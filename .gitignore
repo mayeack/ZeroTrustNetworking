@@ -1,0 +1,9 @@
+local/
+*.env
+*.tgz
+*.spl
+__pycache__/
+*.pyc
+.pytest_cache/
+docs/collateral/backup/
+docs/collateral/screenshots/*.png
