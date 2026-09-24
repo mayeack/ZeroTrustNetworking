@@ -1,5 +1,5 @@
 []
-access = read : [ * ], write : [ admin ]
+access = read : [ * ], write : [ admin, sc_admin ]
 export = system
 
 [views]
@@ -7,3 +7,7 @@ export = none
 
 [nav]
 export = none
+
+[collections/zt_policy_state]
+access = read : [ * ], write : [ admin, zt_service ]
+export = system

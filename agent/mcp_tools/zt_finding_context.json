@@ -1,0 +1,30 @@
+{
+ "name": "zt_finding_context",
+ "title": "Zero trust finding context",
+ "description": "The newest zero trust finding group since the last reset: finding id, time, entity (namespace/workload), total risk, the contributing detections and their scores, threat objects, MITRE ATT&CK technique IDs, and the pod, node, destination store, port and program behind it. Call it first. workload is namespace/name such as build-farm/ci-runner, or * when you do not know it yet.",
+ "inputSchema": {
+  "type": "object",
+  "properties": {
+   "workload": {
+    "type": "string",
+    "description": "Entity as namespace/name, for example build-farm/ci-runner, or * for the newest finding of any workload",
+    "pattern": "^([a-z0-9.\\-]+/[a-z0-9.\\-]+|\\*)$"
+   }
+  },
+  "required": [
+   "workload"
+  ]
+ },
+ "_meta": {
+  "tags": [
+   "zero-trust",
+   "evidence"
+  ],
+  "execution": {
+   "type": "spl",
+   "template": "| savedsearch \"ZT Agent - Finding Context\" workload=$workload$",
+   "row_limiter": true,
+   "time_range": true
+  }
+ }
+}

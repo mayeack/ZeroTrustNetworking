@@ -1,0 +1,36 @@
+{
+ "name": "zt_flow_evidence",
+ "title": "Zero trust flow evidence",
+ "description": "Hubble flow evidence for one source workload: verdict counts (FORWARDED, AUDIT, DROPPED) by direction, source and destination identities and labels, pods, the node that observed each flow, the policies that allowed or denied it, the drop reason, first and last seen, and the destination store's allowlist and mode. Call it after zt_finding_context. workload is namespace/name, for example build-farm/ci-runner; dest is namespace/name such as ai-train/checkpoint-store, or * for every destination.",
+ "inputSchema": {
+  "type": "object",
+  "properties": {
+   "workload": {
+    "type": "string",
+    "description": "Source workload as namespace/name, for example build-farm/ci-runner",
+    "pattern": "^[a-z0-9.\\-]+/[a-z0-9.\\-]+$"
+   },
+   "dest": {
+    "type": "string",
+    "description": "Destination workload as namespace/name, or * for any",
+    "pattern": "^([a-z0-9.\\-]+/[a-z0-9.\\-]+|\\*)$"
+   }
+  },
+  "required": [
+   "workload",
+   "dest"
+  ]
+ },
+ "_meta": {
+  "tags": [
+   "zero-trust",
+   "evidence"
+  ],
+  "execution": {
+   "type": "spl",
+   "template": "| savedsearch \"ZT Agent - Flow Evidence\" workload=$workload$ dest=$dest$",
+   "row_limiter": true,
+   "time_range": true
+  }
+ }
+}

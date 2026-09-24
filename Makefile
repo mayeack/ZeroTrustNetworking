@@ -21,7 +21,7 @@ indexes: ## Create zero_trust and zt_summary on the stack (idempotent)
 hec: ## Create the HEC token (idempotent) and keep it in local/env for the emulator
 	$(PY) tools/hec.py
 secrets: ## Emulator certificate and bearer tokens (local/env and storage/passwords on the stack)
-	$(PY) tools/secrets.py
+	$(PY) tools/gen_secrets.py
 configure: ## Write the HEC and emulator URLs into the installed app's local/zt_demo.conf (REST)
 	$(PY) tools/configure.py
 users: ## Roles and users on the stack (asks first; passwords generated into local/env)

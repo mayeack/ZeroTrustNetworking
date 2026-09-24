@@ -1,0 +1,30 @@
+{
+ "name": "zt_ci_job_context",
+ "title": "Zero trust CI job context",
+ "description": "CI jobs that ran on one runner pod in the last 24 hours, the one overlapping the incident first: project, pipeline, job id, name and stage, merge request id, title and URL, author, commit, script, status, failure reason and times. pod is the runner pod name, for example ci-runner-7d9f8-xk2lq.",
+ "inputSchema": {
+  "type": "object",
+  "properties": {
+   "pod": {
+    "type": "string",
+    "description": "Runner pod name, for example ci-runner-7d9f8-xk2lq",
+    "pattern": "^([a-z0-9.\\-]+|\\*)$"
+   }
+  },
+  "required": [
+   "pod"
+  ]
+ },
+ "_meta": {
+  "tags": [
+   "zero-trust",
+   "evidence"
+  ],
+  "execution": {
+   "type": "spl",
+   "template": "| savedsearch \"ZT Agent - CI Job Context\" pod=$pod$",
+   "row_limiter": true,
+   "time_range": true
+  }
+ }
+}

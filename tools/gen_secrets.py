@@ -2,7 +2,7 @@
 """make secrets: emulator certificate (local/certs) and the two bearer tokens. Tokens go to local/env for the Mac
 process and to storage/passwords (realm zt_incident_demo) on the stack once the app is installed. Idempotent."""
 import os
-import secrets
+import secrets as _secrets
 import subprocess
 import sys
 
@@ -33,7 +33,7 @@ def ensure_cert():
 def ensure_tokens():
     for name in ("ZT_K8S_ENFORCER_TOKEN", "ZT_K8S_PLATFORM_TOKEN"):
         if not ztrest.env(name):
-            ztrest.set_env_value(name, secrets.token_urlsafe(32))
+            ztrest.set_env_value(name, _secrets.token_urlsafe(32))
             print("%s generated" % name)
         else:
             print("%s present" % name)

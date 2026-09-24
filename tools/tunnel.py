@@ -49,7 +49,7 @@ def main(argv):
     with open(CFG, "w") as fh:
         fh.write(config_text(tid))
     print("wrote %s" % CFG)
-    r = subprocess.run([CF, "tunnel", "route", "dns", NAME, host], capture_output=True, text=True)
+    r = subprocess.run([CF, "--config", CFG, "tunnel", "route", "dns", "--overwrite-dns", NAME, host], capture_output=True, text=True)
     print((r.stdout + r.stderr).strip())
     return 0
 

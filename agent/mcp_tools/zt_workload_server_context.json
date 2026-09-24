@@ -1,0 +1,36 @@
+{
+ "name": "zt_workload_server_context",
+ "title": "Zero trust workload and server context",
+ "description": "Context rows (context, value) for a workload and its server: owners and teams, the protected store it reached with owner, data class and allowlist members, the protected data behind the requested path (training job, scheduler, GPUs, owner), the server's switch and port and its Live Protect state, how many other workloads share that server (blast radius of a switch-port action), prior enforcement on the workload in 30 days, a known-gap ticket if any, the approval matrix per enforcement point and the quarantine policy naming convention. workload is namespace/name, for example build-farm/ci-runner; node is the server name, for example bf-node-03, or * if unknown.",
+ "inputSchema": {
+  "type": "object",
+  "properties": {
+   "workload": {
+    "type": "string",
+    "description": "Workload as namespace/name, for example build-farm/ci-runner",
+    "pattern": "^[a-z0-9.\\-]+/[a-z0-9.\\-]+$"
+   },
+   "node": {
+    "type": "string",
+    "description": "Server (node) name, for example bf-node-03, or *",
+    "pattern": "^([a-z0-9.\\-]+|\\*)$"
+   }
+  },
+  "required": [
+   "workload",
+   "node"
+  ]
+ },
+ "_meta": {
+  "tags": [
+   "zero-trust",
+   "evidence"
+  ],
+  "execution": {
+   "type": "spl",
+   "template": "| savedsearch \"ZT Agent - Workload and Server Context\" workload=$workload$ node=$node$",
+   "row_limiter": true,
+   "time_range": true
+  }
+ }
+}

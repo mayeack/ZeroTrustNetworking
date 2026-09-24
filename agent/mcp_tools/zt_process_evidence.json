@@ -1,0 +1,30 @@
+{
+ "name": "zt_process_evidence",
+ "title": "Zero trust process evidence",
+ "description": "Tetragon evidence for one pod: the program that connected to a protected store, its first and last arguments, the parent process chain, the container image, the destination and port, counts, first and last seen, and whether the program is on the approved list for that store. pod is the pod name, for example ci-runner-7d9f8-xk2lq (take it from zt_finding_context).",
+ "inputSchema": {
+  "type": "object",
+  "properties": {
+   "pod": {
+    "type": "string",
+    "description": "Pod name, for example ci-runner-7d9f8-xk2lq",
+    "pattern": "^([a-z0-9.\\-]+|\\*)$"
+   }
+  },
+  "required": [
+   "pod"
+  ]
+ },
+ "_meta": {
+  "tags": [
+   "zero-trust",
+   "evidence"
+  ],
+  "execution": {
+   "type": "spl",
+   "template": "| savedsearch \"ZT Agent - Process Evidence\" pod=$pod$",
+   "row_limiter": true,
+   "time_range": true
+  }
+ }
+}
