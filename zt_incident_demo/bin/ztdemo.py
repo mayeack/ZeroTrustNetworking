@@ -129,12 +129,14 @@ class ZtDemoCommand(GeneratingCommand):
                     sd.post("servicesNS/nobody/%s/saved/searches/%s" % (app, urllib.parse.quote(name, safe="")), data={"cron_schedule": cron})
                     changed.append(name)
         st = ST.load(sd)
+        snap = dict(st)
         st["speed"] = value
-        ST.save(sd, st)
+        ST.save_changes(sd, st, snap)
         return {"_time": time.time(), "action": "speed", "result": value, "changed": ", ".join(changed) or "none"}
 
     def config(self, sd):
         st = ST.load(sd)
+        snap = dict(st)
         out = {"_time": time.time(), "action": "config"}
         if self.agent_mode:
             if self.agent_mode not in ("mcp", "inline"):
@@ -146,7 +148,7 @@ class ZtDemoCommand(GeneratingCommand):
                 raise ValueError("response_mode must be local or soar")
             st["response_mode"] = self.response_mode
             out["response_mode"] = self.response_mode
-        ST.save(sd, st)
+        ST.save_changes(sd, st, snap)
         out["result"] = "saved" if (self.agent_mode or self.response_mode) else "no change"
         out["state"] = json.dumps({k: st[k] for k in ("agent_mode", "response_mode", "speed")})
         return out

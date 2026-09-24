@@ -197,7 +197,8 @@ def start_from_finding(action=None, success=None, container=None, results=None, 
     _update(finding_id=finding_id, event_id=event_id, rule=rule, finding_title=title, entity=entity, finding_time=_finding_time(data),
             risk_score=data.get("risk_score"), container_id=container.get("id"))
     # code block outputs, addressable as start_from_finding:custom_function:<name> in phantom.format and phantom.decision
-    _publish("start_from_finding", finding_id=finding_id, event_id=event_id, entity=entity, rule=rule, finding_title=title, playbook=PLAYBOOK_NAME)
+    _publish("start_from_finding", finding_id=finding_id, event_id=event_id, entity=entity, rule=rule, finding_title=title, playbook=PLAYBOOK_NAME,
+             min_brief_epoch=int(time.time()) - 900)
     phantom.debug("finding %s (event %s) for %s: %s" % (finding_id, event_id, entity, title))
 
     # The brief is read first: when the agent ran, its capture already opened the investigation and the brief carries
@@ -294,10 +295,13 @@ def read_brief(action=None, success=None, container=None, results=None, handle=N
 
     query_formatted_string = phantom.format(
         container=container,
-        template="""zt_agent_briefs_lookup where finding_id="{0}" OR finding_id="{1}" | head 1""",
+        # ES reuses a finding group's id on every fire, so only a brief of this run counts: its key ends with the reset
+        # stamp of the run (ztbrief's run key) and it was captured after this playbook started, less a margin
+        template="""zt_agent_briefs_lookup where finding_id="{0}" OR finding_id="{1}" | eval zt_run=tonumber(mvindex(split(_key,"@"),-1)) | where zt_run>=[| inputlookup zt_demo_state_lookup | where _key="global" | eval r=floor(tonumber(last_reset_epoch)) | return $r] AND tonumber(run_epoch)>={2} | sort - run_epoch | head 1""",
         parameters=[
             "start_from_finding:custom_function:event_id",
-            "start_from_finding:custom_function:finding_id"
+            "start_from_finding:custom_function:finding_id",
+            "start_from_finding:custom_function:min_brief_epoch"
         ])
 
     parameters = [{
@@ -502,7 +506,7 @@ def build_policy_done(action=None, success=None, container=None, results=None, h
     brief = _state()["brief"]
     _update(policy_name=policy_name, label_patch_json=label_patch_json, cnp_json=cnp_json, policy_yaml=policy_yaml, namespace=namespace, pod=pod,
             workload=brief.get("workload") or "", job_id=str(brief.get("job_id") or ""), enforcement_point=brief["enforcement_point"],
-            action=brief.get("action") or "CNP %s" % policy_name, target="%s/%s" % (namespace, pod), approver_labels=APPROVER_LABELS.get(brief["enforcement_point"], ROLE_SOC),
+            action=("CNP %s" % policy_name) if brief.get("enforcement_point") == "kernel" else (brief.get("action") or "CNP %s" % policy_name), target="%s/%s" % (namespace, pod), approver_labels=APPROVER_LABELS.get(brief["enforcement_point"], ROLE_SOC),
             comment=DEFAULT_COMMENT, audit_finding_id=brief.get("finding_id") or _state()["event_id"])
 
     build_policy_request_id(container=container)
@@ -512,14 +516,14 @@ def build_policy_done(action=None, success=None, container=None, results=None, h
 
 @phantom.playbook_block()
 def build_policy_request_id(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, loop_state_json=None, **kwargs):
-    """Count today's incident requests (request numbers above the 16 routine actions) to number this one."""
+    """Number this request one above the highest request ID of the day, from the audit trail and the local request store."""
     phantom.debug("build_policy_request_id() called")
 
     day = time.strftime("%Y%m%d", time.gmtime())
     _publish("build_policy_request_id", day=day)
     query_formatted_string = phantom.format(
         container=container,
-        template="""index=zero_trust sourcetype=zt:enforcement:audit state=requested request_id="ZTR-{0}-*" earliest=-24h latest=now | rex field=request_id "-(?<seq>\\d{{4}})$" | where tonumber(seq) > 16 | stats dc(request_id) as incident_requests""",
+        template="""index=zero_trust sourcetype=zt:enforcement:audit request_id="ZTR-{0}-*" earliest=-26h latest=now | fields request_id | append [| inputlookup zt_enforcement_requests_lookup | search request_id="ZTR-{0}-*" | fields request_id] | rex field=request_id "-(?<seq>\\d{{4}})$" | stats max(seq) as incident_requests""",
         parameters=[
             "build_policy_request_id:custom_function:day"
         ])
@@ -545,7 +549,7 @@ def build_policy_request_id_done(action=None, success=None, container=None, resu
     except (TypeError, ValueError):
         todays = 0
     day = time.strftime("%Y%m%d", time.gmtime())
-    request_id = "ZTR-%s-%04d" % (day, 16 + todays + 1)
+    request_id = "ZTR-%s-%04d" % (day, max(16, todays) + 1)  # one above the highest ID of the day (local, SOAR and routine)
     _update(request_id=request_id, requested_epoch=time.time())
     phantom.debug("request %s" % request_id)
 
@@ -590,27 +594,25 @@ def _prompt_answer(container, name, results):
 
 
 def _approval_message(container):
-    """The approval message of section 12.1, formatted from the brief and the built policy."""
-    return phantom.format(
-        container=container,
-        template="""Quarantine request for {0}: {1} reached {2} ({3}).\nAgent brief: {4}, {5} confidence. {6}\nRecommended: {7} at the {8}. Blast radius: {9}.\nPolicy to apply:\n{10}Approve to label pod {11} with zt-quarantine={12} and create {13}. Reject to close without action.""",
-        parameters=[
-            "read_brief:action_result.data.*.finding_id",
-            "read_brief:action_result.data.*.workload",
-            "read_brief:action_result.data.*.dest_workload",
-            "read_brief:action_result.data.*.data_class",
-            "read_brief:action_result.data.*.disposition",
-            "read_brief:action_result.data.*.confidence",
-            "read_brief:action_result.data.*.what_happened",
-            "read_brief:action_result.data.*.action",
-            "read_brief:action_result.data.*.enforcement_point",
-            "read_brief:action_result.data.*.blast_radius",
-            "build_policy:custom_function_result.data.policy_yaml",
-            "build_policy:custom_function_result.data.pod",
-            "build_policy:custom_function_result.data.label_value",
-            "build_policy:custom_function_result.data.policy_name"
-        ],
-        name="approval_message")
+    """The approval message of section 12.1, from this run's brief and the policy built for it."""
+    st = _state()
+    b = st.get("brief") or {}
+
+    def clean(x):
+        return str(x or "").strip().rstrip(".")
+
+    job = str(st.get("job_id") or "")
+    label = job if job.isdigit() else st.get("pod", "")
+    ref = st.get("investigation_id") or st.get("event_id") or ""
+    return ("Quarantine request %s for %s: %s reached %s (%s).\n"
+            "Agent brief: %s, %s confidence. %s\n"
+            "Recommended: %s at the %s. Blast radius: %s.\n"
+            "Policy to apply:\n%s"
+            "Approve to label pod %s with zt-quarantine=%s and create %s. Reject to close without action.") % (
+        st.get("request_id", ""), ref, b.get("workload", ""), b.get("dest_workload", ""), b.get("data_class", ""),
+        clean(b.get("disposition")).replace("_", " "), clean(b.get("confidence")), str(b.get("what_happened") or "").strip(),
+        clean(st.get("action")), st.get("enforcement_point", ""), clean(b.get("blast_radius")) or "this pod only",
+        st.get("policy_yaml", ""), st.get("pod", ""), label, st.get("policy_name", ""))
 
 
 @phantom.playbook_block()

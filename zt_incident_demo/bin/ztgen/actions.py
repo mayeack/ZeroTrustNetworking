@@ -3,6 +3,7 @@ import time
 
 from . import attacks as A, canon, plan as P, state as ST, builders as B
 from .k8s_client import K8s
+from .estate import get_estate
 from .restclient import RestError
 from .streamer import Streamer
 
@@ -18,9 +19,20 @@ def reset(splunkd, hec, cfg, now=None, user_agent="ztdemo-reset/1.0"):
     now = now or time.time()
     released, audit_ids, note = [], [], ""
     token = splunkd.password("zt_incident_demo", "k8s_platform")
-    targets = [(canon.RUNNER_NS, canon.RUNNER_POD, canon.RUNNER_WORKLOAD)]
-    for rec in A.all_attacks(splunkd):
-        targets.append((rec["src_workload"].split("/")[0], rec["src_pod"], rec["src_workload"]))
+    # only pods that still carry a quarantine label (policy state) or belong to a running attack: one emulator call each
+    estate = get_estate()
+    found = {(canon.RUNNER_NS, canon.RUNNER_POD): canon.RUNNER_WORKLOAD}
+    try:
+        for r in splunkd.kv_query("zt_policy_state"):
+            key = r.get("_key", "")
+            if "/Pod/" in key and canon.QUARANTINE_LABEL_KEY in (r.get("labels_json") or ""):
+                ns, pod = key.split("/Pod/", 1)
+                found.setdefault((ns, pod), estate.pods[pod].workload if pod in estate.pods else ns + "/" + pod)
+    except RestError:
+        pass
+    for rec in A.running(splunkd):
+        found.setdefault((rec["src_workload"].split("/")[0], rec["src_pod"]), rec["src_workload"])
+    targets = [(ns, pod, wl) for (ns, pod), wl in found.items()]
     if token:
         try:
             k8s = K8s(cfg["emulator"]["url"], token, verify=cfg["emulator"]["verify_tls"], user_agent=user_agent)

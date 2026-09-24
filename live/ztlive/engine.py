@@ -24,6 +24,7 @@ PIPELINE_SECONDS = 20
 LEASE_APP_VERSION = (1, 0, 3)     # the search head streamer honours the lease from this app version on
 SCRIPT_INPUT = "$SPLUNK_HOME/etc/apps/zt_incident_demo/bin/zt_stream.py"
 SUMMARY_LIMIT = 3000
+AUTOMATION_RULE = "Zero Trust Protected Paths"   # ES automation rule that starts the SOAR playbook (Mode A)
 
 
 def summarize(env):
@@ -158,9 +159,17 @@ class Engine:
             self.stop_flag.wait(max(0.5, TICK_SECONDS - (time.time() - t)))
 
     def _kind(self, env):
-        ev = env.get("event", {})
-        text = json.dumps(ev)[:4000] if ev else ""
-        if canon.RUNNER_POD in text or '"build_id": %d' % canon.CI_JOB_ID in text or '"build_id":%d' % canon.CI_JOB_ID in text:
+        """Colour on the timeline: the CI runner incident, a path attack, or background. Only the story's own events
+        count as the incident (job 88213, the runner's connections to the checkpoint store, the quarantine)."""
+        st, ev = env.get("sourcetype", ""), env.get("event", {})
+        text = json.dumps(ev)[:6000] if ev else ""
+        runner, store = canon.RUNNER_POD, canon.STORE_POD
+        if st == "ci:job:event":
+            return "incident" if str(ev.get("build_id")) == str(canon.CI_JOB_ID) else "background"
+        if st in ("zt:enforcement:audit", "kube:apiserver:audit"):
+            if runner in text or canon.QUARANTINE_POLICY in text:
+                return "incident"
+        elif runner in text and (store in text or "job-%d" % canon.CI_JOB_ID in text or "postbuild" in text or "/ckpt/" in text):
             return "incident"
         for pod in self.attack_pods:
             if pod in text:
@@ -227,10 +236,20 @@ class Engine:
                 raise ValueError("%s must be one of %s" % (k, ", ".join(allowed.get(k, ()))))
         with self.state_lock:
             st = ST.load(self.sd)
+            snap = dict(st)
             st.update(values)
-            ST.save(self.sd, st)
+            ST.save_changes(self.sd, st, snap)
         self.sd.conf_set("zt_demo", "modes", {k: v for k, v in values.items()})
-        return {k: st[k] for k in allowed}
+        out = {k: st[k] for k in allowed}
+        if "response_mode" in values:
+            # Mode A needs the ES automation rule on (it starts the playbook); Mode B needs it off, or both paths would act
+            state = "on" if values["response_mode"] == "soar" else "off"
+            try:
+                self.sd.post("servicesNS/nobody/missioncontrol/v1/soar/automation_rule/%s/%s" % (urllib.parse.quote(AUTOMATION_RULE, safe=""), state))
+                out["automation_rule"] = state
+            except RestError as e:
+                out["automation_rule"] = "not switched: %s" % str(e)[:120]
+        return out
 
     def set_speed(self, value):
         rows = self.sd.search("| ztdemo action=speed value=%s" % ("fast" if value == "fast" else "normal"), earliest="-1m", latest="now", timeout=120)

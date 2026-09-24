@@ -9,290 +9,461 @@
 <dashboard version="2" theme="dark">
     <label>Zero Trust Fabric Posture</label>
     <description>Protected-path coverage, unprotected paths and every enforcement decision, from Isovalent flow and process data and the SOAR audit trail</description>
-    <definition><![CDATA[
-{
-    "title": "Zero Trust Fabric Posture",
-    "description": "Protected-path coverage, unprotected paths and every enforcement decision, from Isovalent flow and process data and the SOAR audit trail",
-    "inputs": {
-        "input_time": {
-            "type": "input.timerange",
-            "title": "Time range",
-            "options": { "token": "time", "defaultValue": "-24h,now" }
-        },
-        "input_store": {
-            "type": "input.dropdown",
-            "title": "Protected store",
-            "options": {
-                "token": "store",
-                "defaultValue": "*",
-                "items": [
-                    { "label": "All", "value": "*" },
-                    { "label": "ai-train/checkpoint-store", "value": "ai-train/checkpoint-store" },
-                    { "label": "ai-train/dataset-cache", "value": "ai-train/dataset-cache" },
-                    { "label": "ai-infer/model-registry", "value": "ai-infer/model-registry" },
-                    { "label": "ai-infer/vector-index", "value": "ai-infer/vector-index" }
-                ]
-            }
-        },
-        "input_ns": {
-            "type": "input.text",
-            "title": "Namespace filter",
-            "options": { "token": "ns", "defaultValue": "*" }
-        }
-    },
-    "defaults": {
-        "dataSources": {
-            "ds.search": {
-                "options": {
-                    "queryParameters": { "earliest": "$time.earliest$", "latest": "$time.latest$" }
-                }
-            }
-        }
-    },
-    "visualizations": {
-        "viz_kpi_identities": {
-            "type": "splunk.singlevalue",
-            "title": "Workload Identities",
-            "dataSources": { "primary": "ds_posture_latest" },
-            "options": {
-                "majorValue": "> primary | seriesByName(\"identities\") | lastPoint()",
-                "majorColor": "#FFFFFF",
-                "majorFontSize": 54,
-                "shouldUseThousandSeparators": true,
-                "underLabel": "Cilium identities seen",
-                "underLabelFontSize": 14,
-                "sparklineDisplay": "off",
-                "trendDisplay": "off"
-            }
-        },
-        "viz_kpi_coverage": {
-            "type": "splunk.singlevalue",
-            "title": "Protected-Path Coverage",
-            "dataSources": { "primary": "ds_posture_subtitles" },
-            "options": {
-                "majorValue": "> primary | seriesByName(\"coverage_pct\") | lastPoint()",
-                "majorColor": "#F8BE34",
-                "majorFontSize": 54,
-                "numberPrecision": 1,
-                "unit": "%",
-                "unitPosition": "after",
-                "underLabel": "$ds_posture_subtitles:result.coverage_sub$",
-                "underLabelFontSize": 14,
-                "sparklineDisplay": "off",
-                "trendDisplay": "off"
-            }
-        },
-        "viz_kpi_unprotected": {
-            "type": "splunk.singlevalue",
-            "title": "Unprotected Paths",
-            "dataSources": { "primary": "ds_posture_subtitles" },
-            "options": {
-                "majorValue": "> primary | seriesByName(\"unprotected\") | lastPoint()",
-                "majorColor": "#F1813F",
-                "majorFontSize": 54,
-                "underLabel": "$ds_posture_subtitles:result.unprotected_sub$",
-                "underLabelFontSize": 14,
-                "sparklineDisplay": "off",
-                "trendDisplay": "off"
-            }
-        },
-        "viz_kpi_audit_flows": {
-            "type": "splunk.singlevalue",
-            "title": "Audit-Mode Flows (24h)",
-            "dataSources": { "primary": "ds_posture_latest" },
-            "options": {
-                "majorValue": "> primary | seriesByName(\"audit_flows_24h\") | lastPoint()",
-                "majorColor": "#F1813F",
-                "majorFontSize": 54,
-                "shouldUseThousandSeparators": true,
-                "underLabel": "would deny if enforced",
-                "underLabelFontSize": 14,
-                "sparklineDisplay": "off",
-                "trendDisplay": "off"
-            }
-        },
-        "viz_kpi_enforcement": {
-            "type": "splunk.singlevalue",
-            "title": "Enforcement Actions (24h)",
-            "dataSources": { "primary": "ds_posture_latest" },
-            "options": {
-                "majorValue": "> primary | seriesByName(\"enforcement_24h\") | lastPoint()",
-                "majorColor": "#FFFFFF",
-                "majorFontSize": 54,
-                "underLabel": "$ds_posture_latest:result.enforcement_breakdown$",
-                "underLabelFontSize": 14,
-                "sparklineDisplay": "off",
-                "trendDisplay": "off"
-            }
-        },
-        "viz_coverage_trend": {
-            "type": "splunk.line",
-            "title": "Protected-Path Coverage, 5-minute rollups (%)",
-            "dataSources": { "primary": "ds_coverage_trend" },
-            "options": {
-                "seriesColorsByField": { "coverage": "#009CEB", "target": "#8C9BA5" },
-                "lineDashStylesByField": { "coverage": "solid", "target": "shortDash" },
-                "lineWidth": 2,
-                "yAxisMin": 84,
-                "yAxisMax": 96,
-                "yAxisMajorTickInterval": 4,
-                "yAxisTitleVisibility": "hide",
-                "legendDisplay": "bottom",
-                "nullValueDisplay": "gaps"
-            }
-        },
-        "viz_verdicts_empty": {
-            "type": "splunk.markdown",
-            "title": "build-farm/ci-runner → ai-train/checkpoint-store:9000, flows by verdict",
-            "options": {
-                "markdown": "\n\n### No incident since the last reset\n\nFlows from build-farm/ci-runner to ai-train/checkpoint-store:9000 over the last 30 minutes appear here per minute, split by Hubble verdict, once the incident starts."
-            }
-        },
-        "viz_verdicts": {
-            "type": "splunk.column",
-            "title": "build-farm/ci-runner → ai-train/checkpoint-store:9000, flows by verdict",
-            "dataSources": { "primary": "ds_ci_runner_verdicts" },
-            "hideWhenNoData": true,
-            "options": {
-                "stackMode": "stacked",
-                "seriesColorsByField": {
-                    "AUDIT (would deny)": "#DD9900",
-                    "DROPPED (quarantine policy)": "#FF677B",
-                    "FORWARDED": "#00CDAF"
-                },
-                "columnSpacing": 4,
-                "showYAxisWithZero": true,
-                "yAxisTitleVisibility": "hide",
-                "legendDisplay": "bottom"
-            }
-        },
-        "viz_unprotected_paths": {
-            "type": "splunk.table",
-            "title": "Unprotected Paths (latest verdict AUDIT)",
-            "dataSources": { "primary": "ds_unprotected_paths" },
-            "eventHandlers": [
-                {
-                    "type": "drilldown.linkToSearch",
-                    "options": {
-                        "type": "custom",
-                        "query": "index=zero_trust sourcetype=cilium:hubble:flow src_workload=\"$row.src_workload.value$\" dest_workload=\"$row.dst_workload.value$\" verdict=AUDIT",
-                        "earliest": "$time.earliest$",
-                        "latest": "$time.latest$",
-                        "newTab": true
-                    }
-                }
-            ],
-            "options": {
-                "count": 10
-            }
-        },
-        "viz_enforcement_audit": {
-            "type": "splunk.table",
-            "title": "Enforcement Audit Trail (SOAR)",
-            "dataSources": { "primary": "ds_enforcement_audit" },
-            "eventHandlers": [
-                {
-                    "type": "drilldown.linkToSearch",
-                    "options": {
-                        "type": "custom",
-                        "query": "index=zero_trust sourcetype=zt:enforcement:audit request_id=\"$row.request_id.value$\"",
-                        "earliest": "$time.earliest$",
-                        "latest": "$time.latest$",
-                        "newTab": true
-                    }
-                }
-            ],
-            "context": {
-                "timeConfig": { "time": { "format": "MM-DD HH:mm:ss" } },
-                "statusColorConfig": [
-                    { "match": "verified", "value": "#53A051" },
-                    { "match": "failed", "value": "#E0453A" }
-                ]
-            },
-            "options": {
-                "count": 10,
-                "columnFormat": {
-                    "_time": {
-                        "data": "> table | seriesByName(\"_time\") | formatByType(timeConfig)"
-                    },
-                    "status": {
-                        "rowColors": "> table | seriesByName(\"status\") | matchValue(statusColorConfig)"
-                    }
-                }
-            }
-        }
-    },
-    "dataSources": {
-        "ds_posture_latest": {
-            "type": "ds.search",
-            "name": "ds_posture_latest",
-            "options": {
-                "query": "index=zt_summary source=\"ZT Posture - Rollup\" | head 1 | eval enforcement_breakdown=\"kernel \".enforcement_kernel.\" · DPU \".enforcement_dpu.\" · switch \".enforcement_switch, coverage_label=coverage_pct.\"%\", coverage_detail=enforced.\" of \".paths.\" paths enforced\" | table identities coverage_pct coverage_label coverage_detail unprotected audit_flows_24h enforcement_24h enforcement_breakdown",
-                "queryParameters": { "earliest": "-24h", "latest": "now" },
-                "enableSmartSources": true
-            }
-        },
-        "ds_posture_subtitles": {
-            "type": "ds.search",
-            "name": "ds_posture_subtitles",
-            "options": {
-                "query": "index=zt_summary source=\"ZT Posture - Rollup\" earliest=-30m | stats latest(coverage_pct) as now_cov min(coverage_pct) as min_cov latest(unprotected) as now_unp max(unprotected) as max_unp | eval coverage_sub=if(min_cov<now_cov, \"up from \".min_cov.\"% · target 95%\", \"target 95%\"), unprotected_sub=if(max_unp>now_unp, \"down from \".max_unp, \"known gaps with tickets\") | eval coverage_pct=now_cov, unprotected=now_unp | table coverage_pct unprotected coverage_sub unprotected_sub",
-                "queryParameters": { "earliest": "-30m", "latest": "now" },
-                "enableSmartSources": true
-            }
-        },
-        "ds_coverage_trend": {
-            "type": "ds.search",
-            "name": "ds_coverage_trend",
-            "options": {
-                "query": "index=zt_summary source=\"ZT Posture - Rollup\" | timechart span=5m latest(coverage_pct) as coverage | eval target=95",
-                "queryParameters": { "earliest": "$time.earliest$", "latest": "$time.latest$" }
-            }
-        },
-        "ds_ci_runner_verdicts": {
-            "type": "ds.search",
-            "name": "ds_ci_runner_verdicts",
-            "options": {
-                "query": "index=zero_trust sourcetype=cilium:hubble:flow src_workload=\"build-farm/ci-runner\" dest_workload=\"ai-train/checkpoint-store\" dest_port=9000 (traffic_direction=INGRESS OR verdict=DROPPED) earliest=-30m | eval series=case(verdict=\"AUDIT\",\"AUDIT (would deny)\", verdict=\"DROPPED\",\"DROPPED (quarantine policy)\", true(),\"FORWARDED\") | timechart span=1m count by series",
-                "queryParameters": { "earliest": "-30m", "latest": "now" }
-            }
-        },
-        "ds_unprotected_paths": {
-            "type": "ds.search",
-            "name": "ds_unprotected_paths",
-            "options": {
-                "query": "index=zero_trust sourcetype=cilium:hubble:flow dest_protected=true dest_workload=\"$store$\" src_workload=\"$ns$*\" (traffic_direction=INGRESS OR verdict=DROPPED) | stats latest(verdict) as verdict count(eval(verdict=\"AUDIT\")) as audit_flows by src_workload dest_workload dest_port | where verdict=\"AUDIT\" | join type=left src_workload dest_workload [search index=zero_trust sourcetype=cisco:isovalent:processConnect dest_protected=true | stats latest(process) as program by src_workload dest_workload] | lookup zt_known_gaps src_workload dest_workload dest_port OUTPUT ticket | eval program=coalesce(program, \"-\") | sort - audit_flows | rename dest_workload as dst_workload, dest_port as port | table src_workload dst_workload port audit_flows program ticket",
-                "queryParameters": { "earliest": "$time.earliest$", "latest": "$time.latest$" }
-            }
-        },
-        "ds_enforcement_audit": {
-            "type": "ds.search",
-            "name": "ds_enforcement_audit",
-            "options": {
-                "query": "index=zero_trust sourcetype=zt:enforcement:audit (state=verified OR state=applied OR state=failed OR state=rejected OR state=released) | stats latest(state) as status latest(approved_by_label) as approved_by latest(action) as action latest(enforcement_point) as at latest(finding_id) as finding latest(_time) as _time by request_id | sort - _time | table _time finding action at approved_by status request_id",
-                "queryParameters": { "earliest": "$time.earliest$", "latest": "$time.latest$" }
-            }
-        }
-    },
-    "layout": {
-        "type": "absolute",
-        "options": { "width": 1440, "height": 1010, "display": "auto-scale", "showTitleAndDescription": true },
-        "globalInputs": [ "input_time", "input_store", "input_ns" ],
-        "structure": [
-            { "item": "viz_kpi_identities",   "type": "block", "position": { "x": 0,    "y": 0,   "w": 280, "h": 150 } },
-            { "item": "viz_kpi_coverage",     "type": "block", "position": { "x": 290,  "y": 0,   "w": 280, "h": 150 } },
-            { "item": "viz_kpi_unprotected",  "type": "block", "position": { "x": 580,  "y": 0,   "w": 280, "h": 150 } },
-            { "item": "viz_kpi_audit_flows",  "type": "block", "position": { "x": 870,  "y": 0,   "w": 280, "h": 150 } },
-            { "item": "viz_kpi_enforcement",  "type": "block", "position": { "x": 1160, "y": 0,   "w": 280, "h": 150 } },
-
-            { "item": "viz_coverage_trend",   "type": "block", "position": { "x": 0,    "y": 170, "w": 700, "h": 380 } },
-            { "item": "viz_verdicts_empty",   "type": "block", "position": { "x": 740,  "y": 170, "w": 700, "h": 380 } },
-            { "item": "viz_verdicts",         "type": "block", "position": { "x": 740,  "y": 170, "w": 700, "h": 380 } },
-
-            { "item": "viz_unprotected_paths", "type": "block", "position": { "x": 0,   "y": 570, "w": 700, "h": 420 } },
-            { "item": "viz_enforcement_audit", "type": "block", "position": { "x": 740, "y": 570, "w": 700, "h": 420 } }
-        ]
+    <definition><![CDATA[{
+ "title": "Zero Trust Fabric Posture",
+ "description": "Protected-path coverage, unprotected paths and every enforcement decision, from Isovalent flow and process data and the SOAR audit trail",
+ "inputs": {
+  "input_time": {
+   "type": "input.timerange",
+   "title": "Time range",
+   "options": {
+    "token": "time",
+    "defaultValue": "-24h,now"
+   }
+  },
+  "input_store": {
+   "type": "input.dropdown",
+   "title": "Protected store",
+   "options": {
+    "token": "store",
+    "defaultValue": "*",
+    "items": [
+     {
+      "label": "All",
+      "value": "*"
+     },
+     {
+      "label": "ai-train/checkpoint-store",
+      "value": "ai-train/checkpoint-store"
+     },
+     {
+      "label": "ai-train/dataset-cache",
+      "value": "ai-train/dataset-cache"
+     },
+     {
+      "label": "ai-infer/model-registry",
+      "value": "ai-infer/model-registry"
+     },
+     {
+      "label": "ai-infer/vector-index",
+      "value": "ai-infer/vector-index"
+     }
+    ]
+   }
+  },
+  "input_ns": {
+   "type": "input.text",
+   "title": "Namespace filter",
+   "options": {
+    "token": "ns",
+    "defaultValue": "*"
+   }
+  }
+ },
+ "defaults": {
+  "dataSources": {
+   "ds.search": {
+    "options": {
+     "queryParameters": {
+      "earliest": "$time.earliest$",
+      "latest": "$time.latest$"
+     }
     }
-}
-]]></definition>
+   }
+  }
+ },
+ "visualizations": {
+  "viz_kpi_identities": {
+   "type": "splunk.singlevalue",
+   "title": "Workload Identities",
+   "dataSources": {
+    "primary": "ds_posture_latest"
+   },
+   "options": {
+    "majorValue": "> primary | seriesByName(\"identities\") | lastPoint()",
+    "majorColor": "#FFFFFF",
+    "majorFontSize": 54,
+    "shouldUseThousandSeparators": true,
+    "underLabel": "Cilium identities seen",
+    "underLabelFontSize": 14,
+    "sparklineDisplay": "off",
+    "trendDisplay": "off"
+   }
+  },
+  "viz_kpi_coverage": {
+   "type": "splunk.singlevalue",
+   "title": "Protected-Path Coverage",
+   "dataSources": {
+    "primary": "ds_posture_subtitles"
+   },
+   "options": {
+    "majorValue": "> primary | seriesByName(\"coverage_pct\") | lastPoint()",
+    "majorColor": "#F8BE34",
+    "majorFontSize": 54,
+    "numberPrecision": 1,
+    "unit": "%",
+    "unitPosition": "after",
+    "underLabel": "$ds_posture_subtitles:result.coverage_sub$",
+    "underLabelFontSize": 14,
+    "sparklineDisplay": "off",
+    "trendDisplay": "off"
+   }
+  },
+  "viz_kpi_unprotected": {
+   "type": "splunk.singlevalue",
+   "title": "Unprotected Paths",
+   "dataSources": {
+    "primary": "ds_posture_subtitles"
+   },
+   "options": {
+    "majorValue": "> primary | seriesByName(\"unprotected\") | lastPoint()",
+    "majorColor": "#F1813F",
+    "majorFontSize": 54,
+    "underLabel": "$ds_posture_subtitles:result.unprotected_sub$",
+    "underLabelFontSize": 14,
+    "sparklineDisplay": "off",
+    "trendDisplay": "off"
+   }
+  },
+  "viz_kpi_audit_flows": {
+   "type": "splunk.singlevalue",
+   "title": "Audit-Mode Flows (24h)",
+   "dataSources": {
+    "primary": "ds_posture_latest"
+   },
+   "options": {
+    "majorValue": "> primary | seriesByName(\"audit_flows_24h\") | lastPoint()",
+    "majorColor": "#F1813F",
+    "majorFontSize": 54,
+    "shouldUseThousandSeparators": true,
+    "underLabel": "would deny if enforced",
+    "underLabelFontSize": 14,
+    "sparklineDisplay": "off",
+    "trendDisplay": "off"
+   }
+  },
+  "viz_kpi_enforcement": {
+   "type": "splunk.singlevalue",
+   "title": "Enforcement Actions (24h)",
+   "dataSources": {
+    "primary": "ds_posture_latest"
+   },
+   "options": {
+    "majorValue": "> primary | seriesByName(\"enforcement_24h\") | lastPoint()",
+    "majorColor": "#FFFFFF",
+    "majorFontSize": 54,
+    "underLabel": "$ds_posture_latest:result.enforcement_breakdown$",
+    "underLabelFontSize": 14,
+    "sparklineDisplay": "off",
+    "trendDisplay": "off"
+   }
+  },
+  "viz_coverage_trend": {
+   "type": "splunk.line",
+   "title": "Protected-Path Coverage, 5-minute rollups (%)",
+   "dataSources": {
+    "primary": "ds_coverage_trend"
+   },
+   "options": {
+    "seriesColorsByField": {
+     "coverage": "#009CEB",
+     "target": "#8C9BA5"
+    },
+    "lineDashStylesByField": {
+     "coverage": "solid",
+     "target": "shortDash"
+    },
+    "lineWidth": 2,
+    "yAxisMin": 84,
+    "yAxisMax": 96,
+    "yAxisMajorTickInterval": 4,
+    "yAxisTitleVisibility": "hide",
+    "legendDisplay": "bottom",
+    "nullValueDisplay": "gaps"
+   }
+  },
+  "viz_verdicts_empty": {
+   "type": "splunk.markdown",
+   "title": "build-farm/ci-runner → ai-train/checkpoint-store:9000, flows by verdict",
+   "options": {
+    "markdown": "\n\n### No incident since the last reset\n\nFlows from build-farm/ci-runner to ai-train/checkpoint-store:9000 over the last 30 minutes appear here per minute, split by Hubble verdict, once the incident starts."
+   }
+  },
+  "viz_verdicts": {
+   "type": "splunk.column",
+   "title": "build-farm/ci-runner → ai-train/checkpoint-store:9000, flows by verdict",
+   "dataSources": {
+    "primary": "ds_ci_runner_verdicts"
+   },
+   "hideWhenNoData": true,
+   "options": {
+    "stackMode": "stacked",
+    "seriesColorsByField": {
+     "AUDIT (would deny)": "#DD9900",
+     "DROPPED (quarantine policy)": "#FF677B",
+     "FORWARDED": "#00CDAF"
+    },
+    "columnSpacing": 4,
+    "showYAxisWithZero": true,
+    "yAxisTitleVisibility": "hide",
+    "legendDisplay": "bottom"
+   }
+  },
+  "viz_unprotected_paths": {
+   "type": "splunk.table",
+   "title": "Unprotected Paths (latest verdict AUDIT)",
+   "dataSources": {
+    "primary": "ds_unprotected_paths"
+   },
+   "eventHandlers": [
+    {
+     "type": "drilldown.linkToSearch",
+     "options": {
+      "type": "custom",
+      "query": "index=zero_trust sourcetype=cilium:hubble:flow src_workload=\"$row.src_workload.value$\" dest_workload=\"$row.dst_workload.value$\" verdict=AUDIT",
+      "earliest": "$time.earliest$",
+      "latest": "$time.latest$",
+      "newTab": true
+     }
+    }
+   ],
+   "options": {
+    "count": 10
+   }
+  },
+  "viz_enforcement_audit": {
+   "type": "splunk.table",
+   "title": "Enforcement Audit Trail (SOAR)",
+   "dataSources": {
+    "primary": "ds_enforcement_audit"
+   },
+   "eventHandlers": [
+    {
+     "type": "drilldown.linkToSearch",
+     "options": {
+      "type": "custom",
+      "query": "index=zero_trust sourcetype=zt:enforcement:audit request_id=\"$row.request_id.value$\"",
+      "earliest": "$time.earliest$",
+      "latest": "$time.latest$",
+      "newTab": true
+     }
+    }
+   ],
+   "context": {
+    "timeConfig": {
+     "time": {
+      "format": "MM-DD HH:mm:ss"
+     }
+    },
+    "statusColorConfig": [
+     {
+      "match": "verified",
+      "value": "#53A051"
+     },
+     {
+      "match": "failed",
+      "value": "#E0453A"
+     }
+    ]
+   },
+   "options": {
+    "count": 10,
+    "columnFormat": {
+     "_time": {
+      "data": "> table | seriesByName(\"_time\") | formatByType(timeConfig)"
+     },
+     "status": {
+      "rowColors": "> table | seriesByName(\"status\") | matchValue(statusColorConfig)"
+     }
+    }
+   }
+  }
+ },
+ "dataSources": {
+  "ds_posture_latest": {
+   "type": "ds.search",
+   "name": "ds_posture_latest",
+   "options": {
+    "query": "index=zt_summary source=\"ZT Posture - Rollup\" | head 1 | eval enforcement_breakdown=\"kernel \".enforcement_kernel.\" · DPU \".enforcement_dpu.\" · switch \".enforcement_switch, coverage_label=coverage_pct.\"%\", coverage_detail=enforced.\" of \".paths.\" paths enforced\" | table identities coverage_pct coverage_label coverage_detail unprotected audit_flows_24h enforcement_24h enforcement_breakdown",
+    "queryParameters": {
+     "earliest": "-24h",
+     "latest": "now"
+    },
+    "enableSmartSources": true
+   }
+  },
+  "ds_posture_subtitles": {
+   "type": "ds.search",
+   "name": "ds_posture_subtitles",
+   "options": {
+    "query": "index=zt_summary source=\"ZT Posture - Rollup\" earliest=-30m | stats latest(coverage_pct) as now_cov min(coverage_pct) as min_cov latest(unprotected) as now_unp max(unprotected) as max_unp | eval coverage_sub=if(min_cov<now_cov, \"up from \".min_cov.\"% · target 95%\", \"target 95%\"), unprotected_sub=if(max_unp>now_unp, \"down from \".max_unp, \"known gaps with tickets\") | eval coverage_pct=now_cov, unprotected=now_unp | table coverage_pct unprotected coverage_sub unprotected_sub",
+    "queryParameters": {
+     "earliest": "-30m",
+     "latest": "now"
+    },
+    "enableSmartSources": true
+   }
+  },
+  "ds_coverage_trend": {
+   "type": "ds.search",
+   "name": "ds_coverage_trend",
+   "options": {
+    "query": "index=zt_summary source=\"ZT Posture - Rollup\" | timechart span=5m latest(coverage_pct) as coverage | eval target=95",
+    "queryParameters": {
+     "earliest": "$time.earliest$",
+     "latest": "$time.latest$"
+    }
+   }
+  },
+  "ds_ci_runner_verdicts": {
+   "type": "ds.search",
+   "name": "ds_ci_runner_verdicts",
+   "options": {
+    "query": "index=zero_trust sourcetype=cilium:hubble:flow src_workload=\"build-farm/ci-runner\" dest_workload=\"ai-train/checkpoint-store\" dest_port=9000 (traffic_direction=INGRESS OR verdict=DROPPED) earliest=-30m | eval series=case(verdict=\"AUDIT\",\"AUDIT (would deny)\", verdict=\"DROPPED\",\"DROPPED (quarantine policy)\", true(),\"FORWARDED\") | timechart span=1m count by series",
+    "queryParameters": {
+     "earliest": "-30m",
+     "latest": "now"
+    }
+   }
+  },
+  "ds_unprotected_paths": {
+   "type": "ds.search",
+   "name": "ds_unprotected_paths",
+   "options": {
+    "query": "index=zero_trust sourcetype=cilium:hubble:flow dest_protected=true dest_workload=\"$store$\" src_workload=\"$ns$*\" (traffic_direction=INGRESS OR verdict=DROPPED) | stats latest(verdict) as verdict count(eval(verdict=\"AUDIT\")) as audit_flows by src_workload dest_workload dest_port | where verdict=\"AUDIT\" | join type=left src_workload dest_workload [search index=zero_trust sourcetype=cisco:isovalent:processConnect dest_protected=true | stats latest(process) as program by src_workload dest_workload] | lookup zt_known_gaps src_workload dest_workload dest_port OUTPUT ticket | eval program=coalesce(program, \"-\") | sort - audit_flows | rename dest_workload as dst_workload, dest_port as port | table src_workload dst_workload port audit_flows program ticket",
+    "queryParameters": {
+     "earliest": "$time.earliest$",
+     "latest": "$time.latest$"
+    }
+   }
+  },
+  "ds_enforcement_audit": {
+   "type": "ds.search",
+   "name": "ds_enforcement_audit",
+   "options": {
+    "query": "index=zero_trust sourcetype=zt:enforcement:audit (state=verified OR state=applied OR state=failed OR state=rejected OR state=released) | stats latest(state) as status latest(approved_by_label) as approved_by latest(action) as action latest(enforcement_point) as at latest(finding_id) as finding_id latest(investigation_id) as investigation_id latest(_time) as _time by request_id | eval finding=if(match(finding_id,\"@@notable@@\") AND len(investigation_id)>0, investigation_id, finding_id) | sort - _time | table _time finding action at approved_by status request_id",
+    "queryParameters": {
+     "earliest": "$time.earliest$",
+     "latest": "$time.latest$"
+    }
+   }
+  }
+ },
+ "layout": {
+  "type": "absolute",
+  "options": {
+   "width": 1440,
+   "height": 1010,
+   "display": "auto-scale",
+   "showTitleAndDescription": true
+  },
+  "globalInputs": [
+   "input_time",
+   "input_store",
+   "input_ns"
+  ],
+  "structure": [
+   {
+    "item": "viz_kpi_identities",
+    "type": "block",
+    "position": {
+     "x": 0,
+     "y": 0,
+     "w": 280,
+     "h": 150
+    }
+   },
+   {
+    "item": "viz_kpi_coverage",
+    "type": "block",
+    "position": {
+     "x": 290,
+     "y": 0,
+     "w": 280,
+     "h": 150
+    }
+   },
+   {
+    "item": "viz_kpi_unprotected",
+    "type": "block",
+    "position": {
+     "x": 580,
+     "y": 0,
+     "w": 280,
+     "h": 150
+    }
+   },
+   {
+    "item": "viz_kpi_audit_flows",
+    "type": "block",
+    "position": {
+     "x": 870,
+     "y": 0,
+     "w": 280,
+     "h": 150
+    }
+   },
+   {
+    "item": "viz_kpi_enforcement",
+    "type": "block",
+    "position": {
+     "x": 1160,
+     "y": 0,
+     "w": 280,
+     "h": 150
+    }
+   },
+   {
+    "item": "viz_coverage_trend",
+    "type": "block",
+    "position": {
+     "x": 0,
+     "y": 170,
+     "w": 700,
+     "h": 380
+    }
+   },
+   {
+    "item": "viz_verdicts_empty",
+    "type": "block",
+    "position": {
+     "x": 740,
+     "y": 170,
+     "w": 700,
+     "h": 380
+    }
+   },
+   {
+    "item": "viz_verdicts",
+    "type": "block",
+    "position": {
+     "x": 740,
+     "y": 170,
+     "w": 700,
+     "h": 380
+    }
+   },
+   {
+    "item": "viz_unprotected_paths",
+    "type": "block",
+    "position": {
+     "x": 0,
+     "y": 570,
+     "w": 700,
+     "h": 420
+    }
+   },
+   {
+    "item": "viz_enforcement_audit",
+    "type": "block",
+    "position": {
+     "x": 740,
+     "y": 570,
+     "w": 700,
+     "h": 420
+    }
+   }
+  ]
+ }
+}]]></definition>
 </dashboard>

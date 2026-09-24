@@ -23,7 +23,9 @@
     if (!r.ok) throw new Error(j.error || ('HTTP ' + r.status));
     return j;
   }
-  function show(id, text, ok) { const el = $('#' + id); if (!el) return; el.textContent = text; el.className = 'result ' + (ok ? 'ok' : 'err'); }
+  function show(id, text, ok) {
+    [id, id === 'r-fire' ? 'r-dash' : null].forEach(i => { const el = i && $('#' + i); if (!el) return; el.textContent = text; el.className = 'result ' + (ok ? 'ok' : 'err'); });
+  }
 
   // ---- live feed
   function connect() {
@@ -187,7 +189,15 @@
     enforcement: () => ({ point: $('#en-point').value, target_workload: $('#en-target').value, approved_by: $('#en-by').value, comment: $('#en-comment').value }),
   };
   async function fire(btn) { await act(btn, '/api/fire', null, 'r-fire', (j) => j.result + ' at ' + j.t0_iso + ' · ' + j.next); }
-  async function reset(btn) { if (!confirm('Reset: release the quarantine, cancel open requests and stamp a new run?')) return; await act(btn, '/api/reset', null, 'r-fire', (j) => j.result + ' · released ' + j.released_policies + ' · cancelled ' + j.cancelled_requests + (j.note ? ' · ' + j.note : '')); }
+  async function reset(btn) {
+    // two clicks within 5 s instead of a native dialog: releases the quarantine, cancels open requests, stamps a new run
+    if (btn.dataset.armed !== '1') {
+      btn.dataset.label = btn.dataset.label || btn.textContent; btn.dataset.armed = '1'; btn.textContent = 'Click again to reset';
+      setTimeout(() => { btn.dataset.armed = ''; btn.textContent = btn.dataset.label; }, 5000); return;
+    }
+    btn.dataset.armed = ''; btn.textContent = btn.dataset.label;
+    await act(btn, '/api/reset', null, 'r-fire', (j) => j.result + ' · released ' + j.released_policies + ' · cancelled ' + j.cancelled_requests + (j.note ? ' · ' + j.note : ''));
+  }
   async function act(btn, path, body, rid, fmt) {
     btn.disabled = true; show(rid, 'sending…', true);
     try { const j = await api(path, 'POST', body); show(rid, fmt(j), true); pollPipeline(); pollAttacks(); pollStatus(); }

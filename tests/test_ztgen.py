@@ -131,6 +131,34 @@ def test_attacks():
     assert not any(w in json.dumps(evs).lower() for w in BANNED)
 
 
+def test_state_merge():
+    """A tick that loaded the state before a fire must not undo the fire when it saves."""
+    from ztgen import state as ST
+
+    class KV:
+        def __init__(self):
+            self.rec = {}
+
+        def kv_get(self, coll, key):
+            return dict(self.rec) if self.rec else None
+
+        def kv_save(self, coll, rec):
+            self.rec = dict(rec)
+
+    kv = KV()
+    ST.save(kv, ST.load(kv))
+    tick = ST.load(kv)
+    snap = dict(tick)
+    fire = ST.load(kv)
+    fsnap = dict(fire)
+    fire.update({"plan_status": "running", "plan_t0": 123.0})
+    ST.save_changes(kv, fire, fsnap)
+    tick["stream_checkpoint"] = 456.0
+    ST.save_changes(kv, tick, snap)
+    now = ST.load(kv)
+    assert now["plan_status"] == "running" and now["plan_t0"] == 123.0 and now["stream_checkpoint"] == 456.0
+
+
 if __name__ == "__main__":
     import time
     for name, fn in list(globals().items()):

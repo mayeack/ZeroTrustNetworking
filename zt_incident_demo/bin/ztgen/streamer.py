@@ -35,9 +35,19 @@ class Streamer:
             n = self.hec.send(S.background_events(self.estate, cur, nxt, self.tz))
             total += n
             st["stream_checkpoint"] = nxt
-            ST.save(self.splunkd, st)
+            self._save(st)
             cur = nxt
         return total
+
+    def _load(self):
+        st = ST.load(self.splunkd)
+        self._snap = dict(st)
+        return st
+
+    def _save(self, st):
+        """Merge-save: only the fields this streamer changed since its last load or save."""
+        ST.save_changes(self.splunkd, st, getattr(self, "_snap", {}))
+        self._snap = dict(st)
 
     def _policy_records(self):
         return self.splunkd.kv_query("zt_policy_state")
@@ -63,7 +73,7 @@ class Streamer:
                 st["plan_dropped_attempts"] = int(st["plan_dropped_attempts"]) + 1
                 if st["plan_dropped_attempts"] == canon.DROPPED_ATTEMPTS_BEFORE_FAIL:
                     st["plan_fail_at"] = t_att + canon.FAIL_DELAY_AFTER_LAST_DROP
-            ST.save(self.splunkd, st)
+            self._save(st)
             k += 1
         if st["plan_status"] == "running":
             if float(st["plan_fail_at"]) and now >= float(st["plan_fail_at"]):
@@ -76,7 +86,7 @@ class Streamer:
                 sent += 1
                 st["plan_status"] = "completed"
                 st["plan_completed_epoch"] = now
-            ST.save(self.splunkd, st)
+            self._save(st)
         return sent
 
     # ---- tick -----------------------------------------------------------------
@@ -85,7 +95,7 @@ class Streamer:
         live generator on a workstation): a fresh lease held by another owner makes this tick a no-op, and a live
         generator always takes the lease over from the search head, so only one side streams at a time."""
         now = now or time.time()
-        st = ST.load(self.splunkd)
+        st = self._load()
         lock_owner = "%s:%d" % (socket.gethostname(), os.getpid())
         sent = 0
         summary = {"backfill": "done" if st["backfill_done"] else "pending", "background_events": 0, "plan_events": 0, "attack_events": 0, "checkpoint": st["stream_checkpoint"]}
@@ -102,7 +112,7 @@ class Streamer:
                     summary["backfill"] = "running elsewhere (%s)" % st["backfill_lock_owner"]
                 else:
                     st["backfill_lock_epoch"], st["backfill_lock_owner"] = now, owner
-                    ST.save(self.splunkd, st)
+                    self._save(st)
                     hours = backfill_hours or self.cfg["stream"]["backfill_hours"]
                     start = now - hours * 3600
                     log.info("backfill %s hours from %s", hours, time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime(start)))
@@ -126,7 +136,7 @@ class Streamer:
             summary["error"] = str(e)[:400]
         st["last_tick_epoch"] = now
         st["last_tick_events"] = sent
-        ST.save(self.splunkd, st)
+        self._save(st)
         summary["checkpoint"] = st["stream_checkpoint"]
         summary["sent"] = sent
         return summary
@@ -134,7 +144,7 @@ class Streamer:
     # ---- fire / reset ------------------------------------------------------------
     def fire(self, now=None):
         now = now or time.time()
-        st = ST.load(self.splunkd)
+        st = self._load()
         if st["plan_status"] == "running":
             raise ValueError("an incident is in progress (fired %s); run `| ztdemo action=reset` first" % time.strftime("%H:%M:%S", time.gmtime(float(st["plan_t0"]))))
         if P.policy_names_selecting(self._policy_records()):
@@ -142,23 +152,23 @@ class Streamer:
         t0 = now
         self.hec.send(P.fire_events(self.estate, t0))
         st.update({"plan_t0": t0, "plan_attempt": 0, "plan_status": "running", "plan_dropped_attempts": 0, "plan_fail_at": 0.0, "plan_completed_epoch": 0.0, "last_fire_epoch": t0})
-        ST.save(self.splunkd, st)
+        self._save(st)
         return t0
 
     def reset(self, now=None):
         now = now or time.time()
-        st = ST.load(self.splunkd)
+        st = self._load()
         st.update({"plan_status": "idle", "plan_attempt": -1, "plan_dropped_attempts": 0, "plan_fail_at": 0.0, "last_reset_epoch": now})
-        ST.save(self.splunkd, st)
+        self._save(st)
         for rec in A.running(self.splunkd):
             A.stop(self.splunkd, rec["_key"], now)
         return st
 
     def release_lease(self, owner):
-        st = ST.load(self.splunkd)
+        st = self._load()
         if st.get("stream_owner") == owner:
             st["stream_owner"], st["stream_owner_epoch"] = "", 0.0
-            ST.save(self.splunkd, st)
+            self._save(st)
 
 
 def make_hec(splunkd, cfg):

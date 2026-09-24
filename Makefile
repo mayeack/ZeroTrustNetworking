@@ -2,7 +2,7 @@
 PY ?= python3
 APP := zt_incident_demo
 DA := DA-ESS-zt_incident_demo
-VERSION := 1.0.3
+VERSION := 1.0.4
 LOCAL_SPLUNK ?= /opt/splunk104
 SPL := $(LOCAL_SPLUNK)/bin/splunk
 FRESH ?= 0
@@ -52,10 +52,12 @@ fast: ## Every ZT scheduled search every minute
 	$(PY) tools/ztctl.py speed fast
 normal: ## Every ZT scheduled search every 5 minutes
 	$(PY) tools/ztctl.py speed normal
-mode-local: ## Mode B: local approvals
+mode-local: ## Mode B: local approvals (also switches the ES automation rule off)
 	$(PY) tools/ztctl.py config response_mode=local
-mode-soar: ## Mode A: SOAR playbook
+	$(PY) tools/es_automation_rule.py --off
+mode-soar: ## Mode A: SOAR playbook (also switches the ES automation rule on)
 	$(PY) tools/ztctl.py config response_mode=soar
+	$(PY) tools/es_automation_rule.py --on
 agent-mcp: ## Agent uses the MCP tools
 	$(PY) tools/agent_mode.py mcp
 agent-inline: ## Agent gets the evidence inline

@@ -37,7 +37,12 @@ def zt_build_cnp(namespace=None, pod=None, workload=None, job_id=None, finding_i
     finding_id = str(finding_id if finding_id is not None else "").strip()
 
     wl = workload.split("/")[-1]
-    policy_name = "zt-quarantine-%s-%s" % (wl, job_id)
+    # same rule as the app's ztgen/cnp.py: a CI job id names the policy and is the label value; without one, the pod does
+    if job_id.isdigit():
+        policy_name = "zt-quarantine-%s-%s" % (wl, job_id)
+    else:
+        job_id = pod
+        policy_name = "zt-quarantine-%s" % pod
     label_patch = OrderedDict([("metadata", OrderedDict([("labels", OrderedDict([(LABEL_KEY, job_id)]))]))])
     cnp = OrderedDict([
         ("apiVersion", "cilium.io/v2"), ("kind", "CiliumNetworkPolicy"),

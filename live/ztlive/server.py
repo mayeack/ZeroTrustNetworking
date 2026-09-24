@@ -16,9 +16,10 @@ def make_handler(engine):
     class Handler(BaseHTTPRequestHandler):
         server_version = "zt-live/1.0"
 
-        def log_message(self, fmt, *args):  # quieter access log
-            if "/api/stream" not in (args[0] if args else ""):
-                log.debug(fmt, *args)
+        def log_message(self, fmt, *args):  # quieter access log; errors arrive as ("code %d, message %s", code, text)
+            line = (fmt % args) if args else str(fmt)
+            if "/api/stream" not in line:
+                log.debug(line)
 
         # ---- helpers
         def _json(self, code, obj):

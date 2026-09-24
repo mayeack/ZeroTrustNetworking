@@ -29,6 +29,18 @@ def save(splunkd, rec):
     return rec
 
 
+def save_changes(splunkd, st, snapshot):
+    """Write only the fields changed since `snapshot`, on top of the record as it is now. Two writers share this
+    record (the streaming tick and a fire, reset or config from Search or the live generator); a full save by one
+    would undo a change the other made in between. Returns the fields written."""
+    changed = {k: v for k, v in st.items() if k != "_key" and snapshot.get(k) != v}
+    if changed:
+        current = load(splunkd)
+        current.update(changed)
+        save(splunkd, current)
+    return changed
+
+
 def config(splunkd):
     """zt_demo.conf merged (default + local) as {stanza: {key: value}} with typed values."""
     out = {}

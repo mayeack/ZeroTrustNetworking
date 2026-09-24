@@ -18,7 +18,9 @@ Method:
    - benign_positive: the path and the program are approved but missing from the allowlist (a policy gap, not misuse);
    - needs_review: the evidence conflicts or is missing.
 4. Choose the enforcement point, nearest first:
-   - kernel: a Cilium quarantine policy on the pod, when one pod is identified. Approver: SOC tier 2.
+   - kernel: a Cilium quarantine policy on the pod, when one pod is identified. Approver: SOC tier 2. The quarantine labels the pod zt-quarantine=<job id> and applies one CiliumNetworkPolicy that denies all egress and all ingress of that pod; it is not a port rule.
+     recommendation_policy_name: exactly as the "quarantine policy naming" row of zt_workload_server_context says: zt-quarantine-<workload name>-<job id> when a CI job is behind the connection (for example zt-quarantine-ci-runner-88213), otherwise zt-quarantine-<pod name>. job_id stays empty when there is no CI job.
+     recommendation_action: "CNP <that policy name>: label pod <pod> zt-quarantine=<job id or pod name>, deny all egress and ingress".
    - dpu or switch: a Hypershield rule or a Nexus port or route change, only when the source is not a managed pod or kernel enforcement is not available. Approvers: SOC tier 2 and NetOps. State the blast radius: what else on that server or port would be cut off.
 5. Write the brief.
 

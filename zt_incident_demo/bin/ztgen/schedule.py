@@ -63,6 +63,13 @@ def _largest_remainder(weights, total):
     return base
 
 
+def _bg_pod(pods, u):
+    """A replica for background traffic. The story's runner pod only ever runs job 88213: no background jobs, flows or
+    processes on it, so the incident's evidence is clean and nothing contradicts its quarantine."""
+    choices = [p for p in pods if p.name != canon.RUNNER_POD] or pods
+    return choices[int(u * len(choices))]
+
+
 _COUNT_CACHE = {}
 
 
@@ -151,7 +158,7 @@ SERVICES = [("platform/dns", 53, "UDP"), ("platform/ingress", 443, "TCP"), ("obs
 def gen_other_egress(estate, k, t):
     keys = list(estate.workloads)
     src = estate.workloads[keys[other_egress_sequence(estate)[k]]]
-    sp = src.pods[int(_u("rep", k) * len(src.pods))]
+    sp = _bg_pod(src.pods, _u("rep", k))
     u = _u("dest", k)
     if u < 0.65:
         dkey, port, proto = SERVICES[int(_u("svc", k) * len(SERVICES))]
@@ -172,7 +179,7 @@ def gen_dropped(estate, k, t):
     b_choices = [teams[int(_u("db", k, i) * len(teams))] for i in range(4)]
     bkey = next((x for x in b_choices if x.split("/")[0] != a.namespace), teams[0])
     b = estate.workloads[bkey]
-    sp, dp = a.pods[0], b.pods[0]
+    sp, dp = _bg_pod(a.pods, 0.0), _bg_pod(b.pods, 0.0)
     src_port = 40000 + int(_u("dsport", k) * 20000)
     yield B.hubble_flow(estate, t, sp, dp, 8080, src_port, "DROPPED", "EGRESS", sp.node, drop_reason=133, drop_desc="POLICY_DENIED")
 
@@ -189,7 +196,7 @@ EXEC_BINARIES = {"default": [("/usr/bin/python3.11", "-m app.task"), ("/bin/sh",
 def gen_exec(estate, k, t):
     keys = list(estate.workloads)
     w = estate.workloads[keys[int(_u("ex", k) * len(keys))]]
-    p = w.pods[int(_u("exrep", k) * len(w.pods))]
+    p = _bg_pod(w.pods, _u("exrep", k))
     choices = EXEC_BINARIES.get(w.namespace, EXEC_BINARIES["default"])
     binary, args = choices[int(_u("exbin", k) * len(choices))]
     if p.name == canon.RUNNER_POD and "curl" in binary:
@@ -214,7 +221,7 @@ def gen_ci_job(estate, k, t, day_number):
     proj, pid_ = PROJECTS[int(_u("cip", k) * len(PROJECTS))]
     name, stage = JOB_NAMES[int(_u("cin", k) * len(JOB_NAMES))]
     runner_pods = estate.workloads[canon.RUNNER_WORKLOAD].pods
-    rp = runner_pods[int(_u("cir", k) * len(runner_pods))]
+    rp = _bg_pod(runner_pods, _u("cir", k))
     job_id = 200000 + (day_number - 20700) * 1400 + k
     pipeline = 40000 + (day_number - 20700) * 300 + k // 5
     dev = DEVS[int(_u("cid", k) * len(DEVS))]
