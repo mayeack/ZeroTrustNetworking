@@ -103,7 +103,7 @@ def list_notes(splunkd, inv_guid):
 
 
 def update_investigation(splunkd, inv_guid, **fields):
-    return splunkd.post(BASE + "/investigations/%s" % urllib.parse.quote(str(inv_guid), safe=""), json_body=fields, params={"output_mode": None, "inherit_fields": "true"})
+    return splunkd.post(BASE + "/investigations/%s" % urllib.parse.quote(str(inv_guid), safe=""), json_body=fields, params={"output_mode": None})
 
 
 def resolve(splunkd, inv_guid, note_title, note_content):

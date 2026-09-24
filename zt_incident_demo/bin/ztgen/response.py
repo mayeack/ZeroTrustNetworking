@@ -168,7 +168,7 @@ def apply(splunkd, hec, cfg, req, user_agent="zt-approvals/1.0", now=None):
             raise K8sError(st, json.dumps(body))
         else:
             audit_ids.append(((body.get("metadata") or {}).get("annotations") or {}).get("zt/auditID", ""))
-    except K8sError as e:
+    except (K8sError, Exception) as e:  # noqa: BLE001  never let an apply error escape without an audit record
         req["status"], req["last_error"] = "failed", str(e)[:300]
         splunkd.kv_save(REQUESTS, req)
         audit(hec, now, req, "failed", *approved_by_fields(req), approved_at=req.get("approved_epoch"), comment=req["last_error"], status="failed")

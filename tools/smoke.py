@@ -169,8 +169,9 @@ def main(argv):
             check("verified within 2 min of applied", bool(vr), "%.0fs" % dtv)
             guid = r0.get("investigation_guid")
             if guid:
-                inv = s.get("servicesNS/nobody/missioncontrol/public/v2/investigations/" + urllib.parse.quote(guid, safe=""), params={"output_mode": None})
-                check("investigation Resolved / True Positive", isinstance(inv, dict) and str(inv.get("status_label") or inv.get("status")) in ("Resolved", "4") and "True Positive" in str(inv.get("disposition_label") or inv.get("disposition")), {k: inv.get(k) for k in ("status", "status_label", "disposition", "disposition_label")} if isinstance(inv, dict) else inv)
+                lst = s.get("servicesNS/nobody/missioncontrol/public/v2/investigations", params={"ids": guid, "output_mode": None})
+                inv = (lst[0] if isinstance(lst, list) and lst else {})
+                check("investigation Resolved / True Positive", str(inv.get("status_label") or inv.get("status")) in ("Resolved", "4") and "True Positive" in str(inv.get("disposition_name") or inv.get("disposition_label") or inv.get("disposition")), {k: inv.get(k) for k in ("investigation_id", "status", "status_label", "disposition", "disposition_name")})
                 notes = s.get("servicesNS/nobody/missioncontrol/public/v2/investigations/%s/notes" % urllib.parse.quote(guid, safe=""), params={"output_mode": None})
                 titles = [n.get("title") for n in (notes if isinstance(notes, list) else notes.get("items", []))]
                 check("notes: brief, request, result", any("brief" in (t or "").lower() for t in titles) and any("requested" in (t or "").lower() for t in titles) and any("verified" in (t or "").lower() for t in titles), titles)

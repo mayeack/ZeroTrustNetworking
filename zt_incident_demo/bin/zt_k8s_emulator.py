@@ -196,6 +196,20 @@ class State:
             log.error("nexus config event not sent: %s", e)
 
 
+def safe(verb):
+    """Turn an unexpected exception into a 500 Status response instead of a dropped connection."""
+    def wrapper(self):
+        try:
+            verb(self)
+        except Exception as e:  # noqa: BLE001
+            log.exception("%s %s failed", self.command, self.path)
+            try:
+                self._send(500, status_body(500, "InternalError", "%s: %s" % (type(e).__name__, str(e)[:300])))
+            except Exception:  # noqa: BLE001
+                pass
+    return wrapper
+
+
 class Handler(BaseHTTPRequestHandler):
     server_version = "kube-apiserver/v1.31.2"
     protocol_version = "HTTP/1.1"
@@ -243,6 +257,7 @@ class Handler(BaseHTTPRequestHandler):
         return self.path.split("?", 1)[0].rstrip("/")
 
     # ---- verbs --------------------------------------------------------------
+    @safe
     def do_GET(self):
         p = self._path()
         if p in ("/version", "/healthz", "/readyz", "/livez"):
@@ -269,6 +284,7 @@ class Handler(BaseHTTPRequestHandler):
             return self._send(code, body)
         self._send(404, status_body(404, "NotFound", "the server could not find the requested resource"))
 
+    @safe
     def do_PATCH(self):
         ident = self._auth()
         if not ident:
@@ -285,6 +301,7 @@ class Handler(BaseHTTPRequestHandler):
             return self._send(code, out, audit_id)
         self._send(404, status_body(404, "NotFound", "the server could not find the requested resource"))
 
+    @safe
     def do_POST(self):
         p = self._path()
         ident = self._auth()
@@ -313,6 +330,7 @@ class Handler(BaseHTTPRequestHandler):
             return self._send(200, [{"jsonrpc": "2.0", "result": {"body": {}, "msg": "Success", "code": "200"}, "id": i + 1} for i in range(max(1, len(cmds)))])
         self._send(404, status_body(404, "NotFound", "the server could not find the requested resource"))
 
+    @safe
     def do_DELETE(self):
         ident = self._auth()
         if not ident:
@@ -350,8 +368,9 @@ def main():
         return 1
     Handler.tokens = {enforcer: {"user": canon.ENFORCER_USER, "ip": canon.ENFORCER_SOURCE_IP}, platform: {"user": canon.PLATFORM_USER, "ip": "10.40.2.44"}}
     token = os.environ.get("ZT_EMULATOR_SPLUNK_TOKEN")
-    sd = Splunkd(os.environ["SPLUNK_URL"], token=token, basic=None if token else (os.environ.get("SPLUNK_USER"), os.environ.get("SPLUNK_PASS")), verify=True)
-    hec = Hec(os.environ["SPLUNK_HEC_URL"], os.environ["SPLUNK_HEC_TOKEN"], verify=True)
+    verify = os.environ.get("SPLUNK_VERIFY", "1").lower() not in ("0", "false", "no")
+    sd = Splunkd(os.environ["SPLUNK_URL"], token=token, basic=None if token else (os.environ.get("SPLUNK_USER"), os.environ.get("SPLUNK_PASS")), verify=verify)
+    hec = Hec(os.environ["SPLUNK_HEC_URL"], os.environ["SPLUNK_HEC_TOKEN"], verify=verify)
     Handler.state = State(sd, hec)
     srv = ThreadingHTTPServer((bind, port), Handler)
     ctx = ssl.SSLContext(ssl.PROTOCOL_TLS_SERVER)

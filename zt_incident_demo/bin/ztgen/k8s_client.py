@@ -38,8 +38,8 @@ class K8s:
                 return e.code, json.loads(text)
             except ValueError:
                 return e.code, {"message": text}
-        except urllib.error.URLError as e:
-            raise K8sError(0, str(e))
+        except Exception as e:  # noqa: BLE001  (URLError, SSL, RemoteDisconnected, timeouts)
+            raise K8sError(0, "%s: %s" % (type(e).__name__, e))
 
     def version(self):
         return self.call("GET", "/version")
