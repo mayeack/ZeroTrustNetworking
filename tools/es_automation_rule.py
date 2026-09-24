@@ -21,10 +21,15 @@ DETECTION_ID = "8b3e3a2a-5c4d-4f3e-9d8a-4b7c9e0f1a23"  # action.correlationsearc
 
 def main(argv):
     s = ztrest.Splunk()
-    body = {"automation_rule_name": RULE, "action": "add", "name": RULE, "status": "on", "trigger": "finding_created",
-            "detections": [{"detection_name": DETECTION, "app_name": APP}], "ingestions": {"soar_assets": []}, "playbooks": [{"repo": "local", "playbook_name": PLAYBOOK}]}
+    # the add call takes playbooks as {"scm", "playbook"} (the GET reports {"repo", "playbook_name"})
+    body = {"automation_rule_name": RULE, "action": "add", "detections": [{"detection_name": DETECTION, "app_name": APP}], "playbooks": [{"scm": "local", "playbook": PLAYBOOK}]}
     if "--dry-run" in argv:
         print(json.dumps(body, indent=1))
+        return 0
+    if "--off" in argv or "--on" in argv:
+        state = "off" if "--off" in argv else "on"
+        out = s.post(EP, json_body={"automation_rule_name": RULE, "action": state})
+        print("automation rule %s -> %s: %s" % (RULE, state, json.dumps(out)[:200]))
         return 0
     # 1. the detection side: one KV record per detection in the rule (ES 8.7 stores the mapping here)
     recs = s.kv_list(DET_COLLECTION, app="SA-ThreatIntelligence", query={"automation_rule_name": RULE, "detection_name": DETECTION})

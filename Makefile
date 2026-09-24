@@ -66,8 +66,8 @@ agent: ## Create or update the SplunkMCP connection and the ZTFlowInvestigator a
 	$(PY) agent/setup_agent.py
 es-assets: ## Register the ES asset source
 	$(PY) tools/es_assets.py
-es-automation-rule: ## ES automation rule that starts the SOAR playbook from the ZT finding
-	$(PY) tools/es_automation_rule.py
+es-automation-rule: ## ES automation rule that starts the SOAR playbook from the ZT finding (RULE=on|off toggles it)
+	$(PY) tools/es_automation_rule.py $(if $(RULE),--$(RULE),)
 soar-setup: ## SOAR roles, users, assets, custom function and playbook (asks first)
 	$(PY) tools/soar_setup.py
 soar-package: ## Validate the SOAR package folder

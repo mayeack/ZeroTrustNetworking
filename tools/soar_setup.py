@@ -268,14 +268,14 @@ def import_playbook(soar, pb_tgz, dry):
         b64 = base64.b64encode(fh.read()).decode()
     body = {"playbook": b64, "scm": REPO, "force": True}
     if dry:
-        say("playbook %s would be imported (%d bytes base64); active=true, label %s" % (PLAYBOOK, len(b64), LABEL))
+        say("playbook %s would be imported (%d bytes base64); active=false (ES starts it through the automation rule; label activation would run it twice), label %s" % (PLAYBOOK, len(b64), LABEL))
         return
     r = soar.post("rest/import_playbook", json_body=body)
     say("playbook %s imported: %s" % (PLAYBOOK, json.dumps(r)[:200]))
     pb = find_one(soar, "playbook", name=PLAYBOOK)
     if pb:
         # ES 8.7 starts the playbook through its automation rule; "active" still lets the rule and manual runs use it
-        soar.post("rest/playbook/%s" % pb["id"], json_body={"active": True})
+        soar.post("rest/playbook/%s" % pb["id"], json_body={"active": False})
         say("playbook %s (id %s) active" % (PLAYBOOK, pb["id"]))
 
 
