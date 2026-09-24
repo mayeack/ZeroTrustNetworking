@@ -15,7 +15,9 @@ import urllib.parse
 import urllib.request
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-ENV_FILE = os.path.join(ROOT, "local", "env")
+ENV_FILE = os.environ.get("ZT_ENV_FILE") or os.path.join(ROOT, "local", "env")
+if not os.path.isabs(ENV_FILE):
+    ENV_FILE = os.path.join(ROOT, ENV_FILE)
 
 
 def load_env(path=ENV_FILE):

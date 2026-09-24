@@ -31,6 +31,7 @@
    "template": "| savedsearch \"ZT Agent - Flow Evidence\" workload=$workload$ dest=$dest$",
    "row_limiter": true,
    "time_range": true
-  }
+  },
+  "external_app_id": "zt_incident_demo"
  }
 }

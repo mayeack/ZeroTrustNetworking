@@ -49,10 +49,15 @@ def sync_savedsearches(s, app):
     if not os.path.exists(path):
         return
     for name, vals in read_conf(path).items():
-        vals = {k: v for k, v in vals.items() if not k.startswith("action.notable.param._") }
-        r = upsert(s, app, "saved/searches", name, vals)
-        share_global(s, app, "saved/searches", name)
-        print("  %-9s saved search %s" % (r, name))
+        vals = {k: v for k, v in vals.items() if not k.startswith("action.notable.param._") and k != "enableSched"}
+        alert_map = {"counttype": "alert_type", "relation": "alert_comparator", "quantity": "alert_threshold"}  # conf keys -> REST arguments
+        vals = {alert_map.get(k, k): v for k, v in vals.items()}
+        try:
+            r = upsert(s, app, "saved/searches", name, vals)
+            share_global(s, app, "saved/searches", name)
+            print("  %-9s saved search %s" % (r, name))
+        except ztrest.RestError as e:
+            print("  FAILED    saved search %s: %s" % (name, e.body[:300].replace("\n", " ")))
 
 
 def sync_macros(s, app):
@@ -60,9 +65,13 @@ def sync_macros(s, app):
     if not os.path.exists(path):
         return
     for name, vals in read_conf(path).items():
-        r = upsert(s, app, "admin/macros", name, vals)
-        share_global(s, app, "admin/macros", name)
-        print("  %-9s macro %s" % (r, name))
+        vals = {k: v for k, v in vals.items() if k != "description"}
+        try:
+            r = upsert(s, app, "admin/macros", name, vals)
+            share_global(s, app, "admin/macros", name)
+            print("  %-9s macro %s" % (r, name))
+        except ztrest.RestError as e:
+            print("  FAILED    macro %s: %s" % (name, e.body[:300].replace("\n", " ")))
 
 
 def sync_views(s, app):

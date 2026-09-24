@@ -25,6 +25,7 @@
    "template": "| savedsearch \"ZT Agent - Finding Context\" workload=$workload$",
    "row_limiter": true,
    "time_range": true
-  }
+  },
+  "external_app_id": "zt_incident_demo"
  }
 }

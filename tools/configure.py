@@ -21,8 +21,8 @@ def main():
             d["name"] = stanza
             s.post(base, data=d)
         print("zt_demo.conf [%s] %s" % (stanza, values))
-    # reload the conf so the scripted input and commands see it
-    s.get("services/apps/local/zt_incident_demo/_reload") if s.exists("services/apps/local/zt_incident_demo/_reload") else None
+    # No app reload here: every stream tick and command reads zt_demo.conf through REST, and an app reload would
+    # restart the scripted input in the middle of a backfill.
     return 0
 
 

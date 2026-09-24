@@ -44,11 +44,12 @@ def main(argv):
     no_fire = "--no-fire" in argv
     skip_agent = "--skip-agent" in argv
     approver = next((a.split("=", 1)[1] for a in argv if a.startswith("--approve-as=")), "j.chen")
+    inject = "--inject-brief" in argv
     s = ztrest.Splunk()
     # 2. backfill counts over [checkpoint-24h, checkpoint]
     st = s.kv_get("zt_demo_state", "global") or {}
-    cp = float(st.get("stream_checkpoint") or 0)
-    check("state: backfill done", bool(st.get("backfill_done")), "checkpoint age %ds" % (time.time() - cp) if cp else "no checkpoint")
+    cp = float(st.get("stream_checkpoint") or 0) - 60  # a minute back so the newest batch is indexed
+    check("state: backfill done", bool(st.get("backfill_done")), "checkpoint age %ds" % (time.time() - cp - 60) if cp > 0 else "no checkpoint")
     rows = s.search("search index=zero_trust earliest=%s latest=%s | stats count by sourcetype" % (cp - 86400, cp), earliest=cp - 86400, latest=cp, timeout=600)
     got = {r["sourcetype"]: int(r["count"]) for r in rows}
     for stype, n in S.daily_expectations().items():
@@ -107,8 +108,11 @@ def main(argv):
     check("MITRE T1530 + T1059.004", {"T1530", "T1059.004"} <= mitre, mitre)
     cnt = s.search('search index=notable source="%s" earliest=%d | stats count' % (canon.RULE_FBD, int(t0)), earliest=int(t0), latest="now")
     check("exactly one ZT finding group since fire", cnt and int(cnt[0]["count"]) == 1, cnt)
-    # 5. agent brief
-    if not skip_agent:
+    # 5. agent brief (or an injected one when no agent is available, e.g. on the local test bed)
+    if inject and fg:
+        inject_brief(s, fg0)
+        check("brief injected (no agent on this instance)", True, fg0.get("event_id", "")[:8])
+    if not skip_agent and not inject:
         def brief():
             b = s.kv_list("zt_agent_briefs")
             b = [x for x in b if float(x.get("run_epoch") or 0) >= t0]
@@ -172,7 +176,7 @@ def main(argv):
     # 7. posture after (wait for a rollup after the last event)
     time.sleep(75)
     after = rollup(s)
-    if before and after:
+    if before.get("identities") and after.get("identities"):
         rel_ok = (int(float(after["identities"])) == int(float(before["identities"])) + 1 and int(float(after["enforcement_24h"])) == int(float(before["enforcement_24h"])) + 1 and
                   int(float(after["enforcement_kernel"])) == int(float(before["enforcement_kernel"])) + 1 and int(float(after["unprotected"])) == int(float(before["unprotected"])) and
                   int(float(after["paths"])) == int(float(before["paths"])) + 1 and int(float(after["enforced"])) == int(float(before["enforced"])) + 1)
@@ -184,6 +188,32 @@ def main(argv):
     trail = s.search('search index=zero_trust sourcetype=zt:enforcement:audit state=verified earliest=%d | head 1 | table approved_by_label status policy_name' % int(t0), earliest=int(t0), latest="now")
     check("audit trail row: j.chen (SOC tier 2), verified", trail and trail[0]["approved_by_label"] == "j.chen (SOC tier 2)" and trail[0]["policy_name"] == canon.QUARANTINE_POLICY, trail)
     return finish()
+
+
+def inject_brief(s, finding):
+    sys.path.insert(0, os.path.join(ztrest.ROOT, "zt_incident_demo", "bin"))
+    from ztgen import es_api
+    from ztgen.restclient import Splunkd
+    sd = Splunkd(ztrest.env("SPLUNK_URL"), basic=(ztrest.env("SPLUNK_USER"), ztrest.env("SPLUNK_PASS")), verify=False)
+    row = {"event_id": finding["event_id"], "rule_title": finding.get("rule_title"), "finding_time": time.time()}
+    inv, created = es_api.ensure_investigation(sd, row, description="Opened for the local test run.")
+    guid, display = es_api.investigation_ids(inv)
+    brief = {"finding_id": finding["event_id"], "entity": canon.RUNNER_WORKLOAD, "risk": 90, "job_id": str(canon.CI_JOB_ID), "dest_workload": canon.STORE_WORKLOAD, "data_class": "crown-jewel",
+             "disposition": "true_positive", "confidence": "high",
+             "what_happened": "CI job 88213 ran scripts/postbuild.sh from merge request !4417 (contractor-dev-17), using curl to fetch a checkpoint of training job 7712.",
+             "why_it_matters": "Protected crown-jewel store; the runner is not on its allowlist, which is still in audit mode.",
+             "where": {"pod": canon.RUNNER_POD, "node": canon.RUNNER_NODE, "switch": canon.RUNNER_SWITCH, "interface": canon.RUNNER_INTERFACE},
+             "recommendation": {"enforcement_point": "kernel", "action": "Quarantine the runner pod at the kernel with a Cilium policy", "policy_name": canon.QUARANTINE_POLICY, "scope": "one pod", "blast_radius": "the one pod; the rest of the build farm keeps running", "approver_labels": ["SOC tier 2"]},
+             "follow_up": ["Revert !4417", "rotate the runner's credentials", "review the allowlist rollout"], "evidence": [{"tool": "zt_finding_context", "fact": "risk 90 from 2 detections"}],
+             "brief_text": "Disposition: True positive, high confidence.\nWhat happened: CI job 88213 ran scripts/postbuild.sh from merge request !4417 (contractor-dev-17), using curl to fetch a checkpoint of training job 7712.\nWhy it matters: Protected crown-jewel store; the runner is not on its allowlist, which is still in audit mode.\nWhere: Pod ci-runner-7d9f8-xk2lq on bf-node-03 (dc2-leaf-205 Eth1/12).\nRecommendation: Quarantine the runner pod at the kernel with a Cilium policy (zt-quarantine-ci-runner-88213). Approver: SOC tier 2.\nFollow-up: Revert !4417, rotate the runner's credentials, review the allowlist rollout."}
+    rec = {"_key": finding["event_id"], "finding_id": finding["event_id"], "finding_display_id": display, "investigation_id": display, "investigation_guid": guid, "workload": canon.RUNNER_WORKLOAD,
+           "pod": canon.RUNNER_POD, "node": canon.RUNNER_NODE, "job_id": str(canon.CI_JOB_ID), "dest_workload": canon.STORE_WORKLOAD, "data_class": "crown-jewel", "disposition": "true_positive",
+           "confidence": "high", "enforcement_point": "kernel", "action": brief["recommendation"]["action"], "policy_name": canon.QUARANTINE_POLICY, "blast_radius": brief["recommendation"]["blast_radius"],
+           "approver_labels": "SOC tier 2", "brief_json": json.dumps(brief), "brief_text": brief["brief_text"], "what_happened": brief["what_happened"], "session_id": "local-test", "run_epoch": time.time(), "note_added": 0}
+    if guid:
+        es_api.add_note(sd, guid, "ZTFlowInvestigator brief", brief["brief_text"], ai_generated=True)
+        rec["note_added"] = 1
+    sd.kv_save("zt_agent_briefs", rec)
 
 
 def finish():

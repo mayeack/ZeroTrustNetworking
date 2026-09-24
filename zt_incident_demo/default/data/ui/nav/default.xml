@@ -1,3 +1,4 @@
 <nav search_view="search" color="#0F1A2B">
-  <view name="search" default="true" />
+  <view name="zt_posture" default="true" />
+  <view name="search" />
 </nav>

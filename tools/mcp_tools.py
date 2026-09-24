@@ -22,18 +22,30 @@ def existing_tools(s):
     return {t["name"]: t for t in s.get("services/mcp_tools").get("tools", [])}
 
 
-def upsert(s, rec):
-    tools = existing_tools(s)
-    name = rec["name"]
-    if name in tools:
-        tid = tools[name].get("tool_id") or tools[name].get("_key")
-        try:
-            s.request("PUT", "services/mcp_tools/%s" % tid, json_body=rec)
-            return "updated"
-        except ztrest.RestError as e:
-            s.delete("services/mcp_tools/%s" % tid)
-    s.post("services/mcp_tools", json_body=rec)
-    return "created"
+APP_ID = "zt"  # tools are exposed as <external_app_id>_<name>: zt_finding_context, zt_flow_evidence, ...
+
+
+def delete_app_tools(s, external_app_id):
+    """Remove every tool registered under an external_app_id (DELETE with a JSON body, per the 2.0 API)."""
+    try:
+        s.request("DELETE", "services/mcp_tools", json_body={"external_app_id": external_app_id})
+        return True
+    except ztrest.RestError as e:
+        if e.status != 404:
+            print("delete %s: %s" % (external_app_id, str(e)[:160]))
+        return False
+
+
+def replace_tools(s, records):
+    """Atomically register the tool set for the app (batch replace), then enable each tool."""
+    for r in records:
+        r["_meta"]["external_app_id"] = APP_ID
+    out = s.post("services/mcp_tools", json_body={"external_app_id": APP_ID, "tools": records})
+    print("batch replace: registered=%s deleted=%s failed=%s" % (out.get("registered_count"), out.get("deleted_count"), out.get("failed_deletes")))
+    for r in records:
+        tid = "%s:%s" % (APP_ID, r["name"])
+        res = s.post("services/mcp_tools", json_body={"tool_id": tid, "enabled": True, "override": True})
+        print("  %-32s enabled=%s" % (tid, res.get("enabled")))
 
 
 def mint_token(s, user="zt-agent"):
@@ -57,9 +69,10 @@ def mcp_call(token, method, params, rid=1):
 
 def main(argv):
     s = ztrest.Splunk()
-    for path in sorted(glob.glob(os.path.join(TOOL_DIR, "*.json"))):
-        rec = json.load(open(path))
-        print("tool %-28s %s" % (rec["name"], upsert(s, rec)))
+    if delete_app_tools(s, "zt_incident_demo"):
+        print("removed the earlier tools registered under zt_incident_demo")
+    records = [json.load(open(p)) for p in sorted(glob.glob(os.path.join(TOOL_DIR, "*.json")))]
+    replace_tools(s, records)
     token = ztrest.env("ZT_AGENT_MCP_TOKEN") or mint_token(s)
     if not token:
         print("could not mint an MCP token for zt-agent (does the user exist? run make users)")
