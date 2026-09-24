@@ -59,7 +59,7 @@ deck:
       Runtime Security as a supported product and parses process execution and connection events; Nexus switch data comes through Cisco''s data center networking add-on; Live Protect exports switch telemetry
       and syslog from NX-OS, orchestrated through Nexus Dashboard. Splunk Security Content ships Cisco Isovalent detections on the Tetragon data. Middle, the Splunk platform: one index, lookups that add
       the workload owner, the CI job and the server, Enterprise Security for detection, Agent Launchpad for the investigation, SOAR for the response. Right, the enforcement points, each with its approver:
-      a Cilium policy on the server needs one approver; a Hypershield rule on a DPU or smart switch, or a Nexus port or route change, touches the network, so SOC and NetOps both approve. The loop closes
+      a Cilium policy on the server needs one approver; a Hypershield rule on a smart switch, Hybrid Mesh Firewall on a BlueField DPU, or a Nexus port or route change touches the network, so SOC and NetOps both approve. The loop closes
       when the next flow from the same workload shows the new verdict.'
     13: 'What ships, and what we build for you. Left, product: Splunk Secure Networking Essentials, in beta, already reads Tetragon runtime data. In the app: Secure Infrastructure, Secure Data Center Operations,
       Runtime Security tab, time range 24h: active Isovalent nodes, observed namespaces, process executions and telemetry age; the Runtime Investigation tab ranks workloads by process executions, and the
@@ -67,7 +67,7 @@ deck:
       Toolkit runs the agent with tools published through the Splunk MCP Server; SOAR prompts a named approver and calls the Kubernetes API through its HTTP app. Data comes in through the Cisco add-ons
       for Tetragon and Nexus, and over the HTTP Event Collector for Hubble flows. Right, what we build with you, and it is small: workload owners and CI context, your protected stores and their allowlists,
       two detections on your paths, five evidence searches for the agent, the quarantine playbook, and the posture and timeline views. Then switch to Splunk and show the Secure Networking view for a minute
-      before firing the incident. If asked why Runtime Detections reads 0: this lab sends no Tetragon policy alerts; the detections in this story run in Enterprise Security. Say beta; give no availability
+      before firing the incident. Point at Runtime Detections: it lists the day''s Tetragon policy alerts, block-reverse-shell and block-unapproved-binaries, two processes the kernel killed; the protected-path detections in this story run in Enterprise Security. Say beta; give no availability
       date.'
     14: 'Section two: switch to the live run. Fire the incident from the live generator page (or in Search with | ztdemo action=fire) and follow steps two to five live. Fast cadence: every scheduled search
       runs each minute, so the finding opens two to three minutes after the fire, the brief a minute or two later, and verification twenty to ninety seconds after the approval.'
@@ -87,8 +87,7 @@ deck:
       and the policy created through the Kubernetes API (an emulated endpoint reached through a tunnel, the same call as production), both recorded in the Kubernetes audit log with the approver on the audit
       trail.'
     19: 'Live: open the Zero Trust Fabric Posture dashboard in the app. Coverage of paths into protected stores went from 87.7% before the incident to 86.4% when the runner''s path appeared, and to 87.9%
-      after the quarantine; unprotected paths 8 to 9 to 8; workload identities 1,283 to 1,284 because the quarantine label creates a new Cilium identity; enforcement actions 16 to 17. The verdict chart
-      shows AUDIT then DROPPED for the runner''s attempts, and the first row of the audit trail is this incident: j.chen (SOC tier 2), verified. Then open the Incident Timeline: the five steps with their
+      after the quarantine; unprotected paths 8 to 9 to 8; workload identities 1,283 to 1,284 because the quarantine label creates a new Cilium identity; enforcement actions 16 to 17. Those numbers hold on a stack with no other incident in the last 24 hours; after rehearsals each run moves the same way from a lower base, as in the screenshot on this slide (coverage 85.3% during, 86.8% after; unprotected paths 10 to 9). The verdict chart shows AUDIT then DROPPED for the runner''s attempts, and the audit trail lists this incident: j.chen (SOC tier 2), verified. Then open the Incident Timeline: the five steps with their
       live timestamps, the journey grid from the one-pager, and every event of the incident.'
     21: 'The ask. Phase one is this conversation: the five steps end to end on our lab data. Phase two is a lab validation in your environment: one cluster with Isovalent, one protected store with its allowlist
       in audit mode, one Nexus leaf pair, your Splunk with Enterprise Security, and one SOAR playbook with an approval gate. Phase three is the first protected store in enforce mode, the posture dashboard
@@ -110,8 +109,9 @@ talk_track:
       the data and shows every event as it leaves, with triggers for single events) or from Search with | ztdemo action=fire.
     Secure Networking Essentials: 'Splunk Secure Networking Essentials (Beta; app splunk-cisco-dashboards 1.0.52) on the same stack. Setup completed 24 September 2026 with the Searchbase app 1.1.8: only
       index_security changed (to zero_trust); the CIM allowlists are untouched. Show Secure Infrastructure › Secure Data Center Operations, 24h: Runtime Security (87 nodes, 129 namespaces, about 12,000
-      process executions, telemetry age 0) and Runtime Investigation (build-farm / ci-runner tops the workloads). Stay off Fabric Operations and Data Center Security: without the Cisco DC Networking app
-      they show no data or data-model errors.'
+      process executions, telemetry age 0) and Runtime Investigation (build-farm / ci-runner tops the workloads). The Cisco DC Networking and Cisco Security Cloud apps are installed; this build''s Nexus
+      Dashboard advisories and anomalies fill Fabric Operations › Critical Security Advisories and Infrastructure Posture › Data Center Signals. Stay off the other Fabric Operations and Data Center
+      Security cards: they read ACI, APIC and Secure Firewall data, and the story''s fabric is NX-OS.'
     Enforcement: 'SOAR playbook zt_quarantine_workload with an approval prompt to SOC tier 2 (Mode A), or the app''s Enforcement Approvals page (Mode B). Both label the pod and create the CiliumNetworkPolicy
       through the Kubernetes API; in this build that endpoint is emulated and reached through a tunnel, so the call is the one production makes. SOAR uses its HTTP app, the supported path: there is no packaged
       Kubernetes connector.'
@@ -122,17 +122,15 @@ talk_track:
     who: 'Who:  Splunk SE   ·   Time: 2 min   ·   Screen: Slide 13, then Splunk Secure Networking Essentials'
     say: 'Say: Before I show you what we built, here is what ships. Most of this loop is product: Splunk Secure Networking Essentials, in beta, already reads your Tetragon data; Splunk Security Content
       ships ten Cisco Isovalent detections; Enterprise Security, Agent Launchpad and SOAR do the rest. What we build with you is small and specific to you: which stores are protected, who may reach them,
-      two detections on those paths, five evidence searches for the agent, and the playbook. Here is the product view: every node and namespace Tetragon sees, the process executions, and how fresh the telemetry
-      is. Notice the busiest workload: the build farm''s CI runner. Hold that thought.'
+      two detections on those paths, five evidence searches for the agent, and the playbook. Here is the product view: every node and namespace Tetragon sees, the process executions, how fresh the telemetry is, and the two processes Tetragon policy killed today. Notice the busiest workload: the build farm''s CI runner. Hold that thought.'
     show:
     - 'Slide 13: the left side is product, the right side is built for you.'
-    - 'Splunk Web: Splunk Secure Networking Essentials › Secure Infrastructure › Secure Data Center Operations, time range 24h, tab Runtime Security: Active Isovalent Nodes 87, Observed Namespaces 129,
-      Process Executions Observed about 12,000, Telemetry Age 0 minutes.'
-    - 'Tab Runtime Investigation: Top workloads by process execution volume, with build-farm / ci-runner first.'
+    - 'Splunk Web: Splunk Secure Networking Essentials › Secure Infrastructure › Secure Data Center Operations, time range 24h, tab Runtime Security (the view opens on Fabric Operations): Runtime Detections 2, Active Isovalent Nodes 87, Observed Namespaces 129, Process Executions Observed about 12,000, Telemetry Age 0 minutes.'
+    - 'Tab Runtime Investigation: Top workloads by process execution volume, with build-farm / ci-runner first; the detection policy table lists block-reverse-shell and block-unapproved-binaries.'
     point:
     - The day-to-day view needs no custom dashboard; the custom part is your policy and the loop.
-    - 'Runtime Detections reads 0 because this lab sends no Tetragon policy alerts; the detections in this story run in Enterprise Security. Stay off the Fabric Operations and Data Center Security tabs:
-      without the Cisco DC Networking app they show no data.'
+    - 'Runtime Detections lists the day''s Tetragon policy alerts (block-reverse-shell, block-unapproved-binaries); the protected-path detections in this story run in Enterprise Security. If asked about the fabric:
+      Secure Infrastructure › Infrastructure Posture › Data Center Signals shows the day''s Nexus Dashboard anomalies and advisories. Stay off the other Fabric Operations and Data Center Security cards: they read ACI, APIC and Secure Firewall data.'
     - Say beta; give no availability date.
   - title: 'Beat 6: Live: fire the incident, Step 2 in Splunk'
     who: 'Who:  Splunk SE   ·   Time: 4 min   ·   Screen: Slides 14 and 15, then Search in the app'
@@ -170,8 +168,7 @@ talk_track:
       one more enforcement action, with the approver on record.'
     show:
     - 'Approve: read the policy YAML in the prompt, approve with a comment. Then the Incident Timeline: the five step cards fill in, the journey grid checks every cell, the raw events appear at the bottom.'
-    - 'Zero Trust Fabric Posture: coverage 87.9% up from 86.4%, unprotected paths 8 down from 9, identities 1,284, enforcement actions 17; the verdict chart flips from AUDIT to DROPPED; the first audit
-      trail row is j.chen (SOC tier 2), verified.'
+    - 'Zero Trust Fabric Posture: coverage 87.9% up from 86.4%, unprotected paths 8 down from 9, identities 1,284, enforcement actions 17; the verdict chart flips from AUDIT to DROPPED; the audit trail lists this incident, j.chen (SOC tier 2), verified. After rehearsals the same changes start from a lower base.'
     - 'After the call: | ztdemo action=reset releases the quarantine and stamps the reset so the next fire starts clean.'
     point:
     - Contained in minutes at the narrowest point, with a named approver.
@@ -186,7 +183,7 @@ talk_track:
   - - 'Splunk Security Content: Cisco Isovalent detections'
     - 'Ten detections, analytic story Cisco Isovalent Suspicious Activity (ESCU 5.20, 20 January 2026; updated 13 May 2026; ESCU is at 6.7.0 and the stack runs 6.5.0 with them disabled). All anomaly type,
       risk 20 on pod_name: shell execution, curl with insecure flags, cloud metadata access, cron job creation, late process execution, non-allowlisted image, nsenter, offensive tools, escape to host; plus
-      a kprobe-spike hunting search. They expect pod_name, pod_namespace and pod_image_name; this build emits src_pod, src_namespace and container_image, so they need field aliases before they fire here.'
+      a kprobe-spike hunting search. They read pod_name, pod_namespace and pod_image_name, which this build provides as calculated fields (app 1.0.7; a field alias would not work, because aliases run before calculated fields). They run on this data but stay disabled: over four hours, Non Allowlisted Image Use returns 2,413 rows, Shell Execution 402, Late Process Execution 293 and Access To Cloud Metadata Service 68, so the allowed-images list and filters come first. The story page now lists 15 detections: these ten plus five generic Linux detections, three of which also read Isovalent process data.'
   - - Splunk Secure Networking Essentials (Beta)
     - 'Splunkbase 9257, 1.0.52 (22 September 2026), Splunk Field Solutions; invitation-only beta, general availability targeted for fall 2026 (internal only: say beta, no date). Collects no data; reads
       the Cisco add-ons. Its Secure Data Center Operations dashboard has a Cisco Isovalent runtime section that reads Tetragon JSON directly; setup needs the Searchbase app (7188). Verified on the stack
@@ -196,17 +193,18 @@ talk_track:
       and branch scope: no data-center, Nexus or Isovalent content, and no ISE ANC action. Installed on the stack without the add-on; not used in this demo.'
   - - Cisco DC Networking app
     - 'Splunkbase 7777, 1.2.2 (24 July 2026), Cisco-supported: Nexus 9000, ACI and Nexus Dashboard anomalies, advisories, flows, congestion and endpoints (cisco:dc:nd:anomalies, cisco:dc:nd:advisories).
-      Not installed on the stack; this build''s cisco:nexus:* sourcetypes are its own.'
+      Installed on the stack 24 September 2026. This build sends Nexus Dashboard advisories and anomalies in its format (cisco:dc:nd:advisories, cisco:dc:nd:anomalies); endpoint inventory, Live
+      Protect and configuration changes stay this build''s own cisco:nexus:* sourcetypes.'
   - - Enterprise Security 8.7 tools in the Splunk MCP Server
     - Read-only es_ tools (es_get_finding and others) register automatically with Splunk MCP Server 1.3 or later; enforcement still goes through SOAR (Enterprise Security 8.7 documentation, September 2026).
   - - dCloud Cisco Secure Networking demo
     - 'Instant demo, shared and read-only: Cloud Control, Meraki, ISE, Security Cloud Control, Secure Access, Secure Firewall, SD-WAN, ThousandEyes, Secure Workload and Splunk Cloud. Two of its use cases
       walk through the Splunk App for Secure Networking (the same beta app). No Isovalent, Nexus Dashboard or Hypershield. Reviewed 24 September 2026; see the demo review.'
   section3_before:
-    Deck: Same deck; add screenshots of the Secure Networking view and the posture dashboard to slides 13 and 19 once captured.
-    Dashboards: Enable the Splunk Security Content Cisco Isovalent detections with field aliases (pod_name, pod_namespace, pod_image_name) so product detections add risk next to the two protected-path detections.
-    Live demo instance: Install the Cisco Security Cloud App (or the dedicated Isovalent add-on once released) and the Cisco DC Networking app, retire the demo app's own Tetragon parsing, and align the
-      Nexus sourcetypes with cisco:dc:*.
-    Secure Networking Essentials: Install the Cisco DC Networking app and feed Nexus Dashboard data so the fabric cards fill; add a Tetragon alert event so Runtime Detections is not zero.
+    Deck: Same deck. Slide 19 carries a posture screenshot from this build; slide 13 stays text, because the Secure Networking view is shown live.
+    Dashboards: 'Tune, then enable, the Splunk Security Content Cisco Isovalent detections: their fields exist in this build (pod_name, pod_namespace, pod_image_name), but four of them are noisy on this estate, so set the allowed-images list and filters first; then product detections add risk next to the two protected-path detections.'
+    Live demo instance: 'Replace the demo app''s own Tetragon parsing when the dedicated Isovalent add-on ships (the installed Cisco Security Cloud App does not add the zero trust fields), and move
+      endpoint inventory and configuration changes to the Cisco DC Networking app''s sourcetypes; Live Protect has no add-on.'
+    Secure Networking Essentials: 'Nothing for the NX-OS fabric: its Nexus Dashboard cards fill. The ACI, APIC and Secure Firewall cards fill only where those products exist.'
     Enforcement: The same playbook against a lab Kubernetes cluster (CiliumNetworkPolicy) with an approval gate; an NX-API or Hypershield action as a second step, also through the HTTP app.
     Leave-behinds: Add the lab-phase scope document.

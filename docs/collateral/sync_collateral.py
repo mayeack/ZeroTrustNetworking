@@ -3,6 +3,7 @@
 --dry-run prints the changes; --live fills the `live:` section from the stack's last run first. A one-time backup of
 each file is kept in docs/collateral/backup/."""
 import copy
+import hashlib
 import os
 import shutil
 import sys
@@ -60,8 +61,11 @@ def sync_deck(cfg, dry):
             print("slide %d: screenshot %s missing, picture kept" % (rep["slide"], shot))
             continue
         slide = slides[rep["slide"] - 1]
+        want = hashlib.sha1(open(shot, "rb").read()).hexdigest()
         for sh in slide.shapes:
             if sh.shape_type == 13 and sh.name.startswith(rep["shape_prefix"]):
+                if sh.image.sha1 == want:  # already this screenshot: nothing to do (keeps --dry-run at 0)
+                    break
                 left, top, width, height = sh.left, sh.top, sh.width, sh.height
                 sp = sh._element
                 sp.getparent().remove(sp)
