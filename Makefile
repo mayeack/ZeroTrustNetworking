@@ -92,7 +92,7 @@ local-install: lookups ## Copy both apps into the local Splunk (test bed) and re
 	rsync -a --delete --exclude local/ $(APP)/ $(LOCAL_SPLUNK)/etc/apps/$(APP)/
 	rsync -a --delete --exclude local/ $(DA)/ $(LOCAL_SPLUNK)/etc/apps/$(DA)/
 	$(SPL) restart
-local-test: ## Run the local test suite against the local Splunk
-	$(PY) tools/local_test.py
+local-test: ## Full incident on the local test Splunk (injected brief, approval as j.chen); needs local/env.local
+	ZT_ENV_FILE=local/env.local $(PY) tools/smoke.py --inject-brief
 clean:
 	rm -f *.tgz; find . -name __pycache__ -prune -exec rm -rf {} \; 2>/dev/null; true
