@@ -37,9 +37,13 @@ def find_investigation_for_finding(splunkd, finding_event_id, name=None, not_bef
     """Match on any id list ES exposes; fall back to the finding title created after the finding."""
     for inv in list_investigations(splunkd, 100):
         ids = []
-        for key in ("finding_ids", "incident_ids", "notable_ids", "event_ids", "source_event_ids"):
+        for key in ("finding_id", "finding_ids", "findings", "implicit_finding_ids", "intermediate_finding_ids", "consolidated_findings", "incident_ids", "notable_ids", "event_ids"):
             v = inv.get(key)
-            ids.extend(v if isinstance(v, list) else [v] if v else [])
+            for item in (v if isinstance(v, list) else [v] if v else []):
+                if isinstance(item, dict):
+                    ids.extend(str(x) for x in (item.get("event_id"), item.get("id"), item.get("finding_id")) if x)
+                else:
+                    ids.append(str(item))
         if finding_event_id in ids:
             return inv
     if name:
@@ -50,11 +54,13 @@ def find_investigation_for_finding(splunkd, finding_event_id, name=None, not_bef
 
 
 def get_investigation(splunkd, inv_id):
+    """The list endpoint filtered by ids (a single-record GET is not allowed on every ES version)."""
     try:
-        d = splunkd.get(BASE + "/investigations/" + urllib.parse.quote(str(inv_id), safe=""), params={"output_mode": None})
+        d = splunkd.get(BASE + "/investigations", params={"ids": str(inv_id), "output_mode": None})
     except RestError:
         return None
-    return d if isinstance(d, dict) else None
+    items = d if isinstance(d, list) else (d.get("items") or d.get("investigations") or []) if isinstance(d, dict) else []
+    return items[0] if items else None
 
 
 def create_investigation(splunkd, name, finding_event_id, finding_time, description="", urgency="high", status=None):
