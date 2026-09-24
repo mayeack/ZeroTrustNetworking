@@ -1,0 +1,5 @@
+dest_workload,port,protected,data_class,owner,allowlist_policy,mode,description
+ai-train/checkpoint-store,9000,true,crown-jewel,ml-platform,checkpoint-store-ingress-allowlist,audit,Training checkpoint store (model weights and optimizer state)
+ai-train/dataset-cache,8443,true,restricted,ml-platform,dataset-cache-ingress-allowlist,audit,Curated training dataset cache
+ai-infer/model-registry,443,true,restricted,ml-platform,model-registry-ingress-allowlist,audit,Model registry (released model artifacts)
+ai-infer/vector-index,6333,true,confidential,ml-serving,vector-index-ingress-allowlist,audit,Vector index for retrieval

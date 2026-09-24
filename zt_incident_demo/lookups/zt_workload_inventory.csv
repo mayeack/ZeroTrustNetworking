@@ -1,0 +1,1284 @@
+workload,namespace,kind,owner,team,tier,data_class,description
+build-farm/ci-runner,build-farm,Deployment,platform-build,platform-build,tier-2,internal,ci runner in build-farm
+build-farm/build-cache,build-farm,Deployment,platform-build,platform-build,tier-2,internal,build cache in build-farm
+build-farm/artifact-proxy,build-farm,Deployment,platform-build,platform-build,tier-2,internal,artifact proxy in build-farm
+build-farm/image-builder,build-farm,Deployment,platform-build,platform-build,tier-2,internal,image builder in build-farm
+build-farm/runner-metrics,build-farm,Deployment,platform-build,platform-build,tier-2,internal,runner metrics in build-farm
+build-farm/webhook-relay,build-farm,Deployment,platform-build,platform-build,tier-2,internal,webhook relay in build-farm
+build-farm/secrets-agent,build-farm,Deployment,platform-build,platform-build,tier-2,internal,secrets agent in build-farm
+build-farm/git-mirror,build-farm,Deployment,platform-build,platform-build,tier-2,internal,git mirror in build-farm
+build-farm/build-scheduler,build-farm,Deployment,platform-build,platform-build,tier-2,internal,build scheduler in build-farm
+build-farm/dep-proxy,build-farm,Deployment,platform-build,platform-build,tier-2,internal,dep proxy in build-farm
+build-farm/npm-cache,build-farm,Deployment,platform-build,platform-build,tier-2,internal,npm cache in build-farm
+build-farm/pip-cache,build-farm,Deployment,platform-build,platform-build,tier-2,internal,pip cache in build-farm
+build-farm/go-proxy,build-farm,Deployment,platform-build,platform-build,tier-2,internal,go proxy in build-farm
+build-farm/maven-cache,build-farm,Deployment,platform-build,platform-build,tier-2,internal,maven cache in build-farm
+build-farm/registry-mirror,build-farm,Deployment,platform-build,platform-build,tier-2,internal,registry mirror in build-farm
+build-farm/test-reporter,build-farm,Deployment,platform-build,platform-build,tier-2,internal,test reporter in build-farm
+build-farm/coverage-collector,build-farm,Deployment,platform-build,platform-build,tier-2,internal,coverage collector in build-farm
+build-farm/sbom-scanner,build-farm,Deployment,platform-build,platform-build,tier-2,internal,sbom scanner in build-farm
+build-farm/sast-runner,build-farm,Deployment,platform-build,platform-build,tier-2,internal,sast runner in build-farm
+build-farm/release-bot,build-farm,Deployment,platform-build,platform-build,tier-2,internal,release bot in build-farm
+build-farm/artifact-gc,build-farm,Deployment,platform-build,platform-build,tier-2,internal,artifact gc in build-farm
+build-farm/runner-autoscaler,build-farm,Deployment,platform-build,platform-build,tier-2,internal,runner autoscaler in build-farm
+build-farm/kaniko-worker,build-farm,Deployment,platform-build,platform-build,tier-2,internal,kaniko worker in build-farm
+build-farm/buildkit,build-farm,Deployment,platform-build,platform-build,tier-2,internal,buildkit in build-farm
+build-farm/ccache,build-farm,Deployment,platform-build,platform-build,tier-2,internal,ccache in build-farm
+build-farm/bazel-remote,build-farm,Deployment,platform-build,platform-build,tier-2,internal,bazel remote in build-farm
+build-farm/job-dispatcher,build-farm,Deployment,platform-build,platform-build,tier-2,internal,job dispatcher in build-farm
+build-farm/pipeline-api,build-farm,Deployment,platform-build,platform-build,tier-2,internal,pipeline api in build-farm
+build-farm/queue-worker,build-farm,Deployment,platform-build,platform-build,tier-2,internal,queue worker in build-farm
+build-farm/notify-bot,build-farm,Deployment,platform-build,platform-build,tier-2,internal,notify bot in build-farm
+build-farm/status-page,build-farm,Deployment,platform-build,platform-build,tier-2,internal,status page in build-farm
+build-farm/runner-registrar,build-farm,Deployment,platform-build,platform-build,tier-2,internal,runner registrar in build-farm
+build-farm/cleanup-cron,build-farm,Deployment,platform-build,platform-build,tier-2,internal,cleanup cron in build-farm
+build-farm/metrics-exporter,build-farm,Deployment,platform-build,platform-build,tier-2,internal,metrics exporter in build-farm
+build-farm/trivy-scanner,build-farm,Deployment,platform-build,platform-build,tier-2,internal,trivy scanner in build-farm
+build-farm/changelog-bot,build-farm,Deployment,platform-build,platform-build,tier-2,internal,changelog bot in build-farm
+ai-train/trainer,ai-train,Deployment,ml-research,ml-platform,tier-1,internal,trainer in ai-train
+ai-train/eval-runner,ai-train,Deployment,ml-research,ml-platform,tier-1,internal,eval runner in ai-train
+ai-train/ckpt-compactor,ai-train,Deployment,ml-platform,ml-platform,tier-1,internal,ckpt compactor in ai-train
+ai-train/checkpoint-store,ai-train,StatefulSet,ml-platform,ml-platform,crown-jewel,crown-jewel,checkpoint store in ai-train
+ai-train/dataset-cache,ai-train,StatefulSet,ml-platform,ml-platform,tier-1,restricted,dataset cache in ai-train
+ai-train/data-loader,ai-train,Deployment,ml-platform,ml-platform,tier-1,internal,data loader in ai-train
+ai-train/tokenizer-service,ai-train,Deployment,ml-platform,ml-platform,tier-1,internal,tokenizer service in ai-train
+ai-train/shard-manager,ai-train,Deployment,ml-platform,ml-platform,tier-1,internal,shard manager in ai-train
+ai-train/run-tracker,ai-train,Deployment,ml-platform,ml-platform,tier-1,internal,run tracker in ai-train
+ai-train/metrics-db,ai-train,StatefulSet,ml-platform,ml-platform,tier-1,internal,metrics db in ai-train
+ai-train/tensorboard,ai-train,Deployment,ml-platform,ml-platform,tier-1,internal,tensorboard in ai-train
+ai-train/sweep-controller,ai-train,Deployment,ml-platform,ml-platform,tier-1,internal,sweep controller in ai-train
+ai-train/hp-tuner,ai-train,Deployment,ml-platform,ml-platform,tier-1,internal,hp tuner in ai-train
+ai-train/eval-db,ai-train,StatefulSet,ml-platform,ml-platform,tier-1,internal,eval db in ai-train
+ai-train/feature-builder,ai-train,Deployment,ml-platform,ml-platform,tier-1,internal,feature builder in ai-train
+ai-train/augmenter,ai-train,Deployment,ml-platform,ml-platform,tier-1,internal,augmenter in ai-train
+ai-train/dedup-worker,ai-train,Deployment,ml-platform,ml-platform,tier-1,internal,dedup worker in ai-train
+ai-train/quality-filter,ai-train,Deployment,ml-platform,ml-platform,tier-1,internal,quality filter in ai-train
+ai-train/curriculum-scheduler,ai-train,Deployment,ml-platform,ml-platform,tier-1,internal,curriculum scheduler in ai-train
+ai-train/grad-monitor,ai-train,Deployment,ml-platform,ml-platform,tier-1,internal,grad monitor in ai-train
+ai-train/ckpt-verifier,ai-train,Deployment,ml-platform,ml-platform,tier-1,internal,ckpt verifier in ai-train
+ai-train/ckpt-replicator,ai-train,Deployment,ml-platform,ml-platform,tier-1,internal,ckpt replicator in ai-train
+ai-train/dataset-indexer,ai-train,Deployment,ml-platform,ml-platform,tier-1,internal,dataset indexer in ai-train
+ai-train/label-service,ai-train,Deployment,ml-platform,ml-platform,tier-1,internal,label service in ai-train
+ai-train/lineage-tracker,ai-train,Deployment,ml-platform,ml-platform,tier-1,internal,lineage tracker in ai-train
+ai-train/experiment-api,ai-train,Deployment,ml-platform,ml-platform,tier-1,internal,experiment api in ai-train
+ai-train/queue-controller,ai-train,Deployment,ml-platform,ml-platform,tier-1,internal,queue controller in ai-train
+ai-train/gpu-allocator,ai-train,Deployment,ml-platform,ml-platform,tier-1,internal,gpu allocator in ai-train
+ai-train/nccl-tester,ai-train,Deployment,ml-platform,ml-platform,tier-1,internal,nccl tester in ai-train
+ai-train/topology-probe,ai-train,Deployment,ml-platform,ml-platform,tier-1,internal,topology probe in ai-train
+ai-train/rdma-monitor,ai-train,Deployment,ml-platform,ml-platform,tier-1,internal,rdma monitor in ai-train
+ai-train/trainer-sidecar-metrics,ai-train,Deployment,ml-platform,ml-platform,tier-1,internal,trainer sidecar metrics in ai-train
+ai-train/loss-dashboard,ai-train,Deployment,ml-platform,ml-platform,tier-1,internal,loss dashboard in ai-train
+ai-train/run-archiver,ai-train,Deployment,ml-platform,ml-platform,tier-1,internal,run archiver in ai-train
+ai-train/config-server,ai-train,Deployment,ml-platform,ml-platform,tier-1,internal,config server in ai-train
+ai-train/secrets-broker,ai-train,Deployment,ml-platform,ml-platform,tier-1,internal,secrets broker in ai-train
+ai-train/artifact-signer,ai-train,Deployment,ml-platform,ml-platform,tier-1,internal,artifact signer in ai-train
+ai-train/eval-scheduler,ai-train,Deployment,ml-platform,ml-platform,tier-1,internal,eval scheduler in ai-train
+ai-train/prompt-bank,ai-train,Deployment,ml-platform,ml-platform,tier-1,internal,prompt bank in ai-train
+ai-train/benchmark-runner,ai-train,Deployment,ml-platform,ml-platform,tier-1,internal,benchmark runner in ai-train
+ai-train/reward-model-trainer,ai-train,Deployment,ml-platform,ml-platform,tier-1,internal,reward model trainer in ai-train
+ai-train/rl-rollout-worker,ai-train,Deployment,ml-platform,ml-platform,tier-1,internal,rl rollout worker in ai-train
+ai-train/dpo-trainer,ai-train,Deployment,ml-platform,ml-platform,tier-1,internal,dpo trainer in ai-train
+ai-train/sft-trainer,ai-train,Deployment,ml-platform,ml-platform,tier-1,internal,sft trainer in ai-train
+ai-train/merge-worker,ai-train,Deployment,ml-platform,ml-platform,tier-1,internal,merge worker in ai-train
+ai-train/quant-worker,ai-train,Deployment,ml-platform,ml-platform,tier-1,internal,quant worker in ai-train
+ai-train/export-worker,ai-train,Deployment,ml-platform,ml-platform,tier-1,internal,export worker in ai-train
+ai-train/safety-eval,ai-train,Deployment,ml-platform,ml-platform,tier-1,internal,safety eval in ai-train
+ai-infer/model-registry,ai-infer,StatefulSet,ml-platform,ml-serving,tier-1,restricted,model registry in ai-infer
+ai-infer/vector-index,ai-infer,StatefulSet,ml-serving,ml-serving,tier-1,confidential,vector index in ai-infer
+ai-infer/eval-harness,ai-infer,Deployment,ml-eval,ml-serving,tier-1,internal,eval harness in ai-infer
+ai-infer/rag-gateway,ai-infer,Deployment,ml-serving,ml-serving,tier-1,internal,rag gateway in ai-infer
+ai-infer/embed-service,ai-infer,Deployment,ml-serving,ml-serving,tier-1,internal,embed service in ai-infer
+ai-infer/rerank-service,ai-infer,Deployment,ml-serving,ml-serving,tier-1,internal,rerank service in ai-infer
+ai-infer/guardrail-service,ai-infer,Deployment,ml-serving,ml-serving,tier-1,internal,guardrail service in ai-infer
+ai-infer/prompt-cache,ai-infer,Deployment,ml-serving,ml-serving,tier-1,internal,prompt cache in ai-infer
+ai-infer/kv-cache-proxy,ai-infer,Deployment,ml-serving,ml-serving,tier-1,internal,kv cache proxy in ai-infer
+ai-infer/inference-router,ai-infer,Deployment,ml-serving,ml-serving,tier-1,internal,inference router in ai-infer
+ai-infer/api-gateway,ai-infer,Deployment,ml-serving,ml-serving,tier-1,internal,api gateway in ai-infer
+ai-infer/token-budget,ai-infer,Deployment,ml-serving,ml-serving,tier-1,internal,token budget in ai-infer
+ai-infer/usage-meter,ai-infer,Deployment,ml-serving,ml-serving,tier-1,internal,usage meter in ai-infer
+ai-infer/abuse-filter,ai-infer,Deployment,ml-serving,ml-serving,tier-1,internal,abuse filter in ai-infer
+ai-infer/model-loader,ai-infer,Deployment,ml-serving,ml-serving,tier-1,internal,model loader in ai-infer
+ai-infer/warm-pool-controller,ai-infer,Deployment,ml-serving,ml-serving,tier-1,internal,warm pool controller in ai-infer
+ai-infer/canary-controller,ai-infer,Deployment,ml-serving,ml-serving,tier-1,internal,canary controller in ai-infer
+ai-infer/ab-router,ai-infer,Deployment,ml-serving,ml-serving,tier-1,internal,ab router in ai-infer
+ai-infer/schema-registry,ai-infer,Deployment,ml-serving,ml-serving,tier-1,internal,schema registry in ai-infer
+ai-infer/feature-store-reader,ai-infer,Deployment,ml-serving,ml-serving,tier-1,internal,feature store reader in ai-infer
+ai-infer/moderation-service,ai-infer,Deployment,ml-serving,ml-serving,tier-1,internal,moderation service in ai-infer
+ai-infer/citation-service,ai-infer,Deployment,ml-serving,ml-serving,tier-1,internal,citation service in ai-infer
+ai-infer/web-search-tool,ai-infer,Deployment,ml-serving,ml-serving,tier-1,internal,web search tool in ai-infer
+ai-infer/code-exec-sandbox,ai-infer,Deployment,ml-serving,ml-serving,tier-1,internal,code exec sandbox in ai-infer
+ai-infer/session-store,ai-infer,StatefulSet,ml-serving,ml-serving,tier-1,internal,session store in ai-infer
+ai-infer/conversation-db,ai-infer,StatefulSet,ml-serving,ml-serving,tier-1,confidential,conversation db in ai-infer
+ai-infer/feedback-collector,ai-infer,Deployment,ml-serving,ml-serving,tier-1,internal,feedback collector in ai-infer
+ai-infer/eval-replay,ai-infer,Deployment,ml-serving,ml-serving,tier-1,internal,eval replay in ai-infer
+ai-infer/latency-probe,ai-infer,Deployment,ml-serving,ml-serving,tier-1,internal,latency probe in ai-infer
+ai-infer/quota-service,ai-infer,Deployment,ml-serving,ml-serving,tier-1,internal,quota service in ai-infer
+ai-infer/serve-llm-70b-01,ai-infer,Deployment,ml-serving,ml-serving,tier-1,internal,serve llm 70b 01 in ai-infer
+ai-infer/serve-llm-7b-01,ai-infer,Deployment,ml-serving,ml-serving,tier-1,internal,serve llm 7b 01 in ai-infer
+ai-infer/serve-llm-7712-01,ai-infer,Deployment,ml-serving,ml-serving,tier-1,internal,serve llm 7712 01 in ai-infer
+ai-infer/serve-code-13b-01,ai-infer,Deployment,ml-serving,ml-serving,tier-1,internal,serve code 13b 01 in ai-infer
+ai-infer/serve-vision-2b-01,ai-infer,Deployment,ml-serving,ml-serving,tier-1,internal,serve vision 2b 01 in ai-infer
+ai-infer/serve-asr-1b-01,ai-infer,Deployment,ml-serving,ml-serving,tier-1,internal,serve asr 1b 01 in ai-infer
+ai-infer/serve-embed-l-01,ai-infer,Deployment,ml-serving,ml-serving,tier-1,internal,serve embed l 01 in ai-infer
+ai-infer/serve-rerank-s-01,ai-infer,Deployment,ml-serving,ml-serving,tier-1,internal,serve rerank s 01 in ai-infer
+ai-infer/serve-guard-3b-01,ai-infer,Deployment,ml-serving,ml-serving,tier-1,internal,serve guard 3b 01 in ai-infer
+ai-infer/serve-summ-8b-01,ai-infer,Deployment,ml-serving,ml-serving,tier-1,internal,serve summ 8b 01 in ai-infer
+ai-infer/serve-llm-70b-02,ai-infer,Deployment,ml-serving,ml-serving,tier-1,internal,serve llm 70b 02 in ai-infer
+ai-infer/serve-llm-7b-02,ai-infer,Deployment,ml-serving,ml-serving,tier-1,internal,serve llm 7b 02 in ai-infer
+ai-infer/serve-llm-7712-02,ai-infer,Deployment,ml-serving,ml-serving,tier-1,internal,serve llm 7712 02 in ai-infer
+ai-infer/serve-code-13b-02,ai-infer,Deployment,ml-serving,ml-serving,tier-1,internal,serve code 13b 02 in ai-infer
+ai-infer/serve-vision-2b-02,ai-infer,Deployment,ml-serving,ml-serving,tier-1,internal,serve vision 2b 02 in ai-infer
+ai-infer/serve-asr-1b-02,ai-infer,Deployment,ml-serving,ml-serving,tier-1,internal,serve asr 1b 02 in ai-infer
+ai-infer/serve-embed-l-02,ai-infer,Deployment,ml-serving,ml-serving,tier-1,internal,serve embed l 02 in ai-infer
+ai-infer/serve-rerank-s-02,ai-infer,Deployment,ml-serving,ml-serving,tier-1,internal,serve rerank s 02 in ai-infer
+ai-infer/serve-guard-3b-02,ai-infer,Deployment,ml-serving,ml-serving,tier-1,internal,serve guard 3b 02 in ai-infer
+ai-infer/serve-summ-8b-02,ai-infer,Deployment,ml-serving,ml-serving,tier-1,internal,serve summ 8b 02 in ai-infer
+ai-infer/serve-llm-70b-03,ai-infer,Deployment,ml-serving,ml-serving,tier-1,internal,serve llm 70b 03 in ai-infer
+ai-infer/serve-llm-7b-03,ai-infer,Deployment,ml-serving,ml-serving,tier-1,internal,serve llm 7b 03 in ai-infer
+ai-infer/serve-llm-7712-03,ai-infer,Deployment,ml-serving,ml-serving,tier-1,internal,serve llm 7712 03 in ai-infer
+ai-infer/serve-code-13b-03,ai-infer,Deployment,ml-serving,ml-serving,tier-1,internal,serve code 13b 03 in ai-infer
+ai-infer/serve-vision-2b-03,ai-infer,Deployment,ml-serving,ml-serving,tier-1,internal,serve vision 2b 03 in ai-infer
+ai-infer/serve-asr-1b-03,ai-infer,Deployment,ml-serving,ml-serving,tier-1,internal,serve asr 1b 03 in ai-infer
+ai-infer/serve-embed-l-03,ai-infer,Deployment,ml-serving,ml-serving,tier-1,internal,serve embed l 03 in ai-infer
+ai-infer/serve-rerank-s-03,ai-infer,Deployment,ml-serving,ml-serving,tier-1,internal,serve rerank s 03 in ai-infer
+ai-infer/serve-guard-3b-03,ai-infer,Deployment,ml-serving,ml-serving,tier-1,internal,serve guard 3b 03 in ai-infer
+ai-infer/serve-summ-8b-03,ai-infer,Deployment,ml-serving,ml-serving,tier-1,internal,serve summ 8b 03 in ai-infer
+ai-infer/serve-llm-70b-04,ai-infer,Deployment,ml-serving,ml-serving,tier-1,internal,serve llm 70b 04 in ai-infer
+ai-infer/serve-llm-7b-04,ai-infer,Deployment,ml-serving,ml-serving,tier-1,internal,serve llm 7b 04 in ai-infer
+ai-infer/serve-llm-7712-04,ai-infer,Deployment,ml-serving,ml-serving,tier-1,internal,serve llm 7712 04 in ai-infer
+ai-infer/serve-code-13b-04,ai-infer,Deployment,ml-serving,ml-serving,tier-1,internal,serve code 13b 04 in ai-infer
+ai-infer/serve-vision-2b-04,ai-infer,Deployment,ml-serving,ml-serving,tier-1,internal,serve vision 2b 04 in ai-infer
+ai-infer/serve-asr-1b-04,ai-infer,Deployment,ml-serving,ml-serving,tier-1,internal,serve asr 1b 04 in ai-infer
+ai-infer/serve-embed-l-04,ai-infer,Deployment,ml-serving,ml-serving,tier-1,internal,serve embed l 04 in ai-infer
+ai-infer/serve-rerank-s-04,ai-infer,Deployment,ml-serving,ml-serving,tier-1,internal,serve rerank s 04 in ai-infer
+ai-infer/serve-guard-3b-04,ai-infer,Deployment,ml-serving,ml-serving,tier-1,internal,serve guard 3b 04 in ai-infer
+ai-infer/serve-summ-8b-04,ai-infer,Deployment,ml-serving,ml-serving,tier-1,internal,serve summ 8b 04 in ai-infer
+ai-infer/serve-llm-70b-05,ai-infer,Deployment,ml-serving,ml-serving,tier-1,internal,serve llm 70b 05 in ai-infer
+ai-infer/serve-llm-7b-05,ai-infer,Deployment,ml-serving,ml-serving,tier-1,internal,serve llm 7b 05 in ai-infer
+ai-infer/serve-llm-7712-05,ai-infer,Deployment,ml-serving,ml-serving,tier-1,internal,serve llm 7712 05 in ai-infer
+ai-infer/serve-code-13b-05,ai-infer,Deployment,ml-serving,ml-serving,tier-1,internal,serve code 13b 05 in ai-infer
+ai-infer/serve-vision-2b-05,ai-infer,Deployment,ml-serving,ml-serving,tier-1,internal,serve vision 2b 05 in ai-infer
+ai-infer/serve-asr-1b-05,ai-infer,Deployment,ml-serving,ml-serving,tier-1,internal,serve asr 1b 05 in ai-infer
+ai-infer/serve-embed-l-05,ai-infer,Deployment,ml-serving,ml-serving,tier-1,internal,serve embed l 05 in ai-infer
+ai-infer/serve-rerank-s-05,ai-infer,Deployment,ml-serving,ml-serving,tier-1,internal,serve rerank s 05 in ai-infer
+ai-infer/serve-guard-3b-05,ai-infer,Deployment,ml-serving,ml-serving,tier-1,internal,serve guard 3b 05 in ai-infer
+ai-infer/serve-summ-8b-05,ai-infer,Deployment,ml-serving,ml-serving,tier-1,internal,serve summ 8b 05 in ai-infer
+ai-infer/serve-llm-70b-06,ai-infer,Deployment,ml-serving,ml-serving,tier-1,internal,serve llm 70b 06 in ai-infer
+ai-infer/serve-llm-7b-06,ai-infer,Deployment,ml-serving,ml-serving,tier-1,internal,serve llm 7b 06 in ai-infer
+ai-infer/serve-llm-7712-06,ai-infer,Deployment,ml-serving,ml-serving,tier-1,internal,serve llm 7712 06 in ai-infer
+ai-infer/serve-code-13b-06,ai-infer,Deployment,ml-serving,ml-serving,tier-1,internal,serve code 13b 06 in ai-infer
+ai-infer/serve-vision-2b-06,ai-infer,Deployment,ml-serving,ml-serving,tier-1,internal,serve vision 2b 06 in ai-infer
+ai-infer/serve-asr-1b-06,ai-infer,Deployment,ml-serving,ml-serving,tier-1,internal,serve asr 1b 06 in ai-infer
+ai-infer/serve-embed-l-06,ai-infer,Deployment,ml-serving,ml-serving,tier-1,internal,serve embed l 06 in ai-infer
+ai-infer/serve-rerank-s-06,ai-infer,Deployment,ml-serving,ml-serving,tier-1,internal,serve rerank s 06 in ai-infer
+ai-infer/serve-guard-3b-06,ai-infer,Deployment,ml-serving,ml-serving,tier-1,internal,serve guard 3b 06 in ai-infer
+ai-infer/serve-summ-8b-06,ai-infer,Deployment,ml-serving,ml-serving,tier-1,internal,serve summ 8b 06 in ai-infer
+ai-infer/serve-llm-70b-07,ai-infer,Deployment,ml-serving,ml-serving,tier-1,internal,serve llm 70b 07 in ai-infer
+ai-infer/serve-llm-7b-07,ai-infer,Deployment,ml-serving,ml-serving,tier-1,internal,serve llm 7b 07 in ai-infer
+ai-infer/serve-llm-7712-07,ai-infer,Deployment,ml-serving,ml-serving,tier-1,internal,serve llm 7712 07 in ai-infer
+ai-infer/serve-code-13b-07,ai-infer,Deployment,ml-serving,ml-serving,tier-1,internal,serve code 13b 07 in ai-infer
+ai-infer/serve-vision-2b-07,ai-infer,Deployment,ml-serving,ml-serving,tier-1,internal,serve vision 2b 07 in ai-infer
+ai-infer/serve-asr-1b-07,ai-infer,Deployment,ml-serving,ml-serving,tier-1,internal,serve asr 1b 07 in ai-infer
+ai-infer/serve-embed-l-07,ai-infer,Deployment,ml-serving,ml-serving,tier-1,internal,serve embed l 07 in ai-infer
+ai-infer/serve-rerank-s-07,ai-infer,Deployment,ml-serving,ml-serving,tier-1,internal,serve rerank s 07 in ai-infer
+ai-infer/serve-guard-3b-07,ai-infer,Deployment,ml-serving,ml-serving,tier-1,internal,serve guard 3b 07 in ai-infer
+ai-infer/serve-summ-8b-07,ai-infer,Deployment,ml-serving,ml-serving,tier-1,internal,serve summ 8b 07 in ai-infer
+ai-infer/serve-llm-70b-08,ai-infer,Deployment,ml-serving,ml-serving,tier-1,internal,serve llm 70b 08 in ai-infer
+ai-infer/serve-llm-7b-08,ai-infer,Deployment,ml-serving,ml-serving,tier-1,internal,serve llm 7b 08 in ai-infer
+ai-infer/serve-llm-7712-08,ai-infer,Deployment,ml-serving,ml-serving,tier-1,internal,serve llm 7712 08 in ai-infer
+ai-infer/serve-code-13b-08,ai-infer,Deployment,ml-serving,ml-serving,tier-1,internal,serve code 13b 08 in ai-infer
+ai-infer/serve-vision-2b-08,ai-infer,Deployment,ml-serving,ml-serving,tier-1,internal,serve vision 2b 08 in ai-infer
+ai-infer/serve-asr-1b-08,ai-infer,Deployment,ml-serving,ml-serving,tier-1,internal,serve asr 1b 08 in ai-infer
+ai-infer/serve-embed-l-08,ai-infer,Deployment,ml-serving,ml-serving,tier-1,internal,serve embed l 08 in ai-infer
+ai-infer/serve-rerank-s-08,ai-infer,Deployment,ml-serving,ml-serving,tier-1,internal,serve rerank s 08 in ai-infer
+ai-infer/serve-guard-3b-08,ai-infer,Deployment,ml-serving,ml-serving,tier-1,internal,serve guard 3b 08 in ai-infer
+ai-infer/serve-summ-8b-08,ai-infer,Deployment,ml-serving,ml-serving,tier-1,internal,serve summ 8b 08 in ai-infer
+ai-infer/serve-llm-70b-09,ai-infer,Deployment,ml-serving,ml-serving,tier-1,internal,serve llm 70b 09 in ai-infer
+ai-infer/serve-llm-7b-09,ai-infer,Deployment,ml-serving,ml-serving,tier-1,internal,serve llm 7b 09 in ai-infer
+ai-infer/serve-llm-7712-09,ai-infer,Deployment,ml-serving,ml-serving,tier-1,internal,serve llm 7712 09 in ai-infer
+ai-infer/serve-code-13b-09,ai-infer,Deployment,ml-serving,ml-serving,tier-1,internal,serve code 13b 09 in ai-infer
+ai-infer/serve-vision-2b-09,ai-infer,Deployment,ml-serving,ml-serving,tier-1,internal,serve vision 2b 09 in ai-infer
+ai-infer/serve-asr-1b-09,ai-infer,Deployment,ml-serving,ml-serving,tier-1,internal,serve asr 1b 09 in ai-infer
+ai-infer/serve-embed-l-09,ai-infer,Deployment,ml-serving,ml-serving,tier-1,internal,serve embed l 09 in ai-infer
+ai-infer/serve-rerank-s-09,ai-infer,Deployment,ml-serving,ml-serving,tier-1,internal,serve rerank s 09 in ai-infer
+ai-infer/serve-guard-3b-09,ai-infer,Deployment,ml-serving,ml-serving,tier-1,internal,serve guard 3b 09 in ai-infer
+ai-infer/serve-summ-8b-09,ai-infer,Deployment,ml-serving,ml-serving,tier-1,internal,serve summ 8b 09 in ai-infer
+ai-infer/serve-llm-70b-10,ai-infer,Deployment,ml-serving,ml-serving,tier-1,internal,serve llm 70b 10 in ai-infer
+ai-infer/serve-llm-7b-10,ai-infer,Deployment,ml-serving,ml-serving,tier-1,internal,serve llm 7b 10 in ai-infer
+ai-infer/serve-llm-7712-10,ai-infer,Deployment,ml-serving,ml-serving,tier-1,internal,serve llm 7712 10 in ai-infer
+ai-infer/serve-code-13b-10,ai-infer,Deployment,ml-serving,ml-serving,tier-1,internal,serve code 13b 10 in ai-infer
+ai-infer/serve-vision-2b-10,ai-infer,Deployment,ml-serving,ml-serving,tier-1,internal,serve vision 2b 10 in ai-infer
+ai-infer/serve-asr-1b-10,ai-infer,Deployment,ml-serving,ml-serving,tier-1,internal,serve asr 1b 10 in ai-infer
+ai-infer/serve-embed-l-10,ai-infer,Deployment,ml-serving,ml-serving,tier-1,internal,serve embed l 10 in ai-infer
+ai-infer/serve-rerank-s-10,ai-infer,Deployment,ml-serving,ml-serving,tier-1,internal,serve rerank s 10 in ai-infer
+ai-infer/serve-guard-3b-10,ai-infer,Deployment,ml-serving,ml-serving,tier-1,internal,serve guard 3b 10 in ai-infer
+ai-infer/serve-summ-8b-10,ai-infer,Deployment,ml-serving,ml-serving,tier-1,internal,serve summ 8b 10 in ai-infer
+ai-infer/serve-llm-70b-11,ai-infer,Deployment,ml-serving,ml-serving,tier-1,internal,serve llm 70b 11 in ai-infer
+ai-infer/serve-llm-7b-11,ai-infer,Deployment,ml-serving,ml-serving,tier-1,internal,serve llm 7b 11 in ai-infer
+ai-infer/serve-llm-7712-11,ai-infer,Deployment,ml-serving,ml-serving,tier-1,internal,serve llm 7712 11 in ai-infer
+ai-infer/serve-code-13b-11,ai-infer,Deployment,ml-serving,ml-serving,tier-1,internal,serve code 13b 11 in ai-infer
+ai-infer/serve-vision-2b-11,ai-infer,Deployment,ml-serving,ml-serving,tier-1,internal,serve vision 2b 11 in ai-infer
+ai-infer/serve-asr-1b-11,ai-infer,Deployment,ml-serving,ml-serving,tier-1,internal,serve asr 1b 11 in ai-infer
+ai-infer/serve-embed-l-11,ai-infer,Deployment,ml-serving,ml-serving,tier-1,internal,serve embed l 11 in ai-infer
+ai-infer/serve-rerank-s-11,ai-infer,Deployment,ml-serving,ml-serving,tier-1,internal,serve rerank s 11 in ai-infer
+ai-infer/serve-guard-3b-11,ai-infer,Deployment,ml-serving,ml-serving,tier-1,internal,serve guard 3b 11 in ai-infer
+ai-infer/serve-summ-8b-11,ai-infer,Deployment,ml-serving,ml-serving,tier-1,internal,serve summ 8b 11 in ai-infer
+platform/backup-agent,platform,Deployment,platform,platform,tier-1,internal,backup agent in platform
+platform/argocd-repo,platform,Deployment,platform,platform,tier-1,internal,argocd repo in platform
+platform/dns,platform,DaemonSet,platform,platform,tier-1,internal,dns in platform
+platform/ingress,platform,Deployment,platform,platform,tier-1,internal,ingress in platform
+platform/cert-manager,platform,Deployment,platform,platform,tier-1,internal,cert manager in platform
+platform/external-dns,platform,Deployment,platform,platform,tier-1,internal,external dns in platform
+platform/argocd-server,platform,Deployment,platform,platform,tier-1,internal,argocd server in platform
+platform/argocd-application-controller,platform,Deployment,platform,platform,tier-1,internal,argocd application controller in platform
+platform/vault-agent-injector,platform,Deployment,platform,platform,tier-1,internal,vault agent injector in platform
+platform/oidc-proxy,platform,Deployment,platform,platform,tier-1,internal,oidc proxy in platform
+platform/kube-state-metrics,platform,Deployment,platform,platform,tier-1,internal,kube state metrics in platform
+platform/cluster-autoscaler,platform,Deployment,platform,platform,tier-1,internal,cluster autoscaler in platform
+platform/descheduler,platform,Deployment,platform,platform,tier-1,internal,descheduler in platform
+platform/node-problem-detector,platform,Deployment,platform,platform,tier-1,internal,node problem detector in platform
+platform/image-pull-cache,platform,Deployment,platform,platform,tier-1,internal,image pull cache in platform
+platform/policy-controller,platform,Deployment,platform,platform,tier-1,internal,policy controller in platform
+platform/admission-webhook,platform,Deployment,platform,platform,tier-1,internal,admission webhook in platform
+platform/cilium-operator,platform,Deployment,platform,platform,tier-1,internal,cilium operator in platform
+platform/hubble-relay,platform,Deployment,platform,platform,tier-1,internal,hubble relay in platform
+platform/hubble-ui,platform,Deployment,platform,platform,tier-1,internal,hubble ui in platform
+platform/tetragon-operator,platform,Deployment,platform,platform,tier-1,internal,tetragon operator in platform
+platform/sealed-secrets,platform,Deployment,platform,platform,tier-1,internal,sealed secrets in platform
+platform/harbor-core,platform,Deployment,platform,platform,tier-1,internal,harbor core in platform
+platform/harbor-registry,platform,StatefulSet,platform,platform,tier-1,internal,harbor registry in platform
+platform/harbor-jobservice,platform,Deployment,platform,platform,tier-1,internal,harbor jobservice in platform
+platform/gitops-notifier,platform,Deployment,platform,platform,tier-1,internal,gitops notifier in platform
+platform/cost-exporter,platform,Deployment,platform,platform,tier-1,internal,cost exporter in platform
+platform/chargeback,platform,Deployment,platform,platform,tier-1,internal,chargeback in platform
+platform/quota-manager,platform,Deployment,platform,platform,tier-1,internal,quota manager in platform
+platform/namespace-provisioner,platform,Deployment,platform,platform,tier-1,internal,namespace provisioner in platform
+platform/rbac-sync,platform,Deployment,platform,platform,tier-1,internal,rbac sync in platform
+platform/ldap-sync,platform,Deployment,platform,platform,tier-1,internal,ldap sync in platform
+platform/sso-gateway,platform,Deployment,platform,platform,tier-1,internal,sso gateway in platform
+platform/pki-issuer,platform,Deployment,platform,platform,tier-1,internal,pki issuer in platform
+platform/kms-proxy,platform,Deployment,platform,platform,tier-1,internal,kms proxy in platform
+platform/s3-gateway,platform,Deployment,platform,platform,tier-1,internal,s3 gateway in platform
+platform/nfs-provisioner,platform,Deployment,platform,platform,tier-1,internal,nfs provisioner in platform
+platform/csi-controller,platform,DaemonSet,platform,platform,tier-1,internal,csi controller in platform
+platform/snapshot-controller,platform,Deployment,platform,platform,tier-1,internal,snapshot controller in platform
+platform/velero,platform,Deployment,platform,platform,tier-1,internal,velero in platform
+platform/backup-scheduler,platform,Deployment,platform,platform,tier-1,internal,backup scheduler in platform
+platform/restore-worker,platform,Deployment,platform,platform,tier-1,internal,restore worker in platform
+platform/dr-replicator,platform,Deployment,platform,platform,tier-1,internal,dr replicator in platform
+platform/audit-forwarder,platform,Deployment,platform,platform,tier-1,internal,audit forwarder in platform
+platform/syslog-relay,platform,Deployment,platform,platform,tier-1,internal,syslog relay in platform
+platform/ntp,platform,Deployment,platform,platform,tier-1,internal,ntp in platform
+platform/dhcp-relay,platform,Deployment,platform,platform,tier-1,internal,dhcp relay in platform
+platform/ipam,platform,Deployment,platform,platform,tier-1,internal,ipam in platform
+platform/bgp-speaker,platform,Deployment,platform,platform,tier-1,internal,bgp speaker in platform
+platform/service-mesh-control,platform,Deployment,platform,platform,tier-1,internal,service mesh control in platform
+platform/mesh-gateway,platform,Deployment,platform,platform,tier-1,internal,mesh gateway in platform
+platform/egress-gateway,platform,Deployment,platform,platform,tier-1,internal,egress gateway in platform
+platform/nat-gateway,platform,Deployment,platform,platform,tier-1,internal,nat gateway in platform
+platform/bastion,platform,Deployment,platform,platform,tier-1,internal,bastion in platform
+platform/jump-host,platform,Deployment,platform,platform,tier-1,internal,jump host in platform
+platform/runbook-executor,platform,Deployment,platform,platform,tier-1,internal,runbook executor in platform
+platform/change-bot,platform,Deployment,platform,platform,tier-1,internal,change bot in platform
+platform/maintenance-window,platform,Deployment,platform,platform,tier-1,internal,maintenance window in platform
+platform/upgrade-controller,platform,Deployment,platform,platform,tier-1,internal,upgrade controller in platform
+platform/license-server,platform,Deployment,platform,platform,tier-1,internal,license server in platform
+platform/inventory-sync,platform,Deployment,platform,platform,tier-1,internal,inventory sync in platform
+platform/cmdb-connector,platform,Deployment,platform,platform,tier-1,internal,cmdb connector in platform
+platform/ticket-bridge,platform,Deployment,platform,platform,tier-1,internal,ticket bridge in platform
+platform/pager-bridge,platform,Deployment,platform,platform,tier-1,internal,pager bridge in platform
+data-eng/spark-driver,data-eng,Deployment,data-eng,data-eng,tier-2,internal,spark driver in data-eng
+data-eng/airflow-worker,data-eng,Deployment,data-eng,data-eng,tier-2,internal,airflow worker in data-eng
+data-eng/airflow-scheduler,data-eng,Deployment,data-eng,data-eng,tier-2,internal,airflow scheduler in data-eng
+data-eng/airflow-web,data-eng,Deployment,data-eng,data-eng,tier-2,internal,airflow web in data-eng
+data-eng/spark-history,data-eng,Deployment,data-eng,data-eng,tier-2,internal,spark history in data-eng
+data-eng/kafka-connect,data-eng,StatefulSet,data-eng,data-eng,tier-2,internal,kafka connect in data-eng
+data-eng/schema-registry,data-eng,Deployment,data-eng,data-eng,tier-2,internal,schema registry in data-eng
+data-eng/debezium,data-eng,Deployment,data-eng,data-eng,tier-2,internal,debezium in data-eng
+data-eng/flink-jobmanager,data-eng,Deployment,data-eng,data-eng,tier-2,internal,flink jobmanager in data-eng
+data-eng/flink-taskmanager,data-eng,Deployment,data-eng,data-eng,tier-2,internal,flink taskmanager in data-eng
+data-eng/trino-coordinator,data-eng,Deployment,data-eng,data-eng,tier-2,internal,trino coordinator in data-eng
+data-eng/trino-worker,data-eng,Deployment,data-eng,data-eng,tier-2,internal,trino worker in data-eng
+data-eng/hive-metastore,data-eng,StatefulSet,data-eng,data-eng,tier-2,internal,hive metastore in data-eng
+data-eng/iceberg-catalog,data-eng,Deployment,data-eng,data-eng,tier-2,internal,iceberg catalog in data-eng
+data-eng/dbt-runner,data-eng,Deployment,data-eng,data-eng,tier-2,internal,dbt runner in data-eng
+data-eng/great-expectations,data-eng,Deployment,data-eng,data-eng,tier-2,internal,great expectations in data-eng
+data-eng/data-catalog,data-eng,Deployment,data-eng,data-eng,tier-2,internal,data catalog in data-eng
+data-eng/lineage-api,data-eng,Deployment,data-eng,data-eng,tier-2,internal,lineage api in data-eng
+data-eng/warehouse-loader,data-eng,Deployment,data-eng,data-eng,tier-2,internal,warehouse loader in data-eng
+data-eng/lakehouse-compactor,data-eng,Deployment,data-eng,data-eng,tier-2,internal,lakehouse compactor in data-eng
+data-eng/parquet-writer,data-eng,Deployment,data-eng,data-eng,tier-2,internal,parquet writer in data-eng
+data-eng/cdc-consumer,data-eng,Deployment,data-eng,data-eng,tier-2,internal,cdc consumer in data-eng
+data-eng/event-router,data-eng,Deployment,data-eng,data-eng,tier-2,internal,event router in data-eng
+data-eng/clickstream-ingest,data-eng,Deployment,data-eng,data-eng,tier-2,internal,clickstream ingest in data-eng
+data-eng/sessionizer,data-eng,Deployment,data-eng,data-eng,tier-2,internal,sessionizer in data-eng
+data-eng/dedupe-job,data-eng,Deployment,data-eng,data-eng,tier-2,internal,dedupe job in data-eng
+data-eng/pii-scrubber,data-eng,Deployment,data-eng,data-eng,tier-2,internal,pii scrubber in data-eng
+data-eng/tokenization-service,data-eng,Deployment,data-eng,data-eng,tier-2,internal,tokenization service in data-eng
+data-eng/masking-proxy,data-eng,Deployment,data-eng,data-eng,tier-2,internal,masking proxy in data-eng
+data-eng/s3-sync,data-eng,Deployment,data-eng,data-eng,tier-2,internal,s3 sync in data-eng
+data-eng/gcs-sync,data-eng,Deployment,data-eng,data-eng,tier-2,internal,gcs sync in data-eng
+data-eng/sftp-gateway,data-eng,Deployment,data-eng,data-eng,tier-2,internal,sftp gateway in data-eng
+data-eng/ftp-poller,data-eng,Deployment,data-eng,data-eng,tier-2,internal,ftp poller in data-eng
+data-eng/api-poller,data-eng,Deployment,data-eng,data-eng,tier-2,internal,api poller in data-eng
+data-eng/webhook-ingest,data-eng,Deployment,data-eng,data-eng,tier-2,internal,webhook ingest in data-eng
+data-eng/log-parser,data-eng,Deployment,data-eng,data-eng,tier-2,internal,log parser in data-eng
+data-eng/metrics-rollup,data-eng,Deployment,data-eng,data-eng,tier-2,internal,metrics rollup in data-eng
+data-eng/cost-model,data-eng,Deployment,data-eng,data-eng,tier-2,internal,cost model in data-eng
+data-eng/forecast-job,data-eng,Deployment,data-eng,data-eng,tier-2,internal,forecast job in data-eng
+data-eng/anomaly-job,data-eng,Deployment,data-eng,data-eng,tier-2,internal,anomaly job in data-eng
+data-eng/report-builder,data-eng,Deployment,data-eng,data-eng,tier-2,internal,report builder in data-eng
+data-eng/dashboard-refresh,data-eng,Deployment,data-eng,data-eng,tier-2,internal,dashboard refresh in data-eng
+data-eng/notebook-scheduler,data-eng,Deployment,data-eng,data-eng,tier-2,internal,notebook scheduler in data-eng
+data-eng/query-cache,data-eng,Deployment,data-eng,data-eng,tier-2,internal,query cache in data-eng
+data-eng/result-store,data-eng,StatefulSet,data-eng,data-eng,tier-2,internal,result store in data-eng
+data-eng/export-service,data-eng,Deployment,data-eng,data-eng,tier-2,internal,export service in data-eng
+data-eng/share-service,data-eng,Deployment,data-eng,data-eng,tier-2,internal,share service in data-eng
+data-eng/access-audit,data-eng,Deployment,data-eng,data-eng,tier-2,internal,access audit in data-eng
+data-eng/quota-enforcer,data-eng,Deployment,data-eng,data-eng,tier-2,internal,quota enforcer in data-eng
+data-eng/retention-job,data-eng,Deployment,data-eng,data-eng,tier-2,internal,retention job in data-eng
+data-eng/archive-job,data-eng,Deployment,data-eng,data-eng,tier-2,internal,archive job in data-eng
+data-eng/restore-job,data-eng,Deployment,data-eng,data-eng,tier-2,internal,restore job in data-eng
+data-eng/replication-job,data-eng,Deployment,data-eng,data-eng,tier-2,internal,replication job in data-eng
+data-eng/backfill-job,data-eng,Deployment,data-eng,data-eng,tier-2,internal,backfill job in data-eng
+data-eng/quality-monitor,data-eng,Deployment,data-eng,data-eng,tier-2,internal,quality monitor in data-eng
+data-eng/sla-monitor,data-eng,Deployment,data-eng,data-eng,tier-2,internal,sla monitor in data-eng
+data-eng/freshness-monitor,data-eng,Deployment,data-eng,data-eng,tier-2,internal,freshness monitor in data-eng
+data-eng/schema-drift,data-eng,Deployment,data-eng,data-eng,tier-2,internal,schema drift in data-eng
+data-eng/contract-checker,data-eng,Deployment,data-eng,data-eng,tier-2,internal,contract checker in data-eng
+data-eng/test-runner,data-eng,Deployment,data-eng,data-eng,tier-2,internal,test runner in data-eng
+data-eng/staging-loader,data-eng,Deployment,data-eng,data-eng,tier-2,internal,staging loader in data-eng
+data-eng/prod-loader,data-eng,Deployment,data-eng,data-eng,tier-2,internal,prod loader in data-eng
+data-eng/sandbox-loader,data-eng,Deployment,data-eng,data-eng,tier-2,internal,sandbox loader in data-eng
+data-eng/feature-pipeline,data-eng,Deployment,data-eng,data-eng,tier-2,internal,feature pipeline in data-eng
+data-eng/embedding-pipeline,data-eng,Deployment,data-eng,data-eng,tier-2,internal,embedding pipeline in data-eng
+data-eng/label-pipeline,data-eng,Deployment,data-eng,data-eng,tier-2,internal,label pipeline in data-eng
+data-eng/sampling-job,data-eng,Deployment,data-eng,data-eng,tier-2,internal,sampling job in data-eng
+data-eng/join-job,data-eng,Deployment,data-eng,data-eng,tier-2,internal,join job in data-eng
+data-eng/aggregation-job,data-eng,Deployment,data-eng,data-eng,tier-2,internal,aggregation job in data-eng
+data-eng/window-job,data-eng,Deployment,data-eng,data-eng,tier-2,internal,window job in data-eng
+data-eng/stream-enricher,data-eng,Deployment,data-eng,data-eng,tier-2,internal,stream enricher in data-eng
+data-eng/geo-enricher,data-eng,Deployment,data-eng,data-eng,tier-2,internal,geo enricher in data-eng
+data-eng/ip-enricher,data-eng,Deployment,data-eng,data-eng,tier-2,internal,ip enricher in data-eng
+data-eng/ua-parser,data-eng,Deployment,data-eng,data-eng,tier-2,internal,ua parser in data-eng
+data-eng/currency-converter,data-eng,Deployment,data-eng,data-eng,tier-2,internal,currency converter in data-eng
+data-eng/tax-calculator,data-eng,Deployment,data-eng,data-eng,tier-2,internal,tax calculator in data-eng
+data-eng/billing-export,data-eng,Deployment,data-eng,data-eng,tier-2,internal,billing export in data-eng
+data-eng/invoice-job,data-eng,Deployment,data-eng,data-eng,tier-2,internal,invoice job in data-eng
+data-eng/ledger-sync,data-eng,Deployment,data-eng,data-eng,tier-2,internal,ledger sync in data-eng
+data-eng/finance-report,data-eng,Deployment,data-eng,data-eng,tier-2,internal,finance report in data-eng
+vm-legacy/erp-batch,vm-legacy,Deployment,erp-ops,erp-ops,tier-2,internal,erp batch in vm-legacy
+vm-legacy/erp-web,vm-legacy,Deployment,erp-ops,erp-ops,tier-2,internal,erp web in vm-legacy
+vm-legacy/erp-db,vm-legacy,StatefulSet,erp-ops,erp-ops,tier-2,restricted,erp db in vm-legacy
+vm-legacy/erp-print,vm-legacy,Deployment,erp-ops,erp-ops,tier-2,internal,erp print in vm-legacy
+vm-legacy/payroll-batch,vm-legacy,Deployment,erp-ops,erp-ops,tier-2,internal,payroll batch in vm-legacy
+vm-legacy/hr-portal,vm-legacy,Deployment,erp-ops,erp-ops,tier-2,internal,hr portal in vm-legacy
+vm-legacy/crm-legacy,vm-legacy,Deployment,erp-ops,erp-ops,tier-2,internal,crm legacy in vm-legacy
+vm-legacy/crm-db,vm-legacy,StatefulSet,erp-ops,erp-ops,tier-2,internal,crm db in vm-legacy
+vm-legacy/file-server,vm-legacy,StatefulSet,erp-ops,erp-ops,tier-2,internal,file server in vm-legacy
+vm-legacy/print-server,vm-legacy,Deployment,erp-ops,erp-ops,tier-2,internal,print server in vm-legacy
+vm-legacy/fax-gateway,vm-legacy,Deployment,erp-ops,erp-ops,tier-2,internal,fax gateway in vm-legacy
+vm-legacy/edi-translator,vm-legacy,Deployment,erp-ops,erp-ops,tier-2,internal,edi translator in vm-legacy
+vm-legacy/edi-gateway,vm-legacy,Deployment,erp-ops,erp-ops,tier-2,internal,edi gateway in vm-legacy
+vm-legacy/mainframe-bridge,vm-legacy,Deployment,erp-ops,erp-ops,tier-2,internal,mainframe bridge in vm-legacy
+vm-legacy/tn3270-proxy,vm-legacy,Deployment,erp-ops,erp-ops,tier-2,internal,tn3270 proxy in vm-legacy
+vm-legacy/ldap-legacy,vm-legacy,Deployment,erp-ops,erp-ops,tier-2,internal,ldap legacy in vm-legacy
+vm-legacy/wins,vm-legacy,Deployment,erp-ops,erp-ops,tier-2,internal,wins in vm-legacy
+vm-legacy/legacy-backup,vm-legacy,Deployment,erp-ops,erp-ops,tier-2,internal,legacy backup in vm-legacy
+vm-legacy/report-server,vm-legacy,Deployment,erp-ops,erp-ops,tier-2,internal,report server in vm-legacy
+vm-legacy/bi-cube,vm-legacy,Deployment,erp-ops,erp-ops,tier-2,internal,bi cube in vm-legacy
+vm-legacy/jasper,vm-legacy,Deployment,erp-ops,erp-ops,tier-2,internal,jasper in vm-legacy
+vm-legacy/cognos,vm-legacy,Deployment,erp-ops,erp-ops,tier-2,internal,cognos in vm-legacy
+ml-notebooks/jupyter,ml-notebooks,Deployment,ml-research,ml-research,tier-2,internal,jupyter in ml-notebooks
+ml-notebooks/nb-snakamura,ml-notebooks,StatefulSet,ml-research,ml-research,tier-2,internal,nb snakamura in ml-notebooks
+ml-notebooks/nb-pusman,ml-notebooks,StatefulSet,ml-research,ml-research,tier-2,internal,nb pusman in ml-notebooks
+ml-notebooks/nb-ytorres,ml-notebooks,StatefulSet,ml-research,ml-research,tier-2,internal,nb ytorres in ml-notebooks
+ml-notebooks/nb-bnakamura,ml-notebooks,StatefulSet,ml-research,ml-research,tier-2,internal,nb bnakamura in ml-notebooks
+ml-notebooks/nb-rgupta,ml-notebooks,StatefulSet,ml-research,ml-research,tier-2,internal,nb rgupta in ml-notebooks
+ml-notebooks/nb-btanaka,ml-notebooks,StatefulSet,ml-research,ml-research,tier-2,internal,nb btanaka in ml-notebooks
+ml-notebooks/nb-amoreau,ml-notebooks,StatefulSet,ml-research,ml-research,tier-2,internal,nb amoreau in ml-notebooks
+ml-notebooks/nb-vquinn,ml-notebooks,StatefulSet,ml-research,ml-research,tier-2,internal,nb vquinn in ml-notebooks
+ml-notebooks/nb-tadler,ml-notebooks,StatefulSet,ml-research,ml-research,tier-2,internal,nb tadler in ml-notebooks
+ml-notebooks/nb-htanaka,ml-notebooks,StatefulSet,ml-research,ml-research,tier-2,internal,nb htanaka in ml-notebooks
+ml-notebooks/nb-dkaur,ml-notebooks,StatefulSet,ml-research,ml-research,tier-2,internal,nb dkaur in ml-notebooks
+ml-notebooks/nb-nulrich,ml-notebooks,StatefulSet,ml-research,ml-research,tier-2,internal,nb nulrich in ml-notebooks
+ml-notebooks/nb-ffischer,ml-notebooks,StatefulSet,ml-research,ml-research,tier-2,internal,nb ffischer in ml-notebooks
+ml-notebooks/nb-fgarcia,ml-notebooks,StatefulSet,ml-research,ml-research,tier-2,internal,nb fgarcia in ml-notebooks
+ml-notebooks/nb-vmoreau,ml-notebooks,StatefulSet,ml-research,ml-research,tier-2,internal,nb vmoreau in ml-notebooks
+ml-notebooks/nb-tfontaine,ml-notebooks,StatefulSet,ml-research,ml-research,tier-2,internal,nb tfontaine in ml-notebooks
+ml-notebooks/nb-nquinn,ml-notebooks,StatefulSet,ml-research,ml-research,tier-2,internal,nb nquinn in ml-notebooks
+ml-notebooks/nb-gkaur,ml-notebooks,StatefulSet,ml-research,ml-research,tier-2,internal,nb gkaur in ml-notebooks
+ml-notebooks/nb-kbrennan,ml-notebooks,StatefulSet,ml-research,ml-research,tier-2,internal,nb kbrennan in ml-notebooks
+ml-notebooks/nb-thaddad,ml-notebooks,StatefulSet,ml-research,ml-research,tier-2,internal,nb thaddad in ml-notebooks
+ml-notebooks/nb-szielinski,ml-notebooks,StatefulSet,ml-research,ml-research,tier-2,internal,nb szielinski in ml-notebooks
+ml-notebooks/nb-gtanaka,ml-notebooks,StatefulSet,ml-research,ml-research,tier-2,internal,nb gtanaka in ml-notebooks
+ml-notebooks/nb-bbrennan,ml-notebooks,StatefulSet,ml-research,ml-research,tier-2,internal,nb bbrennan in ml-notebooks
+ml-notebooks/nb-seriksen,ml-notebooks,StatefulSet,ml-research,ml-research,tier-2,internal,nb seriksen in ml-notebooks
+ml-notebooks/nb-lmoreau,ml-notebooks,StatefulSet,ml-research,ml-research,tier-2,internal,nb lmoreau in ml-notebooks
+ml-notebooks/nb-wtorres,ml-notebooks,StatefulSet,ml-research,ml-research,tier-2,internal,nb wtorres in ml-notebooks
+ml-notebooks/nb-nzhang,ml-notebooks,StatefulSet,ml-research,ml-research,tier-2,internal,nb nzhang in ml-notebooks
+ml-notebooks/nb-byilmaz,ml-notebooks,StatefulSet,ml-research,ml-research,tier-2,internal,nb byilmaz in ml-notebooks
+ml-notebooks/nb-byamamoto,ml-notebooks,StatefulSet,ml-research,ml-research,tier-2,internal,nb byamamoto in ml-notebooks
+ml-notebooks/nb-mmoreau,ml-notebooks,StatefulSet,ml-research,ml-research,tier-2,internal,nb mmoreau in ml-notebooks
+ml-notebooks/nb-yzhang,ml-notebooks,StatefulSet,ml-research,ml-research,tier-2,internal,nb yzhang in ml-notebooks
+ml-notebooks/nb-axu,ml-notebooks,StatefulSet,ml-research,ml-research,tier-2,internal,nb axu in ml-notebooks
+ml-notebooks/nb-bcastillo,ml-notebooks,StatefulSet,ml-research,ml-research,tier-2,internal,nb bcastillo in ml-notebooks
+ml-notebooks/nb-mito,ml-notebooks,StatefulSet,ml-research,ml-research,tier-2,internal,nb mito in ml-notebooks
+ml-notebooks/nb-rjimenez,ml-notebooks,StatefulSet,ml-research,ml-research,tier-2,internal,nb rjimenez in ml-notebooks
+ml-notebooks/nb-polsen,ml-notebooks,StatefulSet,ml-research,ml-research,tier-2,internal,nb polsen in ml-notebooks
+ml-notebooks/nb-drossi,ml-notebooks,StatefulSet,ml-research,ml-research,tier-2,internal,nb drossi in ml-notebooks
+ml-notebooks/nb-ahaddad,ml-notebooks,StatefulSet,ml-research,ml-research,tier-2,internal,nb ahaddad in ml-notebooks
+ml-notebooks/nb-hvasquez,ml-notebooks,StatefulSet,ml-research,ml-research,tier-2,internal,nb hvasquez in ml-notebooks
+ml-notebooks/nb-tyamamoto,ml-notebooks,StatefulSet,ml-research,ml-research,tier-2,internal,nb tyamamoto in ml-notebooks
+ml-notebooks/nb-husman,ml-notebooks,StatefulSet,ml-research,ml-research,tier-2,internal,nb husman in ml-notebooks
+ml-notebooks/nb-mrossi,ml-notebooks,StatefulSet,ml-research,ml-research,tier-2,internal,nb mrossi in ml-notebooks
+ml-notebooks/nb-tmendes,ml-notebooks,StatefulSet,ml-research,ml-research,tier-2,internal,nb tmendes in ml-notebooks
+ml-notebooks/nb-jrahman,ml-notebooks,StatefulSet,ml-research,ml-research,tier-2,internal,nb jrahman in ml-notebooks
+ml-notebooks/nb-tcastillo,ml-notebooks,StatefulSet,ml-research,ml-research,tier-2,internal,nb tcastillo in ml-notebooks
+ml-notebooks/nb-gsingh,ml-notebooks,StatefulSet,ml-research,ml-research,tier-2,internal,nb gsingh in ml-notebooks
+ml-notebooks/nb-tfischer,ml-notebooks,StatefulSet,ml-research,ml-research,tier-2,internal,nb tfischer in ml-notebooks
+ml-notebooks/nb-wwagner,ml-notebooks,StatefulSet,ml-research,ml-research,tier-2,internal,nb wwagner in ml-notebooks
+ml-notebooks/nb-dvasquez,ml-notebooks,StatefulSet,ml-research,ml-research,tier-2,internal,nb dvasquez in ml-notebooks
+ml-notebooks/nb-jibrahim,ml-notebooks,StatefulSet,ml-research,ml-research,tier-2,internal,nb jibrahim in ml-notebooks
+ml-notebooks/nb-yokafor,ml-notebooks,StatefulSet,ml-research,ml-research,tier-2,internal,nb yokafor in ml-notebooks
+ml-notebooks/nb-azielinski,ml-notebooks,StatefulSet,ml-research,ml-research,tier-2,internal,nb azielinski in ml-notebooks
+ml-notebooks/nb-yvarga,ml-notebooks,StatefulSet,ml-research,ml-research,tier-2,internal,nb yvarga in ml-notebooks
+ml-notebooks/nb-dbaptiste,ml-notebooks,StatefulSet,ml-research,ml-research,tier-2,internal,nb dbaptiste in ml-notebooks
+ml-notebooks/nb-nito,ml-notebooks,StatefulSet,ml-research,ml-research,tier-2,internal,nb nito in ml-notebooks
+ml-notebooks/nb-chaddad,ml-notebooks,StatefulSet,ml-research,ml-research,tier-2,internal,nb chaddad in ml-notebooks
+ml-notebooks/nb-brahman,ml-notebooks,StatefulSet,ml-research,ml-research,tier-2,internal,nb brahman in ml-notebooks
+ml-notebooks/nb-elindqvist,ml-notebooks,StatefulSet,ml-research,ml-research,tier-2,internal,nb elindqvist in ml-notebooks
+ml-notebooks/nb-ekaur,ml-notebooks,StatefulSet,ml-research,ml-research,tier-2,internal,nb ekaur in ml-notebooks
+ml-notebooks/nb-vxu,ml-notebooks,StatefulSet,ml-research,ml-research,tier-2,internal,nb vxu in ml-notebooks
+ml-notebooks/nb-nyamamoto,ml-notebooks,StatefulSet,ml-research,ml-research,tier-2,internal,nb nyamamoto in ml-notebooks
+ml-notebooks/nb-fgupta,ml-notebooks,StatefulSet,ml-research,ml-research,tier-2,internal,nb fgupta in ml-notebooks
+ml-notebooks/nb-vjensen,ml-notebooks,StatefulSet,ml-research,ml-research,tier-2,internal,nb vjensen in ml-notebooks
+ml-notebooks/nb-susman,ml-notebooks,StatefulSet,ml-research,ml-research,tier-2,internal,nb susman in ml-notebooks
+ml-notebooks/nb-dsingh,ml-notebooks,StatefulSet,ml-research,ml-research,tier-2,internal,nb dsingh in ml-notebooks
+ml-notebooks/nb-ctanaka,ml-notebooks,StatefulSet,ml-research,ml-research,tier-2,internal,nb ctanaka in ml-notebooks
+ml-notebooks/nb-jjimenez,ml-notebooks,StatefulSet,ml-research,ml-research,tier-2,internal,nb jjimenez in ml-notebooks
+ml-notebooks/nb-ypatel,ml-notebooks,StatefulSet,ml-research,ml-research,tier-2,internal,nb ypatel in ml-notebooks
+ml-notebooks/nb-fusman,ml-notebooks,StatefulSet,ml-research,ml-research,tier-2,internal,nb fusman in ml-notebooks
+ml-notebooks/nb-dfontaine,ml-notebooks,StatefulSet,ml-research,ml-research,tier-2,internal,nb dfontaine in ml-notebooks
+ml-notebooks/nb-kvasquez,ml-notebooks,StatefulSet,ml-research,ml-research,tier-2,internal,nb kvasquez in ml-notebooks
+ml-notebooks/nb-kito,ml-notebooks,StatefulSet,ml-research,ml-research,tier-2,internal,nb kito in ml-notebooks
+ml-notebooks/nb-kkaur,ml-notebooks,StatefulSet,ml-research,ml-research,tier-2,internal,nb kkaur in ml-notebooks
+ml-notebooks/nb-solsen,ml-notebooks,StatefulSet,ml-research,ml-research,tier-2,internal,nb solsen in ml-notebooks
+ml-notebooks/nb-julrich,ml-notebooks,StatefulSet,ml-research,ml-research,tier-2,internal,nb julrich in ml-notebooks
+ml-notebooks/nb-lcastillo,ml-notebooks,StatefulSet,ml-research,ml-research,tier-2,internal,nb lcastillo in ml-notebooks
+ml-notebooks/nb-gulrich,ml-notebooks,StatefulSet,ml-research,ml-research,tier-2,internal,nb gulrich in ml-notebooks
+ml-notebooks/nb-rito,ml-notebooks,StatefulSet,ml-research,ml-research,tier-2,internal,nb rito in ml-notebooks
+ml-notebooks/nb-scastillo,ml-notebooks,StatefulSet,ml-research,ml-research,tier-2,internal,nb scastillo in ml-notebooks
+ml-notebooks/nb-wchen,ml-notebooks,StatefulSet,ml-research,ml-research,tier-2,internal,nb wchen in ml-notebooks
+ml-notebooks/nb-gzielinski,ml-notebooks,StatefulSet,ml-research,ml-research,tier-2,internal,nb gzielinski in ml-notebooks
+ml-notebooks/nb-whoffmann,ml-notebooks,StatefulSet,ml-research,ml-research,tier-2,internal,nb whoffmann in ml-notebooks
+ml-notebooks/nb-wpereira,ml-notebooks,StatefulSet,ml-research,ml-research,tier-2,internal,nb wpereira in ml-notebooks
+ml-notebooks/nb-jlarsson,ml-notebooks,StatefulSet,ml-research,ml-research,tier-2,internal,nb jlarsson in ml-notebooks
+ml-notebooks/nb-hdimitrov,ml-notebooks,StatefulSet,ml-research,ml-research,tier-2,internal,nb hdimitrov in ml-notebooks
+ml-notebooks/nb-rlindqvist,ml-notebooks,StatefulSet,ml-research,ml-research,tier-2,internal,nb rlindqvist in ml-notebooks
+ml-notebooks/nb-abrennan,ml-notebooks,StatefulSet,ml-research,ml-research,tier-2,internal,nb abrennan in ml-notebooks
+ml-notebooks/nb-nolsen,ml-notebooks,StatefulSet,ml-research,ml-research,tier-2,internal,nb nolsen in ml-notebooks
+ml-notebooks/nb-tdubois,ml-notebooks,StatefulSet,ml-research,ml-research,tier-2,internal,nb tdubois in ml-notebooks
+ml-notebooks/nb-srahman,ml-notebooks,StatefulSet,ml-research,ml-research,tier-2,internal,nb srahman in ml-notebooks
+ml-notebooks/nb-rolsen,ml-notebooks,StatefulSet,ml-research,ml-research,tier-2,internal,nb rolsen in ml-notebooks
+ml-notebooks/nb-nesposito,ml-notebooks,StatefulSet,ml-research,ml-research,tier-2,internal,nb nesposito in ml-notebooks
+ml-notebooks/nb-pchen,ml-notebooks,StatefulSet,ml-research,ml-research,tier-2,internal,nb pchen in ml-notebooks
+ml-notebooks/nb-nnakamura,ml-notebooks,StatefulSet,ml-research,ml-research,tier-2,internal,nb nnakamura in ml-notebooks
+ml-notebooks/nb-mokafor,ml-notebooks,StatefulSet,ml-research,ml-research,tier-2,internal,nb mokafor in ml-notebooks
+ml-notebooks/nb-kkowalski,ml-notebooks,StatefulSet,ml-research,ml-research,tier-2,internal,nb kkowalski in ml-notebooks
+ml-notebooks/nb-fquinn,ml-notebooks,StatefulSet,ml-research,ml-research,tier-2,internal,nb fquinn in ml-notebooks
+ml-notebooks/nb-sesposito,ml-notebooks,StatefulSet,ml-research,ml-research,tier-2,internal,nb sesposito in ml-notebooks
+ml-notebooks/nb-agarcia,ml-notebooks,StatefulSet,ml-research,ml-research,tier-2,internal,nb agarcia in ml-notebooks
+ml-notebooks/nb-plindqvist,ml-notebooks,StatefulSet,ml-research,ml-research,tier-2,internal,nb plindqvist in ml-notebooks
+ml-notebooks/nb-gyilmaz,ml-notebooks,StatefulSet,ml-research,ml-research,tier-2,internal,nb gyilmaz in ml-notebooks
+ml-notebooks/nb-nokafor,ml-notebooks,StatefulSet,ml-research,ml-research,tier-2,internal,nb nokafor in ml-notebooks
+ml-notebooks/nb-rvarga,ml-notebooks,StatefulSet,ml-research,ml-research,tier-2,internal,nb rvarga in ml-notebooks
+ml-notebooks/nb-atorres,ml-notebooks,StatefulSet,ml-research,ml-research,tier-2,internal,nb atorres in ml-notebooks
+ml-notebooks/nb-lvasquez,ml-notebooks,StatefulSet,ml-research,ml-research,tier-2,internal,nb lvasquez in ml-notebooks
+ml-notebooks/nb-rdubois,ml-notebooks,StatefulSet,ml-research,ml-research,tier-2,internal,nb rdubois in ml-notebooks
+ml-notebooks/nb-tvasquez,ml-notebooks,StatefulSet,ml-research,ml-research,tier-2,internal,nb tvasquez in ml-notebooks
+ml-notebooks/nb-wyilmaz,ml-notebooks,StatefulSet,ml-research,ml-research,tier-2,internal,nb wyilmaz in ml-notebooks
+ml-notebooks/nb-msingh,ml-notebooks,StatefulSet,ml-research,ml-research,tier-2,internal,nb msingh in ml-notebooks
+ml-notebooks/nb-jnguyen,ml-notebooks,StatefulSet,ml-research,ml-research,tier-2,internal,nb jnguyen in ml-notebooks
+ml-notebooks/nb-gxu,ml-notebooks,StatefulSet,ml-research,ml-research,tier-2,internal,nb gxu in ml-notebooks
+ml-notebooks/nb-jtanaka,ml-notebooks,StatefulSet,ml-research,ml-research,tier-2,internal,nb jtanaka in ml-notebooks
+ml-notebooks/nb-dnakamura,ml-notebooks,StatefulSet,ml-research,ml-research,tier-2,internal,nb dnakamura in ml-notebooks
+ml-notebooks/nb-wquinn,ml-notebooks,StatefulSet,ml-research,ml-research,tier-2,internal,nb wquinn in ml-notebooks
+ml-notebooks/nb-mpatel,ml-notebooks,StatefulSet,ml-research,ml-research,tier-2,internal,nb mpatel in ml-notebooks
+ml-notebooks/nb-mgupta,ml-notebooks,StatefulSet,ml-research,ml-research,tier-2,internal,nb mgupta in ml-notebooks
+ml-notebooks/nb-ausman,ml-notebooks,StatefulSet,ml-research,ml-research,tier-2,internal,nb ausman in ml-notebooks
+ml-notebooks/nb-cibrahim,ml-notebooks,StatefulSet,ml-research,ml-research,tier-2,internal,nb cibrahim in ml-notebooks
+ml-notebooks/nb-rrossi,ml-notebooks,StatefulSet,ml-research,ml-research,tier-2,internal,nb rrossi in ml-notebooks
+ml-notebooks/nb-sdimitrov,ml-notebooks,StatefulSet,ml-research,ml-research,tier-2,internal,nb sdimitrov in ml-notebooks
+ml-notebooks/nb-lalmeida,ml-notebooks,StatefulSet,ml-research,ml-research,tier-2,internal,nb lalmeida in ml-notebooks
+ml-notebooks/nb-rfischer,ml-notebooks,StatefulSet,ml-research,ml-research,tier-2,internal,nb rfischer in ml-notebooks
+ml-notebooks/nb-atanaka,ml-notebooks,StatefulSet,ml-research,ml-research,tier-2,internal,nb atanaka in ml-notebooks
+ml-notebooks/nb-shoffmann,ml-notebooks,StatefulSet,ml-research,ml-research,tier-2,internal,nb shoffmann in ml-notebooks
+ml-notebooks/nb-wmendes,ml-notebooks,StatefulSet,ml-research,ml-research,tier-2,internal,nb wmendes in ml-notebooks
+ml-notebooks/nb-yalmeida,ml-notebooks,StatefulSet,ml-research,ml-research,tier-2,internal,nb yalmeida in ml-notebooks
+ml-notebooks/nb-hadler,ml-notebooks,StatefulSet,ml-research,ml-research,tier-2,internal,nb hadler in ml-notebooks
+ml-notebooks/nb-ywagner,ml-notebooks,StatefulSet,ml-research,ml-research,tier-2,internal,nb ywagner in ml-notebooks
+ml-notebooks/nb-nchen,ml-notebooks,StatefulSet,ml-research,ml-research,tier-2,internal,nb nchen in ml-notebooks
+ml-notebooks/nb-trahman,ml-notebooks,StatefulSet,ml-research,ml-research,tier-2,internal,nb trahman in ml-notebooks
+ml-notebooks/nb-twagner,ml-notebooks,StatefulSet,ml-research,ml-research,tier-2,internal,nb twagner in ml-notebooks
+ml-notebooks/nb-dbrennan,ml-notebooks,StatefulSet,ml-research,ml-research,tier-2,internal,nb dbrennan in ml-notebooks
+ml-notebooks/nb-vlarsson,ml-notebooks,StatefulSet,ml-research,ml-research,tier-2,internal,nb vlarsson in ml-notebooks
+ml-notebooks/nb-mesposito,ml-notebooks,StatefulSet,ml-research,ml-research,tier-2,internal,nb mesposito in ml-notebooks
+ml-notebooks/nb-wzhang,ml-notebooks,StatefulSet,ml-research,ml-research,tier-2,internal,nb wzhang in ml-notebooks
+ml-notebooks/nb-jrossi,ml-notebooks,StatefulSet,ml-research,ml-research,tier-2,internal,nb jrossi in ml-notebooks
+ml-notebooks/nb-pwagner,ml-notebooks,StatefulSet,ml-research,ml-research,tier-2,internal,nb pwagner in ml-notebooks
+ml-notebooks/nb-khoffmann,ml-notebooks,StatefulSet,ml-research,ml-research,tier-2,internal,nb khoffmann in ml-notebooks
+ml-notebooks/nb-lusman,ml-notebooks,StatefulSet,ml-research,ml-research,tier-2,internal,nb lusman in ml-notebooks
+ml-notebooks/nb-dvarga,ml-notebooks,StatefulSet,ml-research,ml-research,tier-2,internal,nb dvarga in ml-notebooks
+ml-notebooks/nb-dschneider,ml-notebooks,StatefulSet,ml-research,ml-research,tier-2,internal,nb dschneider in ml-notebooks
+ml-notebooks/nb-pibrahim,ml-notebooks,StatefulSet,ml-research,ml-research,tier-2,internal,nb pibrahim in ml-notebooks
+ml-notebooks/nb-dulrich,ml-notebooks,StatefulSet,ml-research,ml-research,tier-2,internal,nb dulrich in ml-notebooks
+ml-notebooks/nb-aesposito,ml-notebooks,StatefulSet,ml-research,ml-research,tier-2,internal,nb aesposito in ml-notebooks
+ml-notebooks/nb-jzhang,ml-notebooks,StatefulSet,ml-research,ml-research,tier-2,internal,nb jzhang in ml-notebooks
+ml-notebooks/nb-pxu,ml-notebooks,StatefulSet,ml-research,ml-research,tier-2,internal,nb pxu in ml-notebooks
+ml-notebooks/nb-vhoffmann,ml-notebooks,StatefulSet,ml-research,ml-research,tier-2,internal,nb vhoffmann in ml-notebooks
+ml-notebooks/nb-wlarsson,ml-notebooks,StatefulSet,ml-research,ml-research,tier-2,internal,nb wlarsson in ml-notebooks
+ml-notebooks/nb-dalmeida,ml-notebooks,StatefulSet,ml-research,ml-research,tier-2,internal,nb dalmeida in ml-notebooks
+ml-notebooks/nb-mweber,ml-notebooks,StatefulSet,ml-research,ml-research,tier-2,internal,nb mweber in ml-notebooks
+ml-notebooks/nb-fmoreau,ml-notebooks,StatefulSet,ml-research,ml-research,tier-2,internal,nb fmoreau in ml-notebooks
+ml-notebooks/nb-crossi,ml-notebooks,StatefulSet,ml-research,ml-research,tier-2,internal,nb crossi in ml-notebooks
+ml-notebooks/nb-bpatel,ml-notebooks,StatefulSet,ml-research,ml-research,tier-2,internal,nb bpatel in ml-notebooks
+ml-notebooks/nb-wvarga,ml-notebooks,StatefulSet,ml-research,ml-research,tier-2,internal,nb wvarga in ml-notebooks
+ml-notebooks/nb-eito,ml-notebooks,StatefulSet,ml-research,ml-research,tier-2,internal,nb eito in ml-notebooks
+ml-notebooks/nb-nbaptiste,ml-notebooks,StatefulSet,ml-research,ml-research,tier-2,internal,nb nbaptiste in ml-notebooks
+ml-notebooks/nb-balmeida,ml-notebooks,StatefulSet,ml-research,ml-research,tier-2,internal,nb balmeida in ml-notebooks
+ml-notebooks/nb-mvasquez,ml-notebooks,StatefulSet,ml-research,ml-research,tier-2,internal,nb mvasquez in ml-notebooks
+ml-notebooks/nb-wrahman,ml-notebooks,StatefulSet,ml-research,ml-research,tier-2,internal,nb wrahman in ml-notebooks
+ml-notebooks/nb-tusman,ml-notebooks,StatefulSet,ml-research,ml-research,tier-2,internal,nb tusman in ml-notebooks
+ml-notebooks/nb-wulrich,ml-notebooks,StatefulSet,ml-research,ml-research,tier-2,internal,nb wulrich in ml-notebooks
+ml-notebooks/nb-mkowalski,ml-notebooks,StatefulSet,ml-research,ml-research,tier-2,internal,nb mkowalski in ml-notebooks
+ml-notebooks/nb-yvasquez,ml-notebooks,StatefulSet,ml-research,ml-research,tier-2,internal,nb yvasquez in ml-notebooks
+ml-notebooks/nb-yulrich,ml-notebooks,StatefulSet,ml-research,ml-research,tier-2,internal,nb yulrich in ml-notebooks
+ml-notebooks/nb-apereira,ml-notebooks,StatefulSet,ml-research,ml-research,tier-2,internal,nb apereira in ml-notebooks
+ml-notebooks/nb-ceriksen,ml-notebooks,StatefulSet,ml-research,ml-research,tier-2,internal,nb ceriksen in ml-notebooks
+ml-notebooks/nb-gbrennan,ml-notebooks,StatefulSet,ml-research,ml-research,tier-2,internal,nb gbrennan in ml-notebooks
+ml-notebooks/nb-feriksen,ml-notebooks,StatefulSet,ml-research,ml-research,tier-2,internal,nb feriksen in ml-notebooks
+ml-notebooks/nb-pquinn,ml-notebooks,StatefulSet,ml-research,ml-research,tier-2,internal,nb pquinn in ml-notebooks
+ml-notebooks/nb-szhang,ml-notebooks,StatefulSet,ml-research,ml-research,tier-2,internal,nb szhang in ml-notebooks
+ml-notebooks/nb-lhoffmann,ml-notebooks,StatefulSet,ml-research,ml-research,tier-2,internal,nb lhoffmann in ml-notebooks
+ml-notebooks/nb-dyamamoto,ml-notebooks,StatefulSet,ml-research,ml-research,tier-2,internal,nb dyamamoto in ml-notebooks
+ml-notebooks/nb-wusman,ml-notebooks,StatefulSet,ml-research,ml-research,tier-2,internal,nb wusman in ml-notebooks
+ml-notebooks/nb-yyamamoto,ml-notebooks,StatefulSet,ml-research,ml-research,tier-2,internal,nb yyamamoto in ml-notebooks
+ml-notebooks/nb-lzhang,ml-notebooks,StatefulSet,ml-research,ml-research,tier-2,internal,nb lzhang in ml-notebooks
+ml-notebooks/nb-ggarcia,ml-notebooks,StatefulSet,ml-research,ml-research,tier-2,internal,nb ggarcia in ml-notebooks
+ml-notebooks/nb-eesposito,ml-notebooks,StatefulSet,ml-research,ml-research,tier-2,internal,nb eesposito in ml-notebooks
+ml-notebooks/nb-cbaptiste,ml-notebooks,StatefulSet,ml-research,ml-research,tier-2,internal,nb cbaptiste in ml-notebooks
+ml-notebooks/nb-vschneider,ml-notebooks,StatefulSet,ml-research,ml-research,tier-2,internal,nb vschneider in ml-notebooks
+ml-notebooks/nb-halmeida,ml-notebooks,StatefulSet,ml-research,ml-research,tier-2,internal,nb halmeida in ml-notebooks
+ml-notebooks/nb-ntorres,ml-notebooks,StatefulSet,ml-research,ml-research,tier-2,internal,nb ntorres in ml-notebooks
+ml-notebooks/nb-kzhang,ml-notebooks,StatefulSet,ml-research,ml-research,tier-2,internal,nb kzhang in ml-notebooks
+ml-notebooks/nb-alindqvist,ml-notebooks,StatefulSet,ml-research,ml-research,tier-2,internal,nb alindqvist in ml-notebooks
+ml-notebooks/nb-tmoreau,ml-notebooks,StatefulSet,ml-research,ml-research,tier-2,internal,nb tmoreau in ml-notebooks
+ml-notebooks/nb-sjensen,ml-notebooks,StatefulSet,ml-research,ml-research,tier-2,internal,nb sjensen in ml-notebooks
+ml-notebooks/nb-hquinn,ml-notebooks,StatefulSet,ml-research,ml-research,tier-2,internal,nb hquinn in ml-notebooks
+ml-notebooks/nb-apatel,ml-notebooks,StatefulSet,ml-research,ml-research,tier-2,internal,nb apatel in ml-notebooks
+ml-notebooks/nb-ajimenez,ml-notebooks,StatefulSet,ml-research,ml-research,tier-2,internal,nb ajimenez in ml-notebooks
+ml-notebooks/nb-nmoreau,ml-notebooks,StatefulSet,ml-research,ml-research,tier-2,internal,nb nmoreau in ml-notebooks
+ml-notebooks/nb-ddimitrov,ml-notebooks,StatefulSet,ml-research,ml-research,tier-2,internal,nb ddimitrov in ml-notebooks
+ml-notebooks/nb-wpatel,ml-notebooks,StatefulSet,ml-research,ml-research,tier-2,internal,nb wpatel in ml-notebooks
+ml-notebooks/nb-rvasquez,ml-notebooks,StatefulSet,ml-research,ml-research,tier-2,internal,nb rvasquez in ml-notebooks
+ml-notebooks/nb-vyamamoto,ml-notebooks,StatefulSet,ml-research,ml-research,tier-2,internal,nb vyamamoto in ml-notebooks
+ml-notebooks/nb-tlarsson,ml-notebooks,StatefulSet,ml-research,ml-research,tier-2,internal,nb tlarsson in ml-notebooks
+ml-notebooks/nb-kzielinski,ml-notebooks,StatefulSet,ml-research,ml-research,tier-2,internal,nb kzielinski in ml-notebooks
+ml-notebooks/nb-bfontaine,ml-notebooks,StatefulSet,ml-research,ml-research,tier-2,internal,nb bfontaine in ml-notebooks
+ml-notebooks/nb-mtorres,ml-notebooks,StatefulSet,ml-research,ml-research,tier-2,internal,nb mtorres in ml-notebooks
+ml-notebooks/nb-lokafor,ml-notebooks,StatefulSet,ml-research,ml-research,tier-2,internal,nb lokafor in ml-notebooks
+ml-notebooks/nb-nweber,ml-notebooks,StatefulSet,ml-research,ml-research,tier-2,internal,nb nweber in ml-notebooks
+ml-notebooks/nb-ftanaka,ml-notebooks,StatefulSet,ml-research,ml-research,tier-2,internal,nb ftanaka in ml-notebooks
+ml-notebooks/nb-ldubois,ml-notebooks,StatefulSet,ml-research,ml-research,tier-2,internal,nb ldubois in ml-notebooks
+ml-notebooks/nb-ezhang,ml-notebooks,StatefulSet,ml-research,ml-research,tier-2,internal,nb ezhang in ml-notebooks
+ml-notebooks/nb-dnguyen,ml-notebooks,StatefulSet,ml-research,ml-research,tier-2,internal,nb dnguyen in ml-notebooks
+ml-notebooks/nb-gvarga,ml-notebooks,StatefulSet,ml-research,ml-research,tier-2,internal,nb gvarga in ml-notebooks
+ml-notebooks/nb-ykaur,ml-notebooks,StatefulSet,ml-research,ml-research,tier-2,internal,nb ykaur in ml-notebooks
+ml-notebooks/nb-kibrahim,ml-notebooks,StatefulSet,ml-research,ml-research,tier-2,internal,nb kibrahim in ml-notebooks
+ml-notebooks/nb-ehaddad,ml-notebooks,StatefulSet,ml-research,ml-research,tier-2,internal,nb ehaddad in ml-notebooks
+ml-notebooks/nb-ggupta,ml-notebooks,StatefulSet,ml-research,ml-research,tier-2,internal,nb ggupta in ml-notebooks
+ml-notebooks/nb-nschneider,ml-notebooks,StatefulSet,ml-research,ml-research,tier-2,internal,nb nschneider in ml-notebooks
+ml-notebooks/nb-bolsen,ml-notebooks,StatefulSet,ml-research,ml-research,tier-2,internal,nb bolsen in ml-notebooks
+ml-notebooks/nb-ppatel,ml-notebooks,StatefulSet,ml-research,ml-research,tier-2,internal,nb ppatel in ml-notebooks
+ml-notebooks/nb-jxu,ml-notebooks,StatefulSet,ml-research,ml-research,tier-2,internal,nb jxu in ml-notebooks
+ml-notebooks/nb-vito,ml-notebooks,StatefulSet,ml-research,ml-research,tier-2,internal,nb vito in ml-notebooks
+ml-notebooks/nb-gito,ml-notebooks,StatefulSet,ml-research,ml-research,tier-2,internal,nb gito in ml-notebooks
+ml-notebooks/nb-hkowalski,ml-notebooks,StatefulSet,ml-research,ml-research,tier-2,internal,nb hkowalski in ml-notebooks
+ml-notebooks/nb-tchen,ml-notebooks,StatefulSet,ml-research,ml-research,tier-2,internal,nb tchen in ml-notebooks
+ml-notebooks/nb-galmeida,ml-notebooks,StatefulSet,ml-research,ml-research,tier-2,internal,nb galmeida in ml-notebooks
+ml-notebooks/nb-egupta,ml-notebooks,StatefulSet,ml-research,ml-research,tier-2,internal,nb egupta in ml-notebooks
+ml-notebooks/nb-dxu,ml-notebooks,StatefulSet,ml-research,ml-research,tier-2,internal,nb dxu in ml-notebooks
+ml-notebooks/nb-ladler,ml-notebooks,StatefulSet,ml-research,ml-research,tier-2,internal,nb ladler in ml-notebooks
+ml-notebooks/nb-ynakamura,ml-notebooks,StatefulSet,ml-research,ml-research,tier-2,internal,nb ynakamura in ml-notebooks
+ml-notebooks/nb-hnakamura,ml-notebooks,StatefulSet,ml-research,ml-research,tier-2,internal,nb hnakamura in ml-notebooks
+ml-notebooks/nb-jhoffmann,ml-notebooks,StatefulSet,ml-research,ml-research,tier-2,internal,nb jhoffmann in ml-notebooks
+ml-notebooks/nb-gokafor,ml-notebooks,StatefulSet,ml-research,ml-research,tier-2,internal,nb gokafor in ml-notebooks
+ml-notebooks/nb-svasquez,ml-notebooks,StatefulSet,ml-research,ml-research,tier-2,internal,nb svasquez in ml-notebooks
+ml-notebooks/nb-nxu,ml-notebooks,StatefulSet,ml-research,ml-research,tier-2,internal,nb nxu in ml-notebooks
+ml-notebooks/nb-prossi,ml-notebooks,StatefulSet,ml-research,ml-research,tier-2,internal,nb prossi in ml-notebooks
+ml-notebooks/nb-nlindqvist,ml-notebooks,StatefulSet,ml-research,ml-research,tier-2,internal,nb nlindqvist in ml-notebooks
+ml-notebooks/nb-phoffmann,ml-notebooks,StatefulSet,ml-research,ml-research,tier-2,internal,nb phoffmann in ml-notebooks
+ml-notebooks/nb-rdimitrov,ml-notebooks,StatefulSet,ml-research,ml-research,tier-2,internal,nb rdimitrov in ml-notebooks
+ml-notebooks/nb-jsingh,ml-notebooks,StatefulSet,ml-research,ml-research,tier-2,internal,nb jsingh in ml-notebooks
+ml-notebooks/nb-ljensen,ml-notebooks,StatefulSet,ml-research,ml-research,tier-2,internal,nb ljensen in ml-notebooks
+ml-notebooks/nb-bulrich,ml-notebooks,StatefulSet,ml-research,ml-research,tier-2,internal,nb bulrich in ml-notebooks
+ml-notebooks/nb-cadler,ml-notebooks,StatefulSet,ml-research,ml-research,tier-2,internal,nb cadler in ml-notebooks
+ml-notebooks/nb-ehoffmann,ml-notebooks,StatefulSet,ml-research,ml-research,tier-2,internal,nb ehoffmann in ml-notebooks
+ml-notebooks/nb-jpereira,ml-notebooks,StatefulSet,ml-research,ml-research,tier-2,internal,nb jpereira in ml-notebooks
+ml-notebooks/nb-hpereira,ml-notebooks,StatefulSet,ml-research,ml-research,tier-2,internal,nb hpereira in ml-notebooks
+ml-notebooks/nb-rgarcia,ml-notebooks,StatefulSet,ml-research,ml-research,tier-2,internal,nb rgarcia in ml-notebooks
+ml-notebooks/nb-adubois,ml-notebooks,StatefulSet,ml-research,ml-research,tier-2,internal,nb adubois in ml-notebooks
+ml-notebooks/nb-dokafor,ml-notebooks,StatefulSet,ml-research,ml-research,tier-2,internal,nb dokafor in ml-notebooks
+ml-notebooks/nb-jmendes,ml-notebooks,StatefulSet,ml-research,ml-research,tier-2,internal,nb jmendes in ml-notebooks
+ml-notebooks/nb-fzielinski,ml-notebooks,StatefulSet,ml-research,ml-research,tier-2,internal,nb fzielinski in ml-notebooks
+ml-notebooks/nb-kdimitrov,ml-notebooks,StatefulSet,ml-research,ml-research,tier-2,internal,nb kdimitrov in ml-notebooks
+ml-notebooks/nb-nvarga,ml-notebooks,StatefulSet,ml-research,ml-research,tier-2,internal,nb nvarga in ml-notebooks
+ml-notebooks/nb-pdubois,ml-notebooks,StatefulSet,ml-research,ml-research,tier-2,internal,nb pdubois in ml-notebooks
+ml-notebooks/nb-mbaptiste,ml-notebooks,StatefulSet,ml-research,ml-research,tier-2,internal,nb mbaptiste in ml-notebooks
+ml-notebooks/nb-exu,ml-notebooks,StatefulSet,ml-research,ml-research,tier-2,internal,nb exu in ml-notebooks
+ml-notebooks/nb-vulrich,ml-notebooks,StatefulSet,ml-research,ml-research,tier-2,internal,nb vulrich in ml-notebooks
+ml-notebooks/nb-wibrahim,ml-notebooks,StatefulSet,ml-research,ml-research,tier-2,internal,nb wibrahim in ml-notebooks
+ml-notebooks/nb-bschneider,ml-notebooks,StatefulSet,ml-research,ml-research,tier-2,internal,nb bschneider in ml-notebooks
+ml-notebooks/nb-nalmeida,ml-notebooks,StatefulSet,ml-research,ml-research,tier-2,internal,nb nalmeida in ml-notebooks
+ml-notebooks/nb-fesposito,ml-notebooks,StatefulSet,ml-research,ml-research,tier-2,internal,nb fesposito in ml-notebooks
+ml-notebooks/nb-rzielinski,ml-notebooks,StatefulSet,ml-research,ml-research,tier-2,internal,nb rzielinski in ml-notebooks
+ml-notebooks/nb-wschneider,ml-notebooks,StatefulSet,ml-research,ml-research,tier-2,internal,nb wschneider in ml-notebooks
+ml-notebooks/nb-cmendes,ml-notebooks,StatefulSet,ml-research,ml-research,tier-2,internal,nb cmendes in ml-notebooks
+ml-notebooks/nb-lbrennan,ml-notebooks,StatefulSet,ml-research,ml-research,tier-2,internal,nb lbrennan in ml-notebooks
+ml-notebooks/nb-sadler,ml-notebooks,StatefulSet,ml-research,ml-research,tier-2,internal,nb sadler in ml-notebooks
+ml-notebooks/nb-vdubois,ml-notebooks,StatefulSet,ml-research,ml-research,tier-2,internal,nb vdubois in ml-notebooks
+ml-notebooks/nb-wyamamoto,ml-notebooks,StatefulSet,ml-research,ml-research,tier-2,internal,nb wyamamoto in ml-notebooks
+observability/log-shipper,observability,DaemonSet,observability,observability,tier-2,internal,log shipper in observability
+observability/metrics-collector,observability,DaemonSet,observability,observability,tier-2,internal,metrics collector in observability
+observability/otel-collector,observability,DaemonSet,observability,observability,tier-2,internal,otel collector in observability
+observability/otel-gateway,observability,Deployment,observability,observability,tier-2,internal,otel gateway in observability
+observability/trace-collector,observability,Deployment,observability,observability,tier-2,internal,trace collector in observability
+observability/prometheus,observability,StatefulSet,observability,observability,tier-2,internal,prometheus in observability
+observability/alertmanager,observability,Deployment,observability,observability,tier-2,internal,alertmanager in observability
+observability/grafana,observability,Deployment,observability,observability,tier-2,internal,grafana in observability
+observability/loki,observability,StatefulSet,observability,observability,tier-2,internal,loki in observability
+observability/tempo,observability,StatefulSet,observability,observability,tier-2,internal,tempo in observability
+observability/mimir,observability,StatefulSet,observability,observability,tier-2,internal,mimir in observability
+observability/pushgateway,observability,Deployment,observability,observability,tier-2,internal,pushgateway in observability
+observability/blackbox-exporter,observability,Deployment,observability,observability,tier-2,internal,blackbox exporter in observability
+observability/node-exporter,observability,DaemonSet,observability,observability,tier-2,internal,node exporter in observability
+observability/snmp-exporter,observability,Deployment,observability,observability,tier-2,internal,snmp exporter in observability
+observability/syslog-collector,observability,Deployment,observability,observability,tier-2,internal,syslog collector in observability
+observability/netflow-collector,observability,Deployment,observability,observability,tier-2,internal,netflow collector in observability
+observability/flow-aggregator,observability,Deployment,observability,observability,tier-2,internal,flow aggregator in observability
+observability/profiler,observability,Deployment,observability,observability,tier-2,internal,profiler in observability
+observability/uptime-checker,observability,Deployment,observability,observability,tier-2,internal,uptime checker in observability
+observability/sla-reporter,observability,Deployment,observability,observability,tier-2,internal,sla reporter in observability
+observability/oncall-bridge,observability,Deployment,observability,observability,tier-2,internal,oncall bridge in observability
+observability/status-exporter,observability,Deployment,observability,observability,tier-2,internal,status exporter in observability
+observability/cost-collector,observability,Deployment,observability,observability,tier-2,internal,cost collector in observability
+observability/gpu-exporter,observability,DaemonSet,observability,observability,tier-2,internal,gpu exporter in observability
+observability/dcgm-exporter,observability,DaemonSet,observability,observability,tier-2,internal,dcgm exporter in observability
+observability/nvlink-monitor,observability,Deployment,observability,observability,tier-2,internal,nvlink monitor in observability
+observability/fabric-poller,observability,Deployment,observability,observability,tier-2,internal,fabric poller in observability
+team-001/api,team-001,Deployment,team-001,team-001,tier-2,internal,api in team-001
+team-001/worker,team-001,Deployment,team-001,team-001,tier-2,internal,worker in team-001
+team-001/web,team-001,Deployment,team-001,team-001,tier-2,internal,web in team-001
+team-001/cache,team-001,Deployment,team-001,team-001,tier-2,internal,cache in team-001
+team-001/cron,team-001,Deployment,team-001,team-001,tier-2,internal,cron in team-001
+team-002/api,team-002,Deployment,team-002,team-002,tier-2,internal,api in team-002
+team-002/worker,team-002,Deployment,team-002,team-002,tier-2,internal,worker in team-002
+team-002/web,team-002,Deployment,team-002,team-002,tier-2,internal,web in team-002
+team-002/cache,team-002,Deployment,team-002,team-002,tier-2,internal,cache in team-002
+team-002/cron,team-002,Deployment,team-002,team-002,tier-2,internal,cron in team-002
+team-003/api,team-003,Deployment,team-003,team-003,tier-2,internal,api in team-003
+team-003/worker,team-003,Deployment,team-003,team-003,tier-2,internal,worker in team-003
+team-003/web,team-003,Deployment,team-003,team-003,tier-2,internal,web in team-003
+team-003/cache,team-003,Deployment,team-003,team-003,tier-2,internal,cache in team-003
+team-003/cron,team-003,Deployment,team-003,team-003,tier-2,internal,cron in team-003
+team-004/api,team-004,Deployment,team-004,team-004,tier-2,internal,api in team-004
+team-004/worker,team-004,Deployment,team-004,team-004,tier-2,internal,worker in team-004
+team-004/web,team-004,Deployment,team-004,team-004,tier-2,internal,web in team-004
+team-004/cache,team-004,Deployment,team-004,team-004,tier-2,internal,cache in team-004
+team-004/cron,team-004,Deployment,team-004,team-004,tier-2,internal,cron in team-004
+team-005/api,team-005,Deployment,team-005,team-005,tier-2,internal,api in team-005
+team-005/worker,team-005,Deployment,team-005,team-005,tier-2,internal,worker in team-005
+team-005/web,team-005,Deployment,team-005,team-005,tier-2,internal,web in team-005
+team-005/cache,team-005,Deployment,team-005,team-005,tier-2,internal,cache in team-005
+team-005/cron,team-005,Deployment,team-005,team-005,tier-2,internal,cron in team-005
+team-006/api,team-006,Deployment,team-006,team-006,tier-2,internal,api in team-006
+team-006/worker,team-006,Deployment,team-006,team-006,tier-2,internal,worker in team-006
+team-006/web,team-006,Deployment,team-006,team-006,tier-2,internal,web in team-006
+team-006/cache,team-006,Deployment,team-006,team-006,tier-2,internal,cache in team-006
+team-006/cron,team-006,Deployment,team-006,team-006,tier-2,internal,cron in team-006
+team-007/api,team-007,Deployment,team-007,team-007,tier-2,internal,api in team-007
+team-007/worker,team-007,Deployment,team-007,team-007,tier-2,internal,worker in team-007
+team-007/web,team-007,Deployment,team-007,team-007,tier-2,internal,web in team-007
+team-007/cache,team-007,Deployment,team-007,team-007,tier-2,internal,cache in team-007
+team-007/cron,team-007,Deployment,team-007,team-007,tier-2,internal,cron in team-007
+team-008/api,team-008,Deployment,team-008,team-008,tier-2,internal,api in team-008
+team-008/worker,team-008,Deployment,team-008,team-008,tier-2,internal,worker in team-008
+team-008/web,team-008,Deployment,team-008,team-008,tier-2,internal,web in team-008
+team-008/cache,team-008,Deployment,team-008,team-008,tier-2,internal,cache in team-008
+team-008/cron,team-008,Deployment,team-008,team-008,tier-2,internal,cron in team-008
+team-009/api,team-009,Deployment,team-009,team-009,tier-2,internal,api in team-009
+team-009/worker,team-009,Deployment,team-009,team-009,tier-2,internal,worker in team-009
+team-009/web,team-009,Deployment,team-009,team-009,tier-2,internal,web in team-009
+team-009/cache,team-009,Deployment,team-009,team-009,tier-2,internal,cache in team-009
+team-009/cron,team-009,Deployment,team-009,team-009,tier-2,internal,cron in team-009
+team-010/api,team-010,Deployment,team-010,team-010,tier-2,internal,api in team-010
+team-010/worker,team-010,Deployment,team-010,team-010,tier-2,internal,worker in team-010
+team-010/web,team-010,Deployment,team-010,team-010,tier-2,internal,web in team-010
+team-010/cache,team-010,Deployment,team-010,team-010,tier-2,internal,cache in team-010
+team-010/cron,team-010,Deployment,team-010,team-010,tier-2,internal,cron in team-010
+team-011/api,team-011,Deployment,team-011,team-011,tier-2,internal,api in team-011
+team-011/worker,team-011,Deployment,team-011,team-011,tier-2,internal,worker in team-011
+team-011/web,team-011,Deployment,team-011,team-011,tier-2,internal,web in team-011
+team-011/cache,team-011,Deployment,team-011,team-011,tier-2,internal,cache in team-011
+team-011/cron,team-011,Deployment,team-011,team-011,tier-2,internal,cron in team-011
+team-012/api,team-012,Deployment,team-012,team-012,tier-2,internal,api in team-012
+team-012/worker,team-012,Deployment,team-012,team-012,tier-2,internal,worker in team-012
+team-012/web,team-012,Deployment,team-012,team-012,tier-2,internal,web in team-012
+team-012/cache,team-012,Deployment,team-012,team-012,tier-2,internal,cache in team-012
+team-012/cron,team-012,Deployment,team-012,team-012,tier-2,internal,cron in team-012
+team-013/api,team-013,Deployment,team-013,team-013,tier-2,internal,api in team-013
+team-013/worker,team-013,Deployment,team-013,team-013,tier-2,internal,worker in team-013
+team-013/web,team-013,Deployment,team-013,team-013,tier-2,internal,web in team-013
+team-013/cache,team-013,Deployment,team-013,team-013,tier-2,internal,cache in team-013
+team-013/cron,team-013,Deployment,team-013,team-013,tier-2,internal,cron in team-013
+team-014/api,team-014,Deployment,team-014,team-014,tier-2,internal,api in team-014
+team-014/worker,team-014,Deployment,team-014,team-014,tier-2,internal,worker in team-014
+team-014/web,team-014,Deployment,team-014,team-014,tier-2,internal,web in team-014
+team-014/cache,team-014,Deployment,team-014,team-014,tier-2,internal,cache in team-014
+team-014/cron,team-014,Deployment,team-014,team-014,tier-2,internal,cron in team-014
+team-015/api,team-015,Deployment,team-015,team-015,tier-2,internal,api in team-015
+team-015/worker,team-015,Deployment,team-015,team-015,tier-2,internal,worker in team-015
+team-015/web,team-015,Deployment,team-015,team-015,tier-2,internal,web in team-015
+team-015/cache,team-015,Deployment,team-015,team-015,tier-2,internal,cache in team-015
+team-015/cron,team-015,Deployment,team-015,team-015,tier-2,internal,cron in team-015
+team-016/api,team-016,Deployment,team-016,team-016,tier-2,internal,api in team-016
+team-016/worker,team-016,Deployment,team-016,team-016,tier-2,internal,worker in team-016
+team-016/web,team-016,Deployment,team-016,team-016,tier-2,internal,web in team-016
+team-016/cache,team-016,Deployment,team-016,team-016,tier-2,internal,cache in team-016
+team-016/cron,team-016,Deployment,team-016,team-016,tier-2,internal,cron in team-016
+team-017/api,team-017,Deployment,team-017,team-017,tier-2,internal,api in team-017
+team-017/worker,team-017,Deployment,team-017,team-017,tier-2,internal,worker in team-017
+team-017/web,team-017,Deployment,team-017,team-017,tier-2,internal,web in team-017
+team-017/cache,team-017,Deployment,team-017,team-017,tier-2,internal,cache in team-017
+team-017/cron,team-017,Deployment,team-017,team-017,tier-2,internal,cron in team-017
+team-018/api,team-018,Deployment,team-018,team-018,tier-2,internal,api in team-018
+team-018/worker,team-018,Deployment,team-018,team-018,tier-2,internal,worker in team-018
+team-018/web,team-018,Deployment,team-018,team-018,tier-2,internal,web in team-018
+team-018/cache,team-018,Deployment,team-018,team-018,tier-2,internal,cache in team-018
+team-018/cron,team-018,Deployment,team-018,team-018,tier-2,internal,cron in team-018
+team-019/api,team-019,Deployment,team-019,team-019,tier-2,internal,api in team-019
+team-019/worker,team-019,Deployment,team-019,team-019,tier-2,internal,worker in team-019
+team-019/web,team-019,Deployment,team-019,team-019,tier-2,internal,web in team-019
+team-019/cache,team-019,Deployment,team-019,team-019,tier-2,internal,cache in team-019
+team-019/cron,team-019,Deployment,team-019,team-019,tier-2,internal,cron in team-019
+team-020/api,team-020,Deployment,team-020,team-020,tier-2,internal,api in team-020
+team-020/worker,team-020,Deployment,team-020,team-020,tier-2,internal,worker in team-020
+team-020/web,team-020,Deployment,team-020,team-020,tier-2,internal,web in team-020
+team-020/cache,team-020,Deployment,team-020,team-020,tier-2,internal,cache in team-020
+team-020/cron,team-020,Deployment,team-020,team-020,tier-2,internal,cron in team-020
+team-021/api,team-021,Deployment,team-021,team-021,tier-2,internal,api in team-021
+team-021/worker,team-021,Deployment,team-021,team-021,tier-2,internal,worker in team-021
+team-021/web,team-021,Deployment,team-021,team-021,tier-2,internal,web in team-021
+team-021/cache,team-021,Deployment,team-021,team-021,tier-2,internal,cache in team-021
+team-021/cron,team-021,Deployment,team-021,team-021,tier-2,internal,cron in team-021
+team-022/api,team-022,Deployment,team-022,team-022,tier-2,internal,api in team-022
+team-022/worker,team-022,Deployment,team-022,team-022,tier-2,internal,worker in team-022
+team-022/web,team-022,Deployment,team-022,team-022,tier-2,internal,web in team-022
+team-022/cache,team-022,Deployment,team-022,team-022,tier-2,internal,cache in team-022
+team-022/cron,team-022,Deployment,team-022,team-022,tier-2,internal,cron in team-022
+team-023/api,team-023,Deployment,team-023,team-023,tier-2,internal,api in team-023
+team-023/worker,team-023,Deployment,team-023,team-023,tier-2,internal,worker in team-023
+team-023/web,team-023,Deployment,team-023,team-023,tier-2,internal,web in team-023
+team-023/cache,team-023,Deployment,team-023,team-023,tier-2,internal,cache in team-023
+team-023/cron,team-023,Deployment,team-023,team-023,tier-2,internal,cron in team-023
+team-024/api,team-024,Deployment,team-024,team-024,tier-2,internal,api in team-024
+team-024/worker,team-024,Deployment,team-024,team-024,tier-2,internal,worker in team-024
+team-024/web,team-024,Deployment,team-024,team-024,tier-2,internal,web in team-024
+team-024/cache,team-024,Deployment,team-024,team-024,tier-2,internal,cache in team-024
+team-024/cron,team-024,Deployment,team-024,team-024,tier-2,internal,cron in team-024
+team-025/api,team-025,Deployment,team-025,team-025,tier-2,internal,api in team-025
+team-025/worker,team-025,Deployment,team-025,team-025,tier-2,internal,worker in team-025
+team-025/web,team-025,Deployment,team-025,team-025,tier-2,internal,web in team-025
+team-025/cache,team-025,Deployment,team-025,team-025,tier-2,internal,cache in team-025
+team-025/cron,team-025,Deployment,team-025,team-025,tier-2,internal,cron in team-025
+team-026/api,team-026,Deployment,team-026,team-026,tier-2,internal,api in team-026
+team-026/worker,team-026,Deployment,team-026,team-026,tier-2,internal,worker in team-026
+team-026/web,team-026,Deployment,team-026,team-026,tier-2,internal,web in team-026
+team-026/cache,team-026,Deployment,team-026,team-026,tier-2,internal,cache in team-026
+team-026/cron,team-026,Deployment,team-026,team-026,tier-2,internal,cron in team-026
+team-027/api,team-027,Deployment,team-027,team-027,tier-2,internal,api in team-027
+team-027/worker,team-027,Deployment,team-027,team-027,tier-2,internal,worker in team-027
+team-027/web,team-027,Deployment,team-027,team-027,tier-2,internal,web in team-027
+team-027/cache,team-027,Deployment,team-027,team-027,tier-2,internal,cache in team-027
+team-027/cron,team-027,Deployment,team-027,team-027,tier-2,internal,cron in team-027
+team-028/api,team-028,Deployment,team-028,team-028,tier-2,internal,api in team-028
+team-028/worker,team-028,Deployment,team-028,team-028,tier-2,internal,worker in team-028
+team-028/web,team-028,Deployment,team-028,team-028,tier-2,internal,web in team-028
+team-028/cache,team-028,Deployment,team-028,team-028,tier-2,internal,cache in team-028
+team-028/cron,team-028,Deployment,team-028,team-028,tier-2,internal,cron in team-028
+team-029/api,team-029,Deployment,team-029,team-029,tier-2,internal,api in team-029
+team-029/worker,team-029,Deployment,team-029,team-029,tier-2,internal,worker in team-029
+team-029/web,team-029,Deployment,team-029,team-029,tier-2,internal,web in team-029
+team-029/cache,team-029,Deployment,team-029,team-029,tier-2,internal,cache in team-029
+team-029/cron,team-029,Deployment,team-029,team-029,tier-2,internal,cron in team-029
+team-030/api,team-030,Deployment,team-030,team-030,tier-2,internal,api in team-030
+team-030/worker,team-030,Deployment,team-030,team-030,tier-2,internal,worker in team-030
+team-030/web,team-030,Deployment,team-030,team-030,tier-2,internal,web in team-030
+team-030/cache,team-030,Deployment,team-030,team-030,tier-2,internal,cache in team-030
+team-030/cron,team-030,Deployment,team-030,team-030,tier-2,internal,cron in team-030
+team-031/api,team-031,Deployment,team-031,team-031,tier-2,internal,api in team-031
+team-031/worker,team-031,Deployment,team-031,team-031,tier-2,internal,worker in team-031
+team-031/web,team-031,Deployment,team-031,team-031,tier-2,internal,web in team-031
+team-031/cache,team-031,Deployment,team-031,team-031,tier-2,internal,cache in team-031
+team-031/cron,team-031,Deployment,team-031,team-031,tier-2,internal,cron in team-031
+team-032/api,team-032,Deployment,team-032,team-032,tier-2,internal,api in team-032
+team-032/worker,team-032,Deployment,team-032,team-032,tier-2,internal,worker in team-032
+team-032/web,team-032,Deployment,team-032,team-032,tier-2,internal,web in team-032
+team-032/cache,team-032,Deployment,team-032,team-032,tier-2,internal,cache in team-032
+team-032/cron,team-032,Deployment,team-032,team-032,tier-2,internal,cron in team-032
+team-033/api,team-033,Deployment,team-033,team-033,tier-2,internal,api in team-033
+team-033/worker,team-033,Deployment,team-033,team-033,tier-2,internal,worker in team-033
+team-033/web,team-033,Deployment,team-033,team-033,tier-2,internal,web in team-033
+team-033/cache,team-033,Deployment,team-033,team-033,tier-2,internal,cache in team-033
+team-033/cron,team-033,Deployment,team-033,team-033,tier-2,internal,cron in team-033
+team-034/api,team-034,Deployment,team-034,team-034,tier-2,internal,api in team-034
+team-034/worker,team-034,Deployment,team-034,team-034,tier-2,internal,worker in team-034
+team-034/web,team-034,Deployment,team-034,team-034,tier-2,internal,web in team-034
+team-034/cache,team-034,Deployment,team-034,team-034,tier-2,internal,cache in team-034
+team-034/cron,team-034,Deployment,team-034,team-034,tier-2,internal,cron in team-034
+team-035/api,team-035,Deployment,team-035,team-035,tier-2,internal,api in team-035
+team-035/worker,team-035,Deployment,team-035,team-035,tier-2,internal,worker in team-035
+team-035/web,team-035,Deployment,team-035,team-035,tier-2,internal,web in team-035
+team-035/cache,team-035,Deployment,team-035,team-035,tier-2,internal,cache in team-035
+team-035/cron,team-035,Deployment,team-035,team-035,tier-2,internal,cron in team-035
+team-036/api,team-036,Deployment,team-036,team-036,tier-2,internal,api in team-036
+team-036/worker,team-036,Deployment,team-036,team-036,tier-2,internal,worker in team-036
+team-036/web,team-036,Deployment,team-036,team-036,tier-2,internal,web in team-036
+team-036/cache,team-036,Deployment,team-036,team-036,tier-2,internal,cache in team-036
+team-036/cron,team-036,Deployment,team-036,team-036,tier-2,internal,cron in team-036
+team-037/api,team-037,Deployment,team-037,team-037,tier-2,internal,api in team-037
+team-037/worker,team-037,Deployment,team-037,team-037,tier-2,internal,worker in team-037
+team-037/web,team-037,Deployment,team-037,team-037,tier-2,internal,web in team-037
+team-037/cache,team-037,Deployment,team-037,team-037,tier-2,internal,cache in team-037
+team-037/cron,team-037,Deployment,team-037,team-037,tier-2,internal,cron in team-037
+team-038/api,team-038,Deployment,team-038,team-038,tier-2,internal,api in team-038
+team-038/worker,team-038,Deployment,team-038,team-038,tier-2,internal,worker in team-038
+team-038/web,team-038,Deployment,team-038,team-038,tier-2,internal,web in team-038
+team-038/cache,team-038,Deployment,team-038,team-038,tier-2,internal,cache in team-038
+team-038/cron,team-038,Deployment,team-038,team-038,tier-2,internal,cron in team-038
+team-039/api,team-039,Deployment,team-039,team-039,tier-2,internal,api in team-039
+team-039/worker,team-039,Deployment,team-039,team-039,tier-2,internal,worker in team-039
+team-039/web,team-039,Deployment,team-039,team-039,tier-2,internal,web in team-039
+team-039/cache,team-039,Deployment,team-039,team-039,tier-2,internal,cache in team-039
+team-039/cron,team-039,Deployment,team-039,team-039,tier-2,internal,cron in team-039
+team-040/api,team-040,Deployment,team-040,team-040,tier-2,internal,api in team-040
+team-040/worker,team-040,Deployment,team-040,team-040,tier-2,internal,worker in team-040
+team-040/web,team-040,Deployment,team-040,team-040,tier-2,internal,web in team-040
+team-040/cache,team-040,Deployment,team-040,team-040,tier-2,internal,cache in team-040
+team-040/cron,team-040,Deployment,team-040,team-040,tier-2,internal,cron in team-040
+team-041/api,team-041,Deployment,team-041,team-041,tier-2,internal,api in team-041
+team-041/worker,team-041,Deployment,team-041,team-041,tier-2,internal,worker in team-041
+team-041/web,team-041,Deployment,team-041,team-041,tier-2,internal,web in team-041
+team-041/cache,team-041,Deployment,team-041,team-041,tier-2,internal,cache in team-041
+team-041/cron,team-041,Deployment,team-041,team-041,tier-2,internal,cron in team-041
+team-042/api,team-042,Deployment,team-042,team-042,tier-2,internal,api in team-042
+team-042/worker,team-042,Deployment,team-042,team-042,tier-2,internal,worker in team-042
+team-042/web,team-042,Deployment,team-042,team-042,tier-2,internal,web in team-042
+team-042/cache,team-042,Deployment,team-042,team-042,tier-2,internal,cache in team-042
+team-042/cron,team-042,Deployment,team-042,team-042,tier-2,internal,cron in team-042
+team-043/api,team-043,Deployment,team-043,team-043,tier-2,internal,api in team-043
+team-043/worker,team-043,Deployment,team-043,team-043,tier-2,internal,worker in team-043
+team-043/web,team-043,Deployment,team-043,team-043,tier-2,internal,web in team-043
+team-043/cache,team-043,Deployment,team-043,team-043,tier-2,internal,cache in team-043
+team-043/cron,team-043,Deployment,team-043,team-043,tier-2,internal,cron in team-043
+team-044/api,team-044,Deployment,team-044,team-044,tier-2,internal,api in team-044
+team-044/worker,team-044,Deployment,team-044,team-044,tier-2,internal,worker in team-044
+team-044/web,team-044,Deployment,team-044,team-044,tier-2,internal,web in team-044
+team-044/cache,team-044,Deployment,team-044,team-044,tier-2,internal,cache in team-044
+team-044/cron,team-044,Deployment,team-044,team-044,tier-2,internal,cron in team-044
+team-045/api,team-045,Deployment,team-045,team-045,tier-2,internal,api in team-045
+team-045/worker,team-045,Deployment,team-045,team-045,tier-2,internal,worker in team-045
+team-045/web,team-045,Deployment,team-045,team-045,tier-2,internal,web in team-045
+team-045/cache,team-045,Deployment,team-045,team-045,tier-2,internal,cache in team-045
+team-045/cron,team-045,Deployment,team-045,team-045,tier-2,internal,cron in team-045
+team-046/api,team-046,Deployment,team-046,team-046,tier-2,internal,api in team-046
+team-046/worker,team-046,Deployment,team-046,team-046,tier-2,internal,worker in team-046
+team-046/web,team-046,Deployment,team-046,team-046,tier-2,internal,web in team-046
+team-046/cache,team-046,Deployment,team-046,team-046,tier-2,internal,cache in team-046
+team-046/cron,team-046,Deployment,team-046,team-046,tier-2,internal,cron in team-046
+team-047/api,team-047,Deployment,team-047,team-047,tier-2,internal,api in team-047
+team-047/worker,team-047,Deployment,team-047,team-047,tier-2,internal,worker in team-047
+team-047/web,team-047,Deployment,team-047,team-047,tier-2,internal,web in team-047
+team-047/cache,team-047,Deployment,team-047,team-047,tier-2,internal,cache in team-047
+team-047/cron,team-047,Deployment,team-047,team-047,tier-2,internal,cron in team-047
+team-048/api,team-048,Deployment,team-048,team-048,tier-2,internal,api in team-048
+team-048/worker,team-048,Deployment,team-048,team-048,tier-2,internal,worker in team-048
+team-048/web,team-048,Deployment,team-048,team-048,tier-2,internal,web in team-048
+team-048/cache,team-048,Deployment,team-048,team-048,tier-2,internal,cache in team-048
+team-048/cron,team-048,Deployment,team-048,team-048,tier-2,internal,cron in team-048
+team-049/api,team-049,Deployment,team-049,team-049,tier-2,internal,api in team-049
+team-049/worker,team-049,Deployment,team-049,team-049,tier-2,internal,worker in team-049
+team-049/web,team-049,Deployment,team-049,team-049,tier-2,internal,web in team-049
+team-049/cache,team-049,Deployment,team-049,team-049,tier-2,internal,cache in team-049
+team-049/cron,team-049,Deployment,team-049,team-049,tier-2,internal,cron in team-049
+team-050/api,team-050,Deployment,team-050,team-050,tier-2,internal,api in team-050
+team-050/worker,team-050,Deployment,team-050,team-050,tier-2,internal,worker in team-050
+team-050/web,team-050,Deployment,team-050,team-050,tier-2,internal,web in team-050
+team-050/cache,team-050,Deployment,team-050,team-050,tier-2,internal,cache in team-050
+team-050/cron,team-050,Deployment,team-050,team-050,tier-2,internal,cron in team-050
+team-051/api,team-051,Deployment,team-051,team-051,tier-2,internal,api in team-051
+team-051/worker,team-051,Deployment,team-051,team-051,tier-2,internal,worker in team-051
+team-051/web,team-051,Deployment,team-051,team-051,tier-2,internal,web in team-051
+team-051/cache,team-051,Deployment,team-051,team-051,tier-2,internal,cache in team-051
+team-051/cron,team-051,Deployment,team-051,team-051,tier-2,internal,cron in team-051
+team-052/api,team-052,Deployment,team-052,team-052,tier-2,internal,api in team-052
+team-052/worker,team-052,Deployment,team-052,team-052,tier-2,internal,worker in team-052
+team-052/web,team-052,Deployment,team-052,team-052,tier-2,internal,web in team-052
+team-052/cache,team-052,Deployment,team-052,team-052,tier-2,internal,cache in team-052
+team-052/cron,team-052,Deployment,team-052,team-052,tier-2,internal,cron in team-052
+team-053/api,team-053,Deployment,team-053,team-053,tier-2,internal,api in team-053
+team-053/worker,team-053,Deployment,team-053,team-053,tier-2,internal,worker in team-053
+team-053/web,team-053,Deployment,team-053,team-053,tier-2,internal,web in team-053
+team-053/cache,team-053,Deployment,team-053,team-053,tier-2,internal,cache in team-053
+team-053/cron,team-053,Deployment,team-053,team-053,tier-2,internal,cron in team-053
+team-054/api,team-054,Deployment,team-054,team-054,tier-2,internal,api in team-054
+team-054/worker,team-054,Deployment,team-054,team-054,tier-2,internal,worker in team-054
+team-054/web,team-054,Deployment,team-054,team-054,tier-2,internal,web in team-054
+team-054/cache,team-054,Deployment,team-054,team-054,tier-2,internal,cache in team-054
+team-054/cron,team-054,Deployment,team-054,team-054,tier-2,internal,cron in team-054
+team-055/api,team-055,Deployment,team-055,team-055,tier-2,internal,api in team-055
+team-055/worker,team-055,Deployment,team-055,team-055,tier-2,internal,worker in team-055
+team-055/web,team-055,Deployment,team-055,team-055,tier-2,internal,web in team-055
+team-055/cache,team-055,Deployment,team-055,team-055,tier-2,internal,cache in team-055
+team-055/cron,team-055,Deployment,team-055,team-055,tier-2,internal,cron in team-055
+team-056/api,team-056,Deployment,team-056,team-056,tier-2,internal,api in team-056
+team-056/worker,team-056,Deployment,team-056,team-056,tier-2,internal,worker in team-056
+team-056/web,team-056,Deployment,team-056,team-056,tier-2,internal,web in team-056
+team-056/cache,team-056,Deployment,team-056,team-056,tier-2,internal,cache in team-056
+team-056/cron,team-056,Deployment,team-056,team-056,tier-2,internal,cron in team-056
+team-057/api,team-057,Deployment,team-057,team-057,tier-2,internal,api in team-057
+team-057/worker,team-057,Deployment,team-057,team-057,tier-2,internal,worker in team-057
+team-057/web,team-057,Deployment,team-057,team-057,tier-2,internal,web in team-057
+team-057/cache,team-057,Deployment,team-057,team-057,tier-2,internal,cache in team-057
+team-057/cron,team-057,Deployment,team-057,team-057,tier-2,internal,cron in team-057
+team-058/api,team-058,Deployment,team-058,team-058,tier-2,internal,api in team-058
+team-058/worker,team-058,Deployment,team-058,team-058,tier-2,internal,worker in team-058
+team-058/web,team-058,Deployment,team-058,team-058,tier-2,internal,web in team-058
+team-058/cache,team-058,Deployment,team-058,team-058,tier-2,internal,cache in team-058
+team-058/cron,team-058,Deployment,team-058,team-058,tier-2,internal,cron in team-058
+team-059/api,team-059,Deployment,team-059,team-059,tier-2,internal,api in team-059
+team-059/worker,team-059,Deployment,team-059,team-059,tier-2,internal,worker in team-059
+team-059/web,team-059,Deployment,team-059,team-059,tier-2,internal,web in team-059
+team-059/cache,team-059,Deployment,team-059,team-059,tier-2,internal,cache in team-059
+team-059/cron,team-059,Deployment,team-059,team-059,tier-2,internal,cron in team-059
+team-060/api,team-060,Deployment,team-060,team-060,tier-2,internal,api in team-060
+team-060/worker,team-060,Deployment,team-060,team-060,tier-2,internal,worker in team-060
+team-060/web,team-060,Deployment,team-060,team-060,tier-2,internal,web in team-060
+team-060/cache,team-060,Deployment,team-060,team-060,tier-2,internal,cache in team-060
+team-060/cron,team-060,Deployment,team-060,team-060,tier-2,internal,cron in team-060
+team-061/api,team-061,Deployment,team-061,team-061,tier-2,internal,api in team-061
+team-061/worker,team-061,Deployment,team-061,team-061,tier-2,internal,worker in team-061
+team-061/web,team-061,Deployment,team-061,team-061,tier-2,internal,web in team-061
+team-061/cache,team-061,Deployment,team-061,team-061,tier-2,internal,cache in team-061
+team-061/cron,team-061,Deployment,team-061,team-061,tier-2,internal,cron in team-061
+team-062/api,team-062,Deployment,team-062,team-062,tier-2,internal,api in team-062
+team-062/worker,team-062,Deployment,team-062,team-062,tier-2,internal,worker in team-062
+team-062/web,team-062,Deployment,team-062,team-062,tier-2,internal,web in team-062
+team-062/cache,team-062,Deployment,team-062,team-062,tier-2,internal,cache in team-062
+team-062/cron,team-062,Deployment,team-062,team-062,tier-2,internal,cron in team-062
+team-063/api,team-063,Deployment,team-063,team-063,tier-2,internal,api in team-063
+team-063/worker,team-063,Deployment,team-063,team-063,tier-2,internal,worker in team-063
+team-063/web,team-063,Deployment,team-063,team-063,tier-2,internal,web in team-063
+team-063/cache,team-063,Deployment,team-063,team-063,tier-2,internal,cache in team-063
+team-063/cron,team-063,Deployment,team-063,team-063,tier-2,internal,cron in team-063
+team-064/api,team-064,Deployment,team-064,team-064,tier-2,internal,api in team-064
+team-064/worker,team-064,Deployment,team-064,team-064,tier-2,internal,worker in team-064
+team-064/web,team-064,Deployment,team-064,team-064,tier-2,internal,web in team-064
+team-064/cache,team-064,Deployment,team-064,team-064,tier-2,internal,cache in team-064
+team-064/cron,team-064,Deployment,team-064,team-064,tier-2,internal,cron in team-064
+team-065/api,team-065,Deployment,team-065,team-065,tier-2,internal,api in team-065
+team-065/worker,team-065,Deployment,team-065,team-065,tier-2,internal,worker in team-065
+team-065/web,team-065,Deployment,team-065,team-065,tier-2,internal,web in team-065
+team-065/cache,team-065,Deployment,team-065,team-065,tier-2,internal,cache in team-065
+team-065/cron,team-065,Deployment,team-065,team-065,tier-2,internal,cron in team-065
+team-066/api,team-066,Deployment,team-066,team-066,tier-2,internal,api in team-066
+team-066/worker,team-066,Deployment,team-066,team-066,tier-2,internal,worker in team-066
+team-066/web,team-066,Deployment,team-066,team-066,tier-2,internal,web in team-066
+team-066/cache,team-066,Deployment,team-066,team-066,tier-2,internal,cache in team-066
+team-066/cron,team-066,Deployment,team-066,team-066,tier-2,internal,cron in team-066
+team-067/api,team-067,Deployment,team-067,team-067,tier-2,internal,api in team-067
+team-067/worker,team-067,Deployment,team-067,team-067,tier-2,internal,worker in team-067
+team-067/web,team-067,Deployment,team-067,team-067,tier-2,internal,web in team-067
+team-067/cache,team-067,Deployment,team-067,team-067,tier-2,internal,cache in team-067
+team-067/cron,team-067,Deployment,team-067,team-067,tier-2,internal,cron in team-067
+team-068/api,team-068,Deployment,team-068,team-068,tier-2,internal,api in team-068
+team-068/worker,team-068,Deployment,team-068,team-068,tier-2,internal,worker in team-068
+team-068/web,team-068,Deployment,team-068,team-068,tier-2,internal,web in team-068
+team-068/cache,team-068,Deployment,team-068,team-068,tier-2,internal,cache in team-068
+team-068/cron,team-068,Deployment,team-068,team-068,tier-2,internal,cron in team-068
+team-069/api,team-069,Deployment,team-069,team-069,tier-2,internal,api in team-069
+team-069/worker,team-069,Deployment,team-069,team-069,tier-2,internal,worker in team-069
+team-069/web,team-069,Deployment,team-069,team-069,tier-2,internal,web in team-069
+team-069/cache,team-069,Deployment,team-069,team-069,tier-2,internal,cache in team-069
+team-069/cron,team-069,Deployment,team-069,team-069,tier-2,internal,cron in team-069
+team-070/api,team-070,Deployment,team-070,team-070,tier-2,internal,api in team-070
+team-070/worker,team-070,Deployment,team-070,team-070,tier-2,internal,worker in team-070
+team-070/web,team-070,Deployment,team-070,team-070,tier-2,internal,web in team-070
+team-070/cache,team-070,Deployment,team-070,team-070,tier-2,internal,cache in team-070
+team-070/cron,team-070,Deployment,team-070,team-070,tier-2,internal,cron in team-070
+team-071/api,team-071,Deployment,team-071,team-071,tier-2,internal,api in team-071
+team-071/worker,team-071,Deployment,team-071,team-071,tier-2,internal,worker in team-071
+team-071/web,team-071,Deployment,team-071,team-071,tier-2,internal,web in team-071
+team-071/cache,team-071,Deployment,team-071,team-071,tier-2,internal,cache in team-071
+team-071/cron,team-071,Deployment,team-071,team-071,tier-2,internal,cron in team-071
+team-072/api,team-072,Deployment,team-072,team-072,tier-2,internal,api in team-072
+team-072/worker,team-072,Deployment,team-072,team-072,tier-2,internal,worker in team-072
+team-072/web,team-072,Deployment,team-072,team-072,tier-2,internal,web in team-072
+team-072/cache,team-072,Deployment,team-072,team-072,tier-2,internal,cache in team-072
+team-072/cron,team-072,Deployment,team-072,team-072,tier-2,internal,cron in team-072
+team-073/api,team-073,Deployment,team-073,team-073,tier-2,internal,api in team-073
+team-073/worker,team-073,Deployment,team-073,team-073,tier-2,internal,worker in team-073
+team-073/web,team-073,Deployment,team-073,team-073,tier-2,internal,web in team-073
+team-073/cache,team-073,Deployment,team-073,team-073,tier-2,internal,cache in team-073
+team-073/cron,team-073,Deployment,team-073,team-073,tier-2,internal,cron in team-073
+team-074/api,team-074,Deployment,team-074,team-074,tier-2,internal,api in team-074
+team-074/worker,team-074,Deployment,team-074,team-074,tier-2,internal,worker in team-074
+team-074/web,team-074,Deployment,team-074,team-074,tier-2,internal,web in team-074
+team-074/cache,team-074,Deployment,team-074,team-074,tier-2,internal,cache in team-074
+team-074/cron,team-074,Deployment,team-074,team-074,tier-2,internal,cron in team-074
+team-075/api,team-075,Deployment,team-075,team-075,tier-2,internal,api in team-075
+team-075/worker,team-075,Deployment,team-075,team-075,tier-2,internal,worker in team-075
+team-075/web,team-075,Deployment,team-075,team-075,tier-2,internal,web in team-075
+team-075/cache,team-075,Deployment,team-075,team-075,tier-2,internal,cache in team-075
+team-075/cron,team-075,Deployment,team-075,team-075,tier-2,internal,cron in team-075
+team-076/api,team-076,Deployment,team-076,team-076,tier-2,internal,api in team-076
+team-076/worker,team-076,Deployment,team-076,team-076,tier-2,internal,worker in team-076
+team-076/web,team-076,Deployment,team-076,team-076,tier-2,internal,web in team-076
+team-076/cache,team-076,Deployment,team-076,team-076,tier-2,internal,cache in team-076
+team-076/cron,team-076,Deployment,team-076,team-076,tier-2,internal,cron in team-076
+team-077/api,team-077,Deployment,team-077,team-077,tier-2,internal,api in team-077
+team-077/worker,team-077,Deployment,team-077,team-077,tier-2,internal,worker in team-077
+team-077/web,team-077,Deployment,team-077,team-077,tier-2,internal,web in team-077
+team-077/cache,team-077,Deployment,team-077,team-077,tier-2,internal,cache in team-077
+team-077/cron,team-077,Deployment,team-077,team-077,tier-2,internal,cron in team-077
+team-078/api,team-078,Deployment,team-078,team-078,tier-2,internal,api in team-078
+team-078/worker,team-078,Deployment,team-078,team-078,tier-2,internal,worker in team-078
+team-078/web,team-078,Deployment,team-078,team-078,tier-2,internal,web in team-078
+team-078/cache,team-078,Deployment,team-078,team-078,tier-2,internal,cache in team-078
+team-078/cron,team-078,Deployment,team-078,team-078,tier-2,internal,cron in team-078
+team-079/api,team-079,Deployment,team-079,team-079,tier-2,internal,api in team-079
+team-079/worker,team-079,Deployment,team-079,team-079,tier-2,internal,worker in team-079
+team-079/web,team-079,Deployment,team-079,team-079,tier-2,internal,web in team-079
+team-079/cache,team-079,Deployment,team-079,team-079,tier-2,internal,cache in team-079
+team-079/cron,team-079,Deployment,team-079,team-079,tier-2,internal,cron in team-079
+team-080/api,team-080,Deployment,team-080,team-080,tier-2,internal,api in team-080
+team-080/worker,team-080,Deployment,team-080,team-080,tier-2,internal,worker in team-080
+team-080/web,team-080,Deployment,team-080,team-080,tier-2,internal,web in team-080
+team-080/cache,team-080,Deployment,team-080,team-080,tier-2,internal,cache in team-080
+team-080/cron,team-080,Deployment,team-080,team-080,tier-2,internal,cron in team-080
+team-081/api,team-081,Deployment,team-081,team-081,tier-2,internal,api in team-081
+team-081/worker,team-081,Deployment,team-081,team-081,tier-2,internal,worker in team-081
+team-081/web,team-081,Deployment,team-081,team-081,tier-2,internal,web in team-081
+team-081/cache,team-081,Deployment,team-081,team-081,tier-2,internal,cache in team-081
+team-081/cron,team-081,Deployment,team-081,team-081,tier-2,internal,cron in team-081
+team-082/api,team-082,Deployment,team-082,team-082,tier-2,internal,api in team-082
+team-082/worker,team-082,Deployment,team-082,team-082,tier-2,internal,worker in team-082
+team-082/web,team-082,Deployment,team-082,team-082,tier-2,internal,web in team-082
+team-082/cache,team-082,Deployment,team-082,team-082,tier-2,internal,cache in team-082
+team-082/cron,team-082,Deployment,team-082,team-082,tier-2,internal,cron in team-082
+team-083/api,team-083,Deployment,team-083,team-083,tier-2,internal,api in team-083
+team-083/worker,team-083,Deployment,team-083,team-083,tier-2,internal,worker in team-083
+team-083/web,team-083,Deployment,team-083,team-083,tier-2,internal,web in team-083
+team-083/cache,team-083,Deployment,team-083,team-083,tier-2,internal,cache in team-083
+team-083/cron,team-083,Deployment,team-083,team-083,tier-2,internal,cron in team-083
+team-084/api,team-084,Deployment,team-084,team-084,tier-2,internal,api in team-084
+team-084/worker,team-084,Deployment,team-084,team-084,tier-2,internal,worker in team-084
+team-084/web,team-084,Deployment,team-084,team-084,tier-2,internal,web in team-084
+team-084/cache,team-084,Deployment,team-084,team-084,tier-2,internal,cache in team-084
+team-084/cron,team-084,Deployment,team-084,team-084,tier-2,internal,cron in team-084
+team-085/api,team-085,Deployment,team-085,team-085,tier-2,internal,api in team-085
+team-085/worker,team-085,Deployment,team-085,team-085,tier-2,internal,worker in team-085
+team-085/web,team-085,Deployment,team-085,team-085,tier-2,internal,web in team-085
+team-085/cache,team-085,Deployment,team-085,team-085,tier-2,internal,cache in team-085
+team-085/cron,team-085,Deployment,team-085,team-085,tier-2,internal,cron in team-085
+team-086/api,team-086,Deployment,team-086,team-086,tier-2,internal,api in team-086
+team-086/worker,team-086,Deployment,team-086,team-086,tier-2,internal,worker in team-086
+team-086/web,team-086,Deployment,team-086,team-086,tier-2,internal,web in team-086
+team-086/cache,team-086,Deployment,team-086,team-086,tier-2,internal,cache in team-086
+team-086/cron,team-086,Deployment,team-086,team-086,tier-2,internal,cron in team-086
+team-087/api,team-087,Deployment,team-087,team-087,tier-2,internal,api in team-087
+team-087/worker,team-087,Deployment,team-087,team-087,tier-2,internal,worker in team-087
+team-087/web,team-087,Deployment,team-087,team-087,tier-2,internal,web in team-087
+team-087/cache,team-087,Deployment,team-087,team-087,tier-2,internal,cache in team-087
+team-087/cron,team-087,Deployment,team-087,team-087,tier-2,internal,cron in team-087
+team-088/api,team-088,Deployment,team-088,team-088,tier-2,internal,api in team-088
+team-088/worker,team-088,Deployment,team-088,team-088,tier-2,internal,worker in team-088
+team-088/web,team-088,Deployment,team-088,team-088,tier-2,internal,web in team-088
+team-088/cache,team-088,Deployment,team-088,team-088,tier-2,internal,cache in team-088
+team-088/cron,team-088,Deployment,team-088,team-088,tier-2,internal,cron in team-088
+team-089/api,team-089,Deployment,team-089,team-089,tier-2,internal,api in team-089
+team-089/worker,team-089,Deployment,team-089,team-089,tier-2,internal,worker in team-089
+team-089/web,team-089,Deployment,team-089,team-089,tier-2,internal,web in team-089
+team-089/cache,team-089,Deployment,team-089,team-089,tier-2,internal,cache in team-089
+team-089/cron,team-089,Deployment,team-089,team-089,tier-2,internal,cron in team-089
+team-090/api,team-090,Deployment,team-090,team-090,tier-2,internal,api in team-090
+team-090/worker,team-090,Deployment,team-090,team-090,tier-2,internal,worker in team-090
+team-090/web,team-090,Deployment,team-090,team-090,tier-2,internal,web in team-090
+team-090/cache,team-090,Deployment,team-090,team-090,tier-2,internal,cache in team-090
+team-090/cron,team-090,Deployment,team-090,team-090,tier-2,internal,cron in team-090
+team-091/api,team-091,Deployment,team-091,team-091,tier-2,internal,api in team-091
+team-091/worker,team-091,Deployment,team-091,team-091,tier-2,internal,worker in team-091
+team-091/web,team-091,Deployment,team-091,team-091,tier-2,internal,web in team-091
+team-091/cache,team-091,Deployment,team-091,team-091,tier-2,internal,cache in team-091
+team-091/cron,team-091,Deployment,team-091,team-091,tier-2,internal,cron in team-091
+team-092/api,team-092,Deployment,team-092,team-092,tier-2,internal,api in team-092
+team-092/worker,team-092,Deployment,team-092,team-092,tier-2,internal,worker in team-092
+team-092/web,team-092,Deployment,team-092,team-092,tier-2,internal,web in team-092
+team-092/cache,team-092,Deployment,team-092,team-092,tier-2,internal,cache in team-092
+team-092/cron,team-092,Deployment,team-092,team-092,tier-2,internal,cron in team-092
+team-093/api,team-093,Deployment,team-093,team-093,tier-2,internal,api in team-093
+team-093/worker,team-093,Deployment,team-093,team-093,tier-2,internal,worker in team-093
+team-093/web,team-093,Deployment,team-093,team-093,tier-2,internal,web in team-093
+team-093/cache,team-093,Deployment,team-093,team-093,tier-2,internal,cache in team-093
+team-093/cron,team-093,Deployment,team-093,team-093,tier-2,internal,cron in team-093
+team-094/api,team-094,Deployment,team-094,team-094,tier-2,internal,api in team-094
+team-094/worker,team-094,Deployment,team-094,team-094,tier-2,internal,worker in team-094
+team-094/web,team-094,Deployment,team-094,team-094,tier-2,internal,web in team-094
+team-094/cache,team-094,Deployment,team-094,team-094,tier-2,internal,cache in team-094
+team-094/cron,team-094,Deployment,team-094,team-094,tier-2,internal,cron in team-094
+team-095/api,team-095,Deployment,team-095,team-095,tier-2,internal,api in team-095
+team-095/worker,team-095,Deployment,team-095,team-095,tier-2,internal,worker in team-095
+team-095/web,team-095,Deployment,team-095,team-095,tier-2,internal,web in team-095
+team-095/cache,team-095,Deployment,team-095,team-095,tier-2,internal,cache in team-095
+team-095/cron,team-095,Deployment,team-095,team-095,tier-2,internal,cron in team-095
+team-096/api,team-096,Deployment,team-096,team-096,tier-2,internal,api in team-096
+team-096/worker,team-096,Deployment,team-096,team-096,tier-2,internal,worker in team-096
+team-096/web,team-096,Deployment,team-096,team-096,tier-2,internal,web in team-096
+team-096/cache,team-096,Deployment,team-096,team-096,tier-2,internal,cache in team-096
+team-096/cron,team-096,Deployment,team-096,team-096,tier-2,internal,cron in team-096
+team-097/api,team-097,Deployment,team-097,team-097,tier-2,internal,api in team-097
+team-097/worker,team-097,Deployment,team-097,team-097,tier-2,internal,worker in team-097
+team-097/web,team-097,Deployment,team-097,team-097,tier-2,internal,web in team-097
+team-097/cache,team-097,Deployment,team-097,team-097,tier-2,internal,cache in team-097
+team-097/cron,team-097,Deployment,team-097,team-097,tier-2,internal,cron in team-097
+team-098/api,team-098,Deployment,team-098,team-098,tier-2,internal,api in team-098
+team-098/worker,team-098,Deployment,team-098,team-098,tier-2,internal,worker in team-098
+team-098/web,team-098,Deployment,team-098,team-098,tier-2,internal,web in team-098
+team-098/cache,team-098,Deployment,team-098,team-098,tier-2,internal,cache in team-098
+team-098/cron,team-098,Deployment,team-098,team-098,tier-2,internal,cron in team-098
+team-099/api,team-099,Deployment,team-099,team-099,tier-2,internal,api in team-099
+team-099/worker,team-099,Deployment,team-099,team-099,tier-2,internal,worker in team-099
+team-099/web,team-099,Deployment,team-099,team-099,tier-2,internal,web in team-099
+team-099/cache,team-099,Deployment,team-099,team-099,tier-2,internal,cache in team-099
+team-099/cron,team-099,Deployment,team-099,team-099,tier-2,internal,cron in team-099
+team-100/api,team-100,Deployment,team-100,team-100,tier-2,internal,api in team-100
+team-100/worker,team-100,Deployment,team-100,team-100,tier-2,internal,worker in team-100
+team-100/web,team-100,Deployment,team-100,team-100,tier-2,internal,web in team-100
+team-100/cache,team-100,Deployment,team-100,team-100,tier-2,internal,cache in team-100
+team-100/cron,team-100,Deployment,team-100,team-100,tier-2,internal,cron in team-100
+team-101/api,team-101,Deployment,team-101,team-101,tier-2,internal,api in team-101
+team-101/worker,team-101,Deployment,team-101,team-101,tier-2,internal,worker in team-101
+team-101/web,team-101,Deployment,team-101,team-101,tier-2,internal,web in team-101
+team-101/cache,team-101,Deployment,team-101,team-101,tier-2,internal,cache in team-101
+team-101/cron,team-101,Deployment,team-101,team-101,tier-2,internal,cron in team-101
+team-102/api,team-102,Deployment,team-102,team-102,tier-2,internal,api in team-102
+team-102/worker,team-102,Deployment,team-102,team-102,tier-2,internal,worker in team-102
+team-102/web,team-102,Deployment,team-102,team-102,tier-2,internal,web in team-102
+team-102/cache,team-102,Deployment,team-102,team-102,tier-2,internal,cache in team-102
+team-102/cron,team-102,Deployment,team-102,team-102,tier-2,internal,cron in team-102
+team-103/api,team-103,Deployment,team-103,team-103,tier-2,internal,api in team-103
+team-103/worker,team-103,Deployment,team-103,team-103,tier-2,internal,worker in team-103
+team-103/web,team-103,Deployment,team-103,team-103,tier-2,internal,web in team-103
+team-103/cache,team-103,Deployment,team-103,team-103,tier-2,internal,cache in team-103
+team-103/cron,team-103,Deployment,team-103,team-103,tier-2,internal,cron in team-103
+team-104/api,team-104,Deployment,team-104,team-104,tier-2,internal,api in team-104
+team-104/worker,team-104,Deployment,team-104,team-104,tier-2,internal,worker in team-104
+team-104/web,team-104,Deployment,team-104,team-104,tier-2,internal,web in team-104
+team-104/cache,team-104,Deployment,team-104,team-104,tier-2,internal,cache in team-104
+team-104/cron,team-104,Deployment,team-104,team-104,tier-2,internal,cron in team-104
+team-105/api,team-105,Deployment,team-105,team-105,tier-2,internal,api in team-105
+team-105/worker,team-105,Deployment,team-105,team-105,tier-2,internal,worker in team-105
+team-105/web,team-105,Deployment,team-105,team-105,tier-2,internal,web in team-105
+team-105/cache,team-105,Deployment,team-105,team-105,tier-2,internal,cache in team-105
+team-105/cron,team-105,Deployment,team-105,team-105,tier-2,internal,cron in team-105
+team-106/api,team-106,Deployment,team-106,team-106,tier-2,internal,api in team-106
+team-106/worker,team-106,Deployment,team-106,team-106,tier-2,internal,worker in team-106
+team-106/web,team-106,Deployment,team-106,team-106,tier-2,internal,web in team-106
+team-106/cache,team-106,Deployment,team-106,team-106,tier-2,internal,cache in team-106
+team-106/cron,team-106,Deployment,team-106,team-106,tier-2,internal,cron in team-106
+team-107/api,team-107,Deployment,team-107,team-107,tier-2,internal,api in team-107
+team-107/worker,team-107,Deployment,team-107,team-107,tier-2,internal,worker in team-107
+team-107/web,team-107,Deployment,team-107,team-107,tier-2,internal,web in team-107
+team-107/cache,team-107,Deployment,team-107,team-107,tier-2,internal,cache in team-107
+team-107/cron,team-107,Deployment,team-107,team-107,tier-2,internal,cron in team-107
+team-108/api,team-108,Deployment,team-108,team-108,tier-2,internal,api in team-108
+team-108/worker,team-108,Deployment,team-108,team-108,tier-2,internal,worker in team-108
+team-108/web,team-108,Deployment,team-108,team-108,tier-2,internal,web in team-108
+team-108/cache,team-108,Deployment,team-108,team-108,tier-2,internal,cache in team-108
+team-108/cron,team-108,Deployment,team-108,team-108,tier-2,internal,cron in team-108
+team-109/api,team-109,Deployment,team-109,team-109,tier-2,internal,api in team-109
+team-109/worker,team-109,Deployment,team-109,team-109,tier-2,internal,worker in team-109
+team-109/web,team-109,Deployment,team-109,team-109,tier-2,internal,web in team-109
+team-109/cache,team-109,Deployment,team-109,team-109,tier-2,internal,cache in team-109
+team-109/cron,team-109,Deployment,team-109,team-109,tier-2,internal,cron in team-109
+team-110/api,team-110,Deployment,team-110,team-110,tier-2,internal,api in team-110
+team-110/worker,team-110,Deployment,team-110,team-110,tier-2,internal,worker in team-110
+team-110/web,team-110,Deployment,team-110,team-110,tier-2,internal,web in team-110
+team-110/cache,team-110,Deployment,team-110,team-110,tier-2,internal,cache in team-110
+team-110/cron,team-110,Deployment,team-110,team-110,tier-2,internal,cron in team-110
+team-111/api,team-111,Deployment,team-111,team-111,tier-2,internal,api in team-111
+team-111/worker,team-111,Deployment,team-111,team-111,tier-2,internal,worker in team-111
+team-111/web,team-111,Deployment,team-111,team-111,tier-2,internal,web in team-111
+team-111/cache,team-111,Deployment,team-111,team-111,tier-2,internal,cache in team-111
+team-111/cron,team-111,Deployment,team-111,team-111,tier-2,internal,cron in team-111
+team-112/api,team-112,Deployment,team-112,team-112,tier-2,internal,api in team-112
+team-112/worker,team-112,Deployment,team-112,team-112,tier-2,internal,worker in team-112
+team-112/web,team-112,Deployment,team-112,team-112,tier-2,internal,web in team-112
+team-112/cache,team-112,Deployment,team-112,team-112,tier-2,internal,cache in team-112
+team-112/cron,team-112,Deployment,team-112,team-112,tier-2,internal,cron in team-112
+team-113/api,team-113,Deployment,team-113,team-113,tier-2,internal,api in team-113
+team-113/worker,team-113,Deployment,team-113,team-113,tier-2,internal,worker in team-113
+team-113/web,team-113,Deployment,team-113,team-113,tier-2,internal,web in team-113
+team-113/cache,team-113,Deployment,team-113,team-113,tier-2,internal,cache in team-113
+team-113/cron,team-113,Deployment,team-113,team-113,tier-2,internal,cron in team-113
+team-114/api,team-114,Deployment,team-114,team-114,tier-2,internal,api in team-114
+team-114/worker,team-114,Deployment,team-114,team-114,tier-2,internal,worker in team-114
+team-114/web,team-114,Deployment,team-114,team-114,tier-2,internal,web in team-114
+team-114/cache,team-114,Deployment,team-114,team-114,tier-2,internal,cache in team-114
+team-114/cron,team-114,Deployment,team-114,team-114,tier-2,internal,cron in team-114
+team-115/api,team-115,Deployment,team-115,team-115,tier-2,internal,api in team-115
+team-115/worker,team-115,Deployment,team-115,team-115,tier-2,internal,worker in team-115
+team-115/web,team-115,Deployment,team-115,team-115,tier-2,internal,web in team-115
+team-115/cache,team-115,Deployment,team-115,team-115,tier-2,internal,cache in team-115
+team-115/cron,team-115,Deployment,team-115,team-115,tier-2,internal,cron in team-115
+team-116/api,team-116,Deployment,team-116,team-116,tier-2,internal,api in team-116
+team-116/worker,team-116,Deployment,team-116,team-116,tier-2,internal,worker in team-116
+team-116/web,team-116,Deployment,team-116,team-116,tier-2,internal,web in team-116
+team-116/cache,team-116,Deployment,team-116,team-116,tier-2,internal,cache in team-116
+team-116/cron,team-116,Deployment,team-116,team-116,tier-2,internal,cron in team-116
+team-117/api,team-117,Deployment,team-117,team-117,tier-2,internal,api in team-117
+team-117/worker,team-117,Deployment,team-117,team-117,tier-2,internal,worker in team-117
+team-117/web,team-117,Deployment,team-117,team-117,tier-2,internal,web in team-117
+team-117/cache,team-117,Deployment,team-117,team-117,tier-2,internal,cache in team-117
+team-117/cron,team-117,Deployment,team-117,team-117,tier-2,internal,cron in team-117
+team-118/api,team-118,Deployment,team-118,team-118,tier-2,internal,api in team-118
+team-118/worker,team-118,Deployment,team-118,team-118,tier-2,internal,worker in team-118
+team-118/web,team-118,Deployment,team-118,team-118,tier-2,internal,web in team-118
+team-118/cache,team-118,Deployment,team-118,team-118,tier-2,internal,cache in team-118
+team-118/cron,team-118,Deployment,team-118,team-118,tier-2,internal,cron in team-118
+team-119/api,team-119,Deployment,team-119,team-119,tier-2,internal,api in team-119
+team-119/worker,team-119,Deployment,team-119,team-119,tier-2,internal,worker in team-119
+team-119/web,team-119,Deployment,team-119,team-119,tier-2,internal,web in team-119
+team-119/cache,team-119,Deployment,team-119,team-119,tier-2,internal,cache in team-119
+team-119/cron,team-119,Deployment,team-119,team-119,tier-2,internal,cron in team-119
+team-120/api,team-120,Deployment,team-120,team-120,tier-2,internal,api in team-120
+team-120/worker,team-120,Deployment,team-120,team-120,tier-2,internal,worker in team-120
+team-120/web,team-120,Deployment,team-120,team-120,tier-2,internal,web in team-120
+team-120/cache,team-120,Deployment,team-120,team-120,tier-2,internal,cache in team-120
+team-120/cron,team-120,Deployment,team-120,team-120,tier-2,internal,cron in team-120
+team-121/api,team-121,Deployment,team-121,team-121,tier-2,internal,api in team-121
+team-121/worker,team-121,Deployment,team-121,team-121,tier-2,internal,worker in team-121
+team-121/web,team-121,Deployment,team-121,team-121,tier-2,internal,web in team-121
+team-121/cache,team-121,Deployment,team-121,team-121,tier-2,internal,cache in team-121
+team-121/cron,team-121,Deployment,team-121,team-121,tier-2,internal,cron in team-121

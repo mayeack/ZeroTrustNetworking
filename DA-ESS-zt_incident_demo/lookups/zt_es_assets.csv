@@ -1,0 +1,8 @@
+ip,mac,nt_host,dns,owner,priority,lat,long,city,country,bunit,category,pci_domain,is_expected,should_timesync,should_update,requires_av
+,,ai-train/checkpoint-store,checkpoint-store.ai-train.svc,ml-platform,critical,,,,,ml-platform,k8s_workload|ai_data_store|crown_jewel,untrust,true,false,false,false
+,,ai-train/dataset-cache,dataset-cache.ai-train.svc,ml-platform,high,,,,,ml-platform,k8s_workload|ai_data_store,untrust,true,false,false,false
+,,ai-infer/model-registry,model-registry.ai-infer.svc,ml-platform,high,,,,,ml-serving,k8s_workload|ai_data_store,untrust,true,false,false,false
+,,ai-infer/vector-index,vector-index.ai-infer.svc,ml-serving,high,,,,,ml-serving,k8s_workload|ai_data_store,untrust,true,false,false,false
+,,build-farm/ci-runner,ci-runner.build-farm.svc,platform-build,medium,,,,,platform-build,k8s_workload|ci_runner,untrust,true,false,false,false
+10.40.12.33,3c:fd:fe:9a:12:03,bf-node-03,bf-node-03.corp.internal,platform,medium,,,,,platform,kubernetes_node|bf-node,untrust,true,true,false,false
+10.40.17.52,3c:fd:fe:61:91:22,ai-train-stor-02,ai-train-stor-02.corp.internal,platform,high,,,,,platform,kubernetes_node|ai-train-stor,untrust,true,true,false,false

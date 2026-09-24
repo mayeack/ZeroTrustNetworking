@@ -1,0 +1,9 @@
+src_workload,dest_workload,dest_port,ticket,owner,status
+data-eng/spark-driver,ai-train/dataset-cache,8443,ZT-231,data-eng,open
+vm-legacy/erp-batch,ai-infer/model-registry,443,ZT-236,erp-ops,open
+ai-infer/eval-harness,ai-train/checkpoint-store,9000,ZT-240,ml-eval,open
+platform/backup-agent,ai-train/checkpoint-store,9000,ZT-244,platform,open
+ml-notebooks/jupyter,ai-train/dataset-cache,8443,ZT-247,ml-research,open
+platform/argocd-repo,ai-infer/model-registry,443,ZT-252,platform,open
+observability/log-shipper,ai-train/dataset-cache,8443,ZT-255,observability,open
+data-eng/airflow-worker,ai-infer/model-registry,443,ZT-258,data-eng,open

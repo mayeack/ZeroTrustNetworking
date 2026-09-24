@@ -1,0 +1,9 @@
+dest_workload,path_prefix,dataset,training_job_id,job_name,scheduler,gpus,owner
+ai-train/checkpoint-store,/ckpt/llm-7712/,llm-7712 checkpoints,7712,llm-7712,Slurm,512,ml-research
+ai-train/checkpoint-store,/ckpt/llm-7690/,llm-7690 checkpoints,7690,llm-7690,Slurm,256,ml-research
+ai-train/checkpoint-store,/ckpt/code-7701/,code-7701 checkpoints,7701,code-7701,Slurm,128,ml-research
+ai-train/checkpoint-store,/ckpt/vision-7688/,vision-7688 checkpoints,7688,vision-7688,Kubernetes,64,ml-research
+ai-train/dataset-cache,/datasets/pretrain-v9/,pretrain-v9 shards,7712,llm-7712,Slurm,512,ml-platform
+ai-train/dataset-cache,/datasets/sft-mix-v3/,sft-mix-v3,7705,sft-7705,Slurm,64,ml-platform
+ai-infer/model-registry,/models/llm-7b/,llm-7b released weights,0,,,0,ml-platform
+ai-infer/vector-index,/collections/docs-prod/,docs-prod embeddings,0,,,0,ml-serving

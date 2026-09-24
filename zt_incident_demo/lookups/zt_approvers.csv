@@ -1,0 +1,4 @@
+enforcement_point,approver_roles,approver_labels,approvals_required
+kernel,zt_soc_tier2,SOC tier 2,1
+dpu,"zt_soc_tier2,zt_netops","SOC tier 2, NetOps",2
+switch,"zt_soc_tier2,zt_netops","SOC tier 2, NetOps",2
