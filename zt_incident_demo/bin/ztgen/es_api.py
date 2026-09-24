@@ -13,7 +13,7 @@ DISPOSITION_TP = "True Positive - Suspicious Activity"
 
 def newest_zt_finding(splunkd, rule, earliest=0):
     """Newest finding group of the ZT finding-based detection since `earliest` (epoch), from index=notable."""
-    spl = ('search index=notable source="%s" | eval finding_time=_time | head 1 | table event_id finding_time rule_title normalized_risk_object risk_object risk_score source_count '
+    spl = ('search `notable` | search source="%s" | eval finding_time=_time, rule_title=coalesce(orig_rule_title, rule_title) | sort - _time | head 1 | table event_id finding_time rule_title normalized_risk_object risk_object risk_score source_count '
            'orig_source threat_object annotations.mitre_attack.mitre_technique_id status_label disposition_label investigation_ids owner' % rule)
     rows = splunkd.search(spl, earliest=str(int(earliest)) if earliest else "-24h", latest="now", timeout=120)
     return rows[0] if rows else None

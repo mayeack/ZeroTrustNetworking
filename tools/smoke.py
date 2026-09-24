@@ -35,7 +35,7 @@ def wait_for(fn, timeout, every=10, label=""):
 
 
 def rollup(s):
-    rows = s.search('search index=zt_summary source="ZT Posture - Rollup" | head 1', earliest="-24h", latest="now", timeout=120)
+    rows = s.search('search index=zt_summary source="ZT Posture - Rollup" | head 1 | table _time identities coverage_pct enforced paths unprotected audit_flows_24h enforcement_24h enforcement_kernel enforcement_dpu enforcement_switch', earliest="-24h", latest="now", timeout=120)
     return rows[0] if rows else {}
 
 
@@ -50,7 +50,10 @@ def main(argv):
     st = s.kv_get("zt_demo_state", "global") or {}
     cp = float(st.get("stream_checkpoint") or 0) - 60  # a minute back so the newest batch is indexed
     check("state: backfill done", bool(st.get("backfill_done")), "checkpoint age %ds" % (time.time() - cp - 60) if cp > 0 else "no checkpoint")
-    rows = s.search("search index=zero_trust earliest=%s latest=%s | stats count by sourcetype" % (cp - 86400, cp), earliest=cp - 86400, latest=cp, timeout=600)
+    # exclude the canonical incident's own events so counts stay exact after practice runs
+    excl = ('NOT (src_pod="ci-runner-7d9f8-xk2lq" dest_pod="checkpoint-store-1") NOT (src_pod="ci-runner-7d9f8-xk2lq" cwd="/builds/ml-infra/train-utils") NOT build_id=88213 '
+            'NOT k8s_name="zt-quarantine-ci-runner-88213" NOT (k8s_resource=pods k8s_name="ci-runner-7d9f8-xk2lq") NOT policy_name="zt-quarantine-ci-runner-88213" NOT state=released')
+    rows = s.search("search index=zero_trust earliest=%s latest=%s %s | stats count by sourcetype" % (cp - 86400, cp, excl), earliest=cp - 86400, latest=cp, timeout=600)
     got = {r["sourcetype"]: int(r["count"]) for r in rows}
     for stype, n in S.daily_expectations().items():
         g = got.get(stype, 0)
@@ -58,7 +61,7 @@ def main(argv):
             check("24h count %s" % stype, g > 0, g)
         else:
             check("24h count %s" % stype, g == n, "%d (expected %d)" % (g, n))
-    ci = s.search('search index=zero_trust sourcetype=ci:job:event build_status=running earliest=%s latest=%s | stats dc(build_id) as jobs' % (cp - 86400, cp), earliest=cp - 86400, latest=cp, timeout=300)
+    ci = s.search('search index=zero_trust sourcetype=ci:job:event build_status=running NOT build_id=88213 earliest=%s latest=%s | stats dc(build_id) as jobs' % (cp - 86400, cp), earliest=cp - 86400, latest=cp, timeout=300)
     check("24h CI jobs = 1400", ci and int(ci[0]["jobs"]) == 1400, ci[0]["jobs"] if ci else "none")
     for rule in (canon.RULE_FLOW, canon.RULE_PROGRAM):
         r = s.search('| savedsearch "%s"' % rule, earliest="-60m", latest="now", timeout=300)
@@ -94,7 +97,7 @@ def main(argv):
     rk, dtr = wait_for(risk, 240, 10)
     check("two risk events (50+40) within 3 min", bool(rk) and int(float(rk[0]["total"])) == 90 and int(rk[0]["count"]) == 2, "%.0fs %s" % (dtr, rk[0] if rk else None))
     def finding():
-        r = s.search('search index=notable source="%s" earliest=%d | head 1 | table event_id rule_title risk_score threat_object annotations.mitre_attack.mitre_technique_id source_count' % (canon.RULE_FBD, int(t0)), earliest=int(t0), latest="now")
+        r = s.search('search `notable` | search source="%s" | eval rule_title=coalesce(orig_rule_title, rule_title) | sort - _time | head 1 | table event_id rule_title risk_score threat_object annotations.mitre_attack.mitre_technique_id source_count' % canon.RULE_FBD, earliest=int(t0), latest="now")
         return r or None
     fg, dtf = wait_for(finding, 240, 10)
     fg0 = fg[0] if fg else {}
@@ -106,12 +109,15 @@ def main(argv):
     mitre = fg0.get("annotations.mitre_attack.mitre_technique_id")
     mitre = set(mitre if isinstance(mitre, list) else [mitre])
     check("MITRE T1530 + T1059.004", {"T1530", "T1059.004"} <= mitre, mitre)
-    cnt = s.search('search index=notable source="%s" earliest=%d | stats count' % (canon.RULE_FBD, int(t0)), earliest=int(t0), latest="now")
+    cnt = s.search('search `notable` | search source="%s" | stats count' % canon.RULE_FBD, earliest=int(t0), latest="now")
     check("exactly one ZT finding group since fire", cnt and int(cnt[0]["count"]) == 1, cnt)
     # 5. agent brief (or an injected one when no agent is available, e.g. on the local test bed)
-    if inject and fg:
-        inject_brief(s, fg0)
-        check("brief injected (no agent on this instance)", True, fg0.get("event_id", "")[:8])
+    if inject and fg and fg0.get("event_id"):
+        try:
+            inject_brief(s, fg0)
+            check("brief injected (no agent on this instance)", True, fg0.get("event_id", "")[:8])
+        except Exception as e:  # noqa: BLE001
+            check("brief injected (no agent on this instance)", False, str(e)[:100])
     if not skip_agent and not inject:
         def brief():
             b = s.kv_list("zt_agent_briefs")
