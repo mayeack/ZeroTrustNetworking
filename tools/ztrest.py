@@ -149,7 +149,9 @@ class Http:
 class Splunk(Http):
     """Splunk management REST. Defaults to output_mode=json on GET/POST."""
 
-    def __init__(self, base=None, user=None, password=None, token=None, verify=True, app="zt_incident_demo"):
+    def __init__(self, base=None, user=None, password=None, token=None, verify=None, app="zt_incident_demo"):
+        if verify is None:
+            verify = str(env("SPLUNK_VERIFY", "1")).lower() not in ("0", "false", "no")
         super().__init__(base or env("SPLUNK_URL", required=True), user or env("SPLUNK_USER"), password or env("SPLUNK_PASS"), token, "Bearer", verify)
         self.app = app
 
@@ -270,7 +272,9 @@ class Soar(Http):
 
 
 class Hec:
-    def __init__(self, base=None, token=None, verify=True):
+    def __init__(self, base=None, token=None, verify=None):
+        if verify is None:
+            verify = str(env("SPLUNK_VERIFY", "1")).lower() not in ("0", "false", "no")
         self.base = (base or env("SPLUNK_HEC_URL", required=True)).rstrip("/")
         self.token = token or env("SPLUNK_HEC_TOKEN", required=True)
         self.http = Http(self.base, token=self.token, token_scheme="Splunk", verify=verify, timeout=60)

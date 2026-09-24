@@ -17,6 +17,34 @@ class RestError(Exception):
         self.status, self.body, self.url = status, body, url
 
 
+def local_splunkd_uri():
+    """The management URI of the splunkd this code runs under: SPLUNKD_URI, else Splunk's own settings, else 8089."""
+    import os
+    uri = os.environ.get("SPLUNKD_URI")
+    if uri:
+        return uri.rstrip("/")
+    try:
+        import splunk  # available inside Splunk's Python
+        return "%s://127.0.0.1:%s" % (splunk.getDefault("protocol"), splunk.getDefault("port"))
+    except Exception:  # noqa: BLE001
+        pass
+    home = os.environ.get("SPLUNK_HOME")
+    if home:
+        import configparser
+        for cfg in ("etc/system/local/web.conf", "etc/system/default/web.conf"):
+            path = os.path.join(home, cfg)
+            if os.path.exists(path):
+                cp = configparser.RawConfigParser(strict=False)
+                try:
+                    cp.read(path)
+                    hp = cp.get("settings", "mgmtHostPort", fallback=None)
+                    if hp:
+                        return "https://" + hp.replace("0.0.0.0", "127.0.0.1")
+                except Exception:  # noqa: BLE001
+                    pass
+    return "https://127.0.0.1:8089"
+
+
 class Splunkd:
     """splunkd REST with a session key or a bearer token. app = namespace for KV, conf and passwords."""
 

@@ -24,7 +24,7 @@ def main():
         print("HEC token %s present" % NAME)
     token = ent["content"]["token"]
     ztrest.set_env_value("SPLUNK_HEC_TOKEN", token)
-    hec = ztrest.Http(ztrest.env("SPLUNK_HEC_URL"), token=token, token_scheme="Splunk")
+    hec = ztrest.Http(ztrest.env("SPLUNK_HEC_URL"), token=token, token_scheme="Splunk", verify=str(ztrest.env("SPLUNK_VERIFY","1")).lower() not in ("0","false","no"))
     st, body = hec.request("POST", "services/collector/event", data="{}", headers={"Content-Type": "application/json"}, raw=True, retries=0)
     text = body.decode()
     accepted = st == 400 and "Event field" in text  # token accepted, empty event rejected: nothing indexed

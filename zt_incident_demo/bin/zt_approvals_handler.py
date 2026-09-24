@@ -13,7 +13,7 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
 from splunk.persistconn.application import PersistentServerConnectionApplication  # noqa: E402
 from ztgen import response as R, state as ST  # noqa: E402
-from ztgen.restclient import Splunkd, RestError  # noqa: E402
+from ztgen.restclient import Splunkd, RestError, local_splunkd_uri  # noqa: E402
 from ztgen.streamer import make_hec, setup_logging  # noqa: E402
 
 
@@ -34,7 +34,7 @@ class ApprovalsHandler(PersistentServerConnectionApplication):
         session = req.get("session") or {}
         user = session.get("user") or ""
         system_key = req.get("system_authtoken") or session.get("authtoken")
-        uri = "https://127.0.0.1:8089"
+        uri = ((req.get("server") or {}).get("rest_uri") or local_splunkd_uri()).rstrip("/")
         sd = Splunkd(uri, session_key=system_key)
         try:
             if method == "GET":

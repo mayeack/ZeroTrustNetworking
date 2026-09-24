@@ -8,7 +8,7 @@ sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), "lib
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
 from ztgen import state as ST  # noqa: E402
-from ztgen.restclient import Splunkd  # noqa: E402
+from ztgen.restclient import Splunkd, local_splunkd_uri  # noqa: E402
 from ztgen.streamer import Streamer, make_hec, setup_logging  # noqa: E402
 
 
@@ -18,7 +18,7 @@ def main():
     if not session_key:
         log.error("no session key on stdin (passAuth missing?)")
         return 1
-    uri = os.environ.get("SPLUNKD_URI") or "https://127.0.0.1:8089"
+    uri = local_splunkd_uri()
     sd = Splunkd(uri, session_key=session_key)
     try:
         cfg = ST.config(sd)
