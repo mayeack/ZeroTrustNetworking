@@ -319,7 +319,7 @@
    "type": "ds.search",
    "name": "ds_ci_runner_verdicts",
    "options": {
-    "query": "index=zero_trust sourcetype=cilium:hubble:flow src_workload=\"build-farm/ci-runner\" dest_workload=\"ai-train/checkpoint-store\" dest_port=9000 (traffic_direction=INGRESS OR verdict=DROPPED) earliest=-30m | eval series=case(verdict=\"AUDIT\",\"AUDIT (would deny)\", verdict=\"DROPPED\",\"DROPPED (quarantine policy)\", true(),\"FORWARDED\") | timechart span=1m count by series",
+    "query": "index=zero_trust sourcetype=cilium:hubble:flow src_workload=\"build-farm/ci-runner\" dest_workload=\"ai-train/checkpoint-store\" dest_port=9000 (traffic_direction=INGRESS OR verdict=DROPPED) [| makeresults | eval r=0 | append [| inputlookup zt_demo_state_lookup | where _key=\"global\" | fields last_reset_epoch | rename last_reset_epoch as r] | stats max(r) as r | eval earliest=max(relative_time(now(), \"-30m\"), r) | return earliest] | eval series=case(verdict=\"AUDIT\",\"AUDIT (would deny)\", verdict=\"DROPPED\",\"DROPPED (quarantine policy)\", true(),\"FORWARDED\") | timechart span=1m count by series",
     "queryParameters": {
      "earliest": "-30m",
      "latest": "now"
