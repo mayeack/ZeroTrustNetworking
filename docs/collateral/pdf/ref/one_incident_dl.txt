@@ -1,0 +1,205 @@
+FILL   #0a0e1a a=1 bbox=(0.00,0.00)-(1056.00,816.00) w=1056.00 h=816.00 subpaths=1 curves=0 pts=0.0,0.0 1056.0,0.0 1056.0,816.0 0.0,816.0
+FILL   #0a0e1a a=1 bbox=(0.00,0.00)-(1056.00,816.00) w=1056.00 h=816.00 subpaths=1 curves=0 pts=0.0,0.0 1056.0,0.0 1056.0,816.0 0.0,816.0
+FILL   #223050 a=1 bbox=(41.00,79.00)-(1015.00,80.00) w=974.00 h=1.00 subpaths=1 curves=0 pts=41.0,79.0 1015.0,79.0 1015.0,80.0 41.0,80.0
+TEXT   #f4f6fa a=1 Inter-ExtraBold 22px @(41.27,54.00) lastglyph_x=99.9 |splunk|
+TEXT   #ed0080 a=1 Inter-ExtraBold 22px @(112.50,54.00) lastglyph_x=112.5 |>|
+TEXT   #8b95aa a=1 IBMPlexMono 7px @(41.27,69.00) lastglyph_x=131.4 |A CISCO COMPANY|
+FILL   #ed0080 a=1 bbox=(853.00,45.00)-(855.00,71.00) w=2.00 h=26.00 subpaths=1 curves=0 pts=853.0,45.0 855.0,45.0 855.0,71.0 853.0,71.0
+TEXT   #8b95aa a=1 IBMPlexMono 8px @(866.89,54.00) lastglyph_x=1007.7 |ZERO TRUST NETWORKING|
+TEXT   #8b95aa a=1 IBMPlexMono 8px @(866.89,67.00) lastglyph_x=958.4 |CISCO + SPLUNK|
+TEXT   #ed0080 a=1 IBMPlexMono-SmBld 8px @(41.27,98.00) lastglyph_x=199.5 |ONE INCIDENT, END TO END|
+TEXT   #8b95aa a=1 IBMPlexMono-SmBld 8px @(214.39,98.00) lastglyph_x=214.4 |·|
+TEXT   #ed0080 a=1 IBMPlexMono-SmBld 8px @(229.28,98.00) lastglyph_x=497.6 |BUSINESS VALUE AND SOLUTION ARCHITECTURE|
+TEXT   #f4f6fa a=1 Inter-ExtraBold 23px @(41.27,127.00) lastglyph_x=791.9 |From one risky connection to an enforced policy, and proof, in minutes|
+FILL   #0d1424 a=1 bbox=(42.00,140.00)-(1015.00,196.00) w=973.00 h=56.00 subpaths=1 curves=16 r=0.00/0.00
+FILL   #ed0080 a=1 bbox=(41.00,140.00)-(43.00,196.00) w=2.00 h=56.00 subpaths=1 curves=0 pts=41.0,140.0 43.0,140.0 43.0,196.0 41.0,196.0
+TEXT   #ed0080 a=1 IBMPlexMono-SmBld 7.6px @(55.27,154.00) lastglyph_x=279.5 |THE RISKY CONNECTION, IN THIS EXAMPLE|
+TEXT   #f4f6fa a=1 Inter-Regular 10.2px @(55.27,170.00) lastglyph_x=687.2 |A contractor's merge request adds a post-build script to a machine-learning repository. When the CI job runs, the build runner uses |
+TEXT   #f4f6fa a=1 IBMPlexMono 9.6px @(690.08,170.00) lastglyph_x=707.3 |curl|
+TEXT   #f4f6fa a=1 Inter-Regular 10.2px @(713.11,170.00) lastglyph_x=984.5 | to copy model checkpoint files, the weights of a 512GPU|
+TEXT   #f4f6fa a=1 Inter-Regular 10.2px @(55.27,185.00) lastglyph_x=994.8 |training run, from the protected training store. Nothing was hacked: the runner simply had network reach it shouldn't, and the store's new allowlist was still in audit mode, so the copy went through.|
+TEXT   #f4f6fa a=1 Inter-Bold 10.4px @(41.27,213.00) lastglyph_x=174.0 |Cisco Isovalent observes it|
+TEXT   #c7cfde a=1 Inter-Regular 10.4px @(177.83,213.00) lastglyph_x=806.0 | Hubble records the connection with both workload identities and its policy verdict; Tetragon names the program that opened it. |
+TEXT   #f4f6fa a=1 Inter-Bold 10.4px @(808.95,213.00) lastglyph_x=903.3 |Splunk correlates it|
+TEXT   #c7cfde a=1 Inter-Regular 10.4px @(907.16,213.00) lastglyph_x=997.5 | with the workload,|
+TEXT   #c7cfde a=1 Inter-Regular 10.4px @(41.27,228.00) lastglyph_x=434.0 |the CI job and the server, raises one finding, and an agent gathers the evidence. |
+TEXT   #f4f6fa a=1 Inter-Bold 10.4px @(436.98,228.00) lastglyph_x=567.1 |A SOAR playbook enforces|
+TEXT   #c7cfde a=1 Inter-Regular 10.4px @(572.95,228.00) lastglyph_x=955.0 | at the nearest point once a person approves; the posture dashboard proves it.|
+TEXT   #ed0080 a=1 IBMPlexMono-SmBld 8px @(51.27,644.00) lastglyph_x=143.1 |WHAT IT'S WORTH|
+FILL   #0d1424 a=1 bbox=(205.50,609.50)-(358.50,671.50) w=153.00 h=62.00 subpaths=1 curves=32 r=5.50/5.50
+STROKE #223050 a=1 bbox=(205.50,609.50)-(358.50,671.50) w=153.00 h=62.00 subpaths=1 curves=32 lw=1 r=5.50/5.50
+TEXT   #f4f6fa a=1 Inter-Bold 9.6px @(214.27,626.00) lastglyph_x=264.2 |Attributable|
+TEXT   #c7cfde a=1 Inter-Regular 8.3px @(214.27,639.00) lastglyph_x=314.4 |Every connection carries a|
+TEXT   #c7cfde a=1 Inter-Regular 8.3px @(214.27,650.00) lastglyph_x=336.7 |workload identity, not just an IP.|
+FILL   #0d1424 a=1 bbox=(367.50,609.50)-(520.50,671.50) w=153.00 h=62.00 subpaths=1 curves=32 r=5.50/5.50
+STROKE #223050 a=1 bbox=(367.50,609.50)-(520.50,671.50) w=153.00 h=62.00 subpaths=1 curves=32 lw=1 r=5.50/5.50
+TEXT   #f4f6fa a=1 Inter-Bold 9.6px @(376.27,626.00) lastglyph_x=457.6 |Seen at the source|
+TEXT   #c7cfde a=1 Inter-Regular 8.3px @(376.27,639.00) lastglyph_x=482.4 |Hubble records the flow and|
+TEXT   #c7cfde a=1 Inter-Regular 8.3px @(376.27,650.00) lastglyph_x=497.8 |Tetragon the program behind it.|
+TEXT   #c7cfde a=1 Inter-Regular 8.3px @(376.27,661.00) lastglyph_x=423.1 |No sidecars.|
+FILL   #0d1424 a=1 bbox=(529.50,609.50)-(682.50,671.50) w=153.00 h=62.00 subpaths=1 curves=32 r=5.50/5.50
+STROKE #223050 a=1 bbox=(529.50,609.50)-(682.50,671.50) w=153.00 h=62.00 subpaths=1 curves=32 lw=1 r=5.50/5.50
+TEXT   #f4f6fa a=1 Inter-Bold 9.6px @(538.27,626.00) lastglyph_x=666.0 |One finding, evidence joined|
+TEXT   #c7cfde a=1 Inter-Regular 8.3px @(538.27,639.00) lastglyph_x=663.3 |Workload, job and server already|
+TEXT   #c7cfde a=1 Inter-Regular 8.3px @(538.27,650.00) lastglyph_x=656.3 |correlated; the agent writes the|
+TEXT   #c7cfde a=1 Inter-Regular 8.3px @(538.27,661.00) lastglyph_x=556.0 |brief.|
+FILL   #0d1424 a=1 bbox=(691.50,609.50)-(844.50,671.50) w=153.00 h=62.00 subpaths=1 curves=32 r=5.50/5.50
+STROKE #223050 a=1 bbox=(691.50,609.50)-(844.50,671.50) w=153.00 h=62.00 subpaths=1 curves=32 lw=1 r=5.50/5.50
+TEXT   #f4f6fa a=1 Inter-Bold 9.6px @(700.27,626.00) lastglyph_x=794.2 |Contained in minutes|
+TEXT   #c7cfde a=1 Inter-Regular 8.3px @(700.27,639.00) lastglyph_x=828.7 |Nearest enforcement point, with a|
+TEXT   #c7cfde a=1 Inter-Regular 8.3px @(700.27,650.00) lastglyph_x=804.6 |named approver on record.|
+FILL   #0d1424 a=1 bbox=(853.50,609.50)-(1006.50,671.50) w=153.00 h=62.00 subpaths=1 curves=32 r=5.50/5.50
+STROKE #223050 a=1 bbox=(853.50,609.50)-(1006.50,671.50) w=153.00 h=62.00 subpaths=1 curves=32 lw=1 r=5.50/5.50
+TEXT   #f4f6fa a=1 Inter-Bold 9.6px @(862.27,626.00) lastglyph_x=959.1 |Proof, not assumption|
+TEXT   #c7cfde a=1 Inter-Regular 8.3px @(862.27,639.00) lastglyph_x=953.3 |Coverage up, one fewer|
+TEXT   #c7cfde a=1 Inter-Regular 8.3px @(862.27,650.00) lastglyph_x=972.9 |unprotected path, a complete|
+TEXT   #c7cfde a=1 Inter-Regular 8.3px @(862.27,661.00) lastglyph_x=898.5 |audit trail.|
+FILL   #0d1424 a=1 bbox=(41.50,682.50)-(522.50,769.50) w=481.00 h=87.00 subpaths=1 curves=32 r=6.50/6.50
+STROKE #223050 a=1 bbox=(41.50,682.50)-(522.50,769.50) w=481.00 h=87.00 subpaths=1 curves=32 lw=1 r=6.50/6.50
+TEXT   #02c8ff a=1 IBMPlexMono-SmBld 8px @(54.27,700.00) lastglyph_x=146.1 |GETTING DATA IN|
+TEXT   #f4f6fa a=1 Inter-Bold 8.8px @(54.27,717.00) lastglyph_x=121.2 |Hubble flow logs|
+TEXT   #c7cfde a=1 Inter-Regular 8.8px @(126.11,717.00) lastglyph_x=482.2 | over HTTP Event Collector: every connection with both identities and its policy verdict|
+TEXT   #f4f6fa a=1 Inter-Bold 8.8px @(54.27,731.00) lastglyph_x=119.1 |Tetragon events|
+TEXT   #c7cfde a=1 Inter-Regular 8.8px @(124.00,731.00) lastglyph_x=480.0 | through the Cisco Security Cloud App: the program, its arguments and parent, per pod|
+TEXT   #f4f6fa a=1 Inter-Bold 8.8px @(54.27,744.00) lastglyph_x=97.5 |Nexus data|
+TEXT   #c7cfde a=1 Inter-Regular 8.8px @(102.66,744.00) lastglyph_x=307.1 | through Cisco's data center networking add-on · |
+TEXT   #f4f6fa a=1 Inter-Bold 8.8px @(309.61,744.00) lastglyph_x=357.4 |Live Protect|
+TEXT   #c7cfde a=1 Inter-Regular 8.8px @(360.66,744.00) lastglyph_x=487.4 | exports from Nexus Dashboard|
+FILL   #0d1424 a=1 bbox=(533.50,682.50)-(1014.50,769.50) w=481.00 h=87.00 subpaths=1 curves=32 r=6.50/6.50
+STROKE #223050 a=1 bbox=(533.50,682.50)-(1014.50,769.50) w=481.00 h=87.00 subpaths=1 curves=32 lw=1 r=6.50/6.50
+TEXT   #ed0080 a=1 IBMPlexMono-SmBld 8px @(546.00,700.00) lastglyph_x=736.2 |DETECT · INVESTIGATE · ENFORCE|
+TEXT   #f4f6fa a=1 Inter-Bold 8.8px @(546.00,717.00) lastglyph_x=623.8 |Enterprise Security|
+TEXT   #c7cfde a=1 Inter-Regular 8.8px @(629.08,717.00) lastglyph_x=900.6 | risk-based alerting turns flow and process signals into one finding|
+TEXT   #f4f6fa a=1 Inter-Bold 8.8px @(546.00,731.00) lastglyph_x=616.4 |Agent Launchpad|
+TEXT   #c7cfde a=1 Inter-Regular 8.8px @(621.92,731.00) lastglyph_x=954.6 | agent uses approved tools, keeps data in Splunk, leaves the decision to a person|
+TEXT   #f4f6fa a=1 Inter-Bold 8.8px @(546.00,744.00) lastglyph_x=564.7 |SOAR|
+TEXT   #c7cfde a=1 Inter-Regular 8.8px @(570.52,744.00) lastglyph_x=970.8 | enforces at the nearest point: Cilium policy on the server, Hypershield rule on the DPU or switch,|
+TEXT   #c7cfde a=1 Inter-Regular 8.8px @(546.00,757.00) lastglyph_x=832.0 |Nexus port or route change. Network changes need NetOps approval|
+FILL   #223050 a=1 bbox=(41.00,775.00)-(1015.00,776.00) w=974.00 h=1.00 subpaths=1 curves=0 pts=41.0,775.0 1015.0,775.0 1015.0,776.0 41.0,776.0
+TEXT   #8b95aa a=1 IBMPlexMono 7.2px @(41.27,789.00) lastglyph_x=174.2 |SPLUNK, A CISCO COMPANY|
+TEXT   #8b95aa a=1 IBMPlexMono 7.2px @(188.20,789.00) lastglyph_x=188.2 |·|
+TEXT   #8b95aa a=1 IBMPlexMono 7.2px @(202.25,789.00) lastglyph_x=323.1 |ZERO TRUST NETWORKING|
+TEXT   #8b95aa a=1 IBMPlexMono 7.2px @(869.75,789.00) lastglyph_x=1008.7 |ONE INCIDENT, END TO END|
+FILL   #ffffff a=0.0275 bbox=(41.00,269.00)-(1011.00,324.00) w=970.00 h=55.00 subpaths=1 curves=0 pts=41.0,269.0 1011.0,269.0 1011.0,324.0 41.0,324.0
+FILL   #223050 a=1 bbox=(41.00,269.00)-(1011.00,270.00) w=970.00 h=1.00 subpaths=1 curves=0 pts=41.0,269.0 1011.0,269.0 1011.0,270.0 41.0,270.0
+TEXT   #c7cfde a=1 Inter-Bold 10.5px @(51.27,294.00) lastglyph_x=100.7 |Workloads|
+TEXT   #8b95aa a=1 IBMPlexMono 8px @(51.27,307.00) lastglyph_x=160.4 |Build farm, AI training|
+FILL   #223050 a=1 bbox=(41.00,324.00)-(1011.00,325.00) w=970.00 h=1.00 subpaths=1 curves=0 pts=41.0,324.0 1011.0,324.0 1011.0,325.0 41.0,325.0
+TEXT   #02c8ff a=1 Inter-Bold 10.5px @(51.27,349.00) lastglyph_x=125.9 |Cisco Isovalent|
+TEXT   #8b95aa a=1 IBMPlexMono 8px @(51.27,362.00) lastglyph_x=175.3 |Cilium · Hubble · Tetragon|
+FILL   #ffffff a=0.0275 bbox=(41.00,379.00)-(1011.00,434.00) w=970.00 h=55.00 subpaths=1 curves=0 pts=41.0,379.0 1011.0,379.0 1011.0,434.0 41.0,434.0
+FILL   #223050 a=1 bbox=(41.00,379.00)-(1011.00,380.00) w=970.00 h=1.00 subpaths=1 curves=0 pts=41.0,379.0 1011.0,379.0 1011.0,380.0 41.0,380.0
+TEXT   #ed0080 a=1 Inter-Bold 10.5px @(51.27,404.00) lastglyph_x=123.1 |Splunk platform|
+TEXT   #8b95aa a=1 IBMPlexMono 8px @(51.27,417.00) lastglyph_x=185.2 |Ingest · correlate · posture|
+FILL   #223050 a=1 bbox=(41.00,434.00)-(1011.00,435.00) w=970.00 h=1.00 subpaths=1 curves=0 pts=41.0,434.0 1011.0,434.0 1011.0,435.0 41.0,435.0
+TEXT   #ed0080 a=1 Inter-Bold 10.5px @(51.27,459.00) lastglyph_x=144.1 |Enterprise Security|
+TEXT   #8b95aa a=1 IBMPlexMono 8px @(51.27,472.00) lastglyph_x=140.5 |Risk-based alerting|
+FILL   #ffffff a=0.0275 bbox=(41.00,489.00)-(1011.00,544.00) w=970.00 h=55.00 subpaths=1 curves=0 pts=41.0,489.0 1011.0,489.0 1011.0,544.0 41.0,544.0
+FILL   #223050 a=1 bbox=(41.00,489.00)-(1011.00,490.00) w=970.00 h=1.00 subpaths=1 curves=0 pts=41.0,489.0 1011.0,489.0 1011.0,490.0 41.0,490.0
+TEXT   #ed0080 a=1 Inter-Bold 10.5px @(51.27,514.00) lastglyph_x=135.3 |Agent Launchpad|
+TEXT   #8b95aa a=1 IBMPlexMono 8px @(51.27,527.00) lastglyph_x=110.8 |No-code agent|
+FILL   #223050 a=1 bbox=(41.00,544.00)-(1011.00,545.00) w=970.00 h=1.00 subpaths=1 curves=0 pts=41.0,544.0 1011.0,544.0 1011.0,545.0 41.0,545.0
+TEXT   #ed0080 a=1 Inter-Bold 10.5px @(51.27,569.00) lastglyph_x=133.5 |SOAR and people|
+TEXT   #8b95aa a=1 IBMPlexMono 8px @(51.27,582.00) lastglyph_x=140.5 |Playbook · approval|
+FILL   #ed0080 a=1 bbox=(244.00,245.00)-(263.00,264.00) w=19.00 h=19.00 subpaths=1 curves=32
+TEXT   #ffffff a=1 Inter-ExtraBold 10px @(251.28,259.00) lastglyph_x=251.3 |1|
+TEXT   #f4f6fa a=1 Inter-ExtraBold 12px @(270.00,259.00) lastglyph_x=315.9 |Connect|
+FILL   #ed0080 a=1 bbox=(406.00,245.00)-(425.00,264.00) w=19.00 h=19.00 subpaths=1 curves=32
+TEXT   #ffffff a=1 Inter-ExtraBold 10px @(412.25,259.00) lastglyph_x=412.2 |2|
+TEXT   #f4f6fa a=1 Inter-ExtraBold 12px @(431.95,259.00) lastglyph_x=475.4 |Observe|
+FILL   #ed0080 a=1 bbox=(573.00,245.00)-(592.00,264.00) w=19.00 h=19.00 subpaths=1 curves=32
+TEXT   #ffffff a=1 Inter-ExtraBold 10px @(578.83,259.00) lastglyph_x=578.8 |3|
+TEXT   #f4f6fa a=1 Inter-ExtraBold 12px @(598.62,259.00) lastglyph_x=632.7 |Decide|
+FILL   #ed0080 a=1 bbox=(732.00,245.00)-(751.00,264.00) w=19.00 h=19.00 subpaths=1 curves=32
+TEXT   #ffffff a=1 Inter-ExtraBold 10px @(738.25,259.00) lastglyph_x=738.2 |4|
+TEXT   #f4f6fa a=1 Inter-ExtraBold 12px @(758.20,259.00) lastglyph_x=797.1 |Enforce|
+FILL   #ed0080 a=1 bbox=(899.00,245.00)-(918.00,264.00) w=19.00 h=19.00 subpaths=1 curves=32
+TEXT   #ffffff a=1 Inter-ExtraBold 10px @(905.25,259.00) lastglyph_x=905.2 |5|
+TEXT   #f4f6fa a=1 Inter-ExtraBold 12px @(925.02,259.00) lastglyph_x=954.1 |Verify|
+FILL   #1a2640 a=1 bbox=(363.00,269.00)-(364.00,599.00) w=1.00 h=330.00 subpaths=66 curves=0
+FILL   #1a2640 a=1 bbox=(525.00,269.00)-(526.00,599.00) w=1.00 h=330.00 subpaths=66 curves=0
+FILL   #1a2640 a=1 bbox=(687.00,269.00)-(688.00,599.00) w=1.00 h=330.00 subpaths=66 curves=0
+FILL   #1a2640 a=1 bbox=(849.00,269.00)-(850.00,599.00) w=1.00 h=330.00 subpaths=66 curves=0
+STROKE #c7cfde a=1 bbox=(353.30,296.50)-(444.00,328.40) w=90.70 h=31.90 subpaths=1 curves=0 lw=1 pts=353.3,296.5 444.0,296.5 444.0,328.4
+FILL   #c7cfde a=1 bbox=(439.45,320.21)-(448.55,329.31) w=9.10 h=9.10 subpaths=1 curves=0 pts=448.5,320.2 444.0,329.3 439.4,320.2 448.5,320.2
+STROKE #c7cfde a=1 bbox=(444.00,374.60)-(444.00,383.40) w=0.00 h=8.80 subpaths=1 curves=0 lw=1 pts=444.0,374.6 444.0,383.4
+FILL   #c7cfde a=1 bbox=(439.45,375.21)-(448.55,384.31) w=9.10 h=9.10 subpaths=1 curves=0 pts=448.5,375.2 444.0,384.3 439.4,375.2 448.5,375.2
+STROKE #c7cfde a=1 bbox=(515.30,406.50)-(534.70,406.50) w=19.40 h=0.00 subpaths=1 curves=0 lw=1 pts=515.3,406.5 534.7,406.5
+FILL   #c7cfde a=1 bbox=(526.51,401.95)-(535.61,411.05) w=9.10 h=9.10 subpaths=1 curves=0 pts=526.5,401.9 535.6,406.5 526.5,411.0 526.5,401.9
+STROKE #c7cfde a=1 bbox=(606.00,429.60)-(606.00,438.40) w=0.00 h=8.80 subpaths=1 curves=0 lw=1 pts=606.0,429.6 606.0,438.4
+FILL   #c7cfde a=1 bbox=(601.45,430.21)-(610.55,439.31) w=9.10 h=9.10 subpaths=1 curves=0 pts=610.5,430.2 606.0,439.3 601.4,430.2 610.5,430.2
+STROKE #c7cfde a=1 bbox=(606.00,484.60)-(606.00,493.40) w=0.00 h=8.80 subpaths=1 curves=0 lw=1 pts=606.0,484.6 606.0,493.4
+FILL   #c7cfde a=1 bbox=(601.45,485.21)-(610.55,494.31) w=9.10 h=9.10 subpaths=1 curves=0 pts=610.5,485.2 606.0,494.3 601.4,485.2 610.5,485.2
+STROKE #c7cfde a=1 bbox=(606.00,539.60)-(696.70,571.50) w=90.70 h=31.90 subpaths=1 curves=0 lw=1 pts=606.0,539.6 606.0,571.5 696.7,571.5
+FILL   #c7cfde a=1 bbox=(688.51,566.95)-(697.61,576.05) w=9.10 h=9.10 subpaths=1 curves=0 pts=688.5,566.9 697.6,571.5 688.5,576.0 688.5,566.9
+STROKE #ed0080 a=1 bbox=(768.00,374.60)-(768.00,548.40) w=0.00 h=173.80 subpaths=1 curves=0 lw=1 pts=768.0,548.4 768.0,374.6
+FILL   #ed0080 a=1 bbox=(760.30,373.06)-(775.70,388.46) w=15.40 h=15.40 subpaths=1 curves=0 pts=760.3,388.5 768.0,373.1 775.7,388.5 760.3,388.5
+STROKE #c7cfde a=1 bbox=(768.00,319.60)-(768.00,328.40) w=0.00 h=8.80 subpaths=1 curves=0 lw=1 pts=768.0,328.4 768.0,319.6
+FILL   #c7cfde a=1 bbox=(763.45,318.69)-(772.55,327.79) w=9.10 h=9.10 subpaths=1 curves=0 pts=763.4,327.8 768.0,318.7 772.5,327.8 763.4,327.8
+STROKE #c7cfde a=1 bbox=(839.30,351.50)-(858.70,351.50) w=19.40 h=0.00 subpaths=1 curves=0 lw=1 pts=839.3,351.5 858.7,351.5
+FILL   #c7cfde a=1 bbox=(850.51,346.95)-(859.61,356.05) w=9.10 h=9.10 subpaths=1 curves=0 pts=850.5,346.9 859.6,351.5 850.5,356.0 850.5,346.9
+STROKE #c7cfde a=1 bbox=(930.00,374.60)-(930.00,383.40) w=0.00 h=8.80 subpaths=1 curves=0 lw=1 pts=930.0,374.6 930.0,383.4
+FILL   #c7cfde a=1 bbox=(925.45,375.21)-(934.55,384.31) w=9.10 h=9.10 subpaths=1 curves=0 pts=934.5,375.2 930.0,384.3 925.4,375.2 934.5,375.2
+STROKE #c7cfde a=1 bbox=(839.30,571.50)-(858.70,571.50) w=19.40 h=0.00 subpaths=1 curves=0 lw=1 pts=839.3,571.5 858.7,571.5
+FILL   #c7cfde a=1 bbox=(850.51,566.95)-(859.61,576.05) w=9.10 h=9.10 subpaths=1 curves=0 pts=850.5,566.9 859.6,571.5 850.5,576.0 850.5,566.9
+TEXT   #ed0080 a=1 Inter-Bold 8.39px @(776.27,451.00) lastglyph_x=828.2 |Enforce at the|
+TEXT   #ed0080 a=1 Inter-Bold 8.39px @(776.27,461.00) lastglyph_x=827.2 |nearest point|
+FILL   #0d1424 a=1 bbox=(211.50,273.50)-(353.50,318.50) w=142.00 h=45.00 subpaths=1 curves=32 r=5.50/5.50
+STROKE #c7cfde a=1 bbox=(211.50,273.50)-(353.50,318.50) w=142.00 h=45.00 subpaths=1 curves=32 lw=1 r=5.50/5.50
+TEXT   #f4f6fa a=1 Inter-Bold 9.6px @(218.95,288.00) lastglyph_x=303.0 |CI runner connects|
+TEXT   #c7cfde a=1 Inter-Regular 8.3px @(218.95,301.00) lastglyph_x=333.2 |Job 88213  checkpoint store|
+TEXT   #c7cfde a=1 Inter-Regular 8.3px @(218.95,311.00) lastglyph_x=237.0 |9000|
+FILL   #0d1424 a=1 bbox=(373.50,328.50)-(515.50,373.50) w=142.00 h=45.00 subpaths=1 curves=32 r=5.50/5.50
+STROKE #02c8ff a=1 bbox=(373.50,328.50)-(515.50,373.50) w=142.00 h=45.00 subpaths=1 curves=32 lw=1 r=5.50/5.50
+TEXT   #f4f6fa a=1 Inter-Bold 9.6px @(380.95,343.00) lastglyph_x=464.4 |Isovalent observes|
+TEXT   #c7cfde a=1 Inter-Regular 8.3px @(380.95,356.00) lastglyph_x=495.1 |Hubble: AUDIT (would deny) ·|
+TEXT   #c7cfde a=1 Inter-Regular 8.3px @(380.95,366.00) lastglyph_x=501.6 |Tetragon: curl from postbuild.sh|
+FILL   #0d1424 a=1 bbox=(373.50,383.50)-(515.50,428.50) w=142.00 h=45.00 subpaths=1 curves=32 r=5.50/5.50
+STROKE #ed0080 a=1 bbox=(373.50,383.50)-(515.50,428.50) w=142.00 h=45.00 subpaths=1 curves=32 lw=1 r=5.50/5.50
+TEXT   #f4f6fa a=1 Inter-Bold 9.6px @(380.95,403.00) lastglyph_x=429.3 |Events land|
+TEXT   #c7cfde a=1 Inter-Regular 8.3px @(380.95,416.00) lastglyph_x=486.2 |zero_trust index, in seconds|
+FILL   #0d1424 a=1 bbox=(535.50,383.50)-(677.50,428.50) w=142.00 h=45.00 subpaths=1 curves=32 r=5.50/5.50
+STROKE #ed0080 a=1 bbox=(535.50,383.50)-(677.50,428.50) w=142.00 h=45.00 subpaths=1 curves=32 lw=1 r=5.50/5.50
+TEXT   #f4f6fa a=1 Inter-Bold 9.6px @(542.95,398.00) lastglyph_x=619.9 |Splunk correlates|
+TEXT   #c7cfde a=1 Inter-Regular 8.3px @(542.95,411.00) lastglyph_x=660.2 |Workload, CI job 88213, server|
+TEXT   #c7cfde a=1 Inter-Regular 8.3px @(542.95,421.00) lastglyph_x=583.5 |bf-node-03|
+FILL   #0d1424 a=1 bbox=(535.50,438.50)-(677.50,483.50) w=142.00 h=45.00 subpaths=1 curves=32 r=5.50/5.50
+STROKE #ed0080 a=1 bbox=(535.50,438.50)-(677.50,483.50) w=142.00 h=45.00 subpaths=1 curves=32 lw=1 r=5.50/5.50
+TEXT   #f4f6fa a=1 Inter-Bold 9.6px @(542.95,453.00) lastglyph_x=643.5 |Finding group ES1842|
+TEXT   #c7cfde a=1 Inter-Regular 8.3px @(542.95,466.00) lastglyph_x=661.8 |Two signals, 50  40  risk 90,|
+TEXT   #c7cfde a=1 Inter-Regular 8.3px @(542.95,476.00) lastglyph_x=632.0 |over the threshold of 80|
+FILL   #0d1424 a=1 bbox=(535.50,493.50)-(677.50,538.50) w=142.00 h=45.00 subpaths=1 curves=32 r=5.50/5.50
+STROKE #ed0080 a=1 bbox=(535.50,493.50)-(677.50,538.50) w=142.00 h=45.00 subpaths=1 curves=32 lw=1 r=5.50/5.50
+TEXT   #f4f6fa a=1 Inter-Bold 9.6px @(542.95,508.00) lastglyph_x=591.8 |Agent brief|
+TEXT   #c7cfde a=1 Inter-Regular 8.3px @(542.95,521.00) lastglyph_x=647.5 |True positive · recommends|
+TEXT   #c7cfde a=1 Inter-Regular 8.3px @(542.95,531.00) lastglyph_x=579.9 |quarantine|
+FILL   #0d1424 a=1 bbox=(697.50,548.50)-(839.50,593.50) w=142.00 h=45.00 subpaths=1 curves=32 r=5.50/5.50
+STROKE #ed0080 a=1 bbox=(697.50,548.50)-(839.50,593.50) w=142.00 h=45.00 subpaths=1 curves=32 lw=1 r=5.50/5.50
+TEXT   #f4f6fa a=1 Inter-Bold 9.6px @(704.95,563.00) lastglyph_x=787.4 |Approve and apply|
+TEXT   #c7cfde a=1 Inter-Regular 8.3px @(704.95,576.00) lastglyph_x=819.7 |j.chen approves · Cilium policy|
+TEXT   #c7cfde a=1 Inter-Regular 8.3px @(704.95,586.00) lastglyph_x=728.6 |applied|
+FILL   #0d1424 a=1 bbox=(697.50,328.50)-(839.50,373.50) w=142.00 h=45.00 subpaths=1 curves=32 r=5.50/5.50
+STROKE #02c8ff a=1 bbox=(697.50,328.50)-(839.50,373.50) w=142.00 h=45.00 subpaths=1 curves=32 lw=1 r=5.50/5.50
+TEXT   #f4f6fa a=1 Inter-Bold 9.6px @(704.95,343.00) lastglyph_x=773.1 |Cilium enforces|
+TEXT   #c7cfde a=1 Inter-Regular 8.3px @(704.95,356.00) lastglyph_x=815.8 |Quarantine policy isolates the|
+TEXT   #c7cfde a=1 Inter-Regular 8.3px @(704.95,366.00) lastglyph_x=768.7 |pod in the kernel|
+FILL   #0d1424 a=1 bbox=(697.50,273.50)-(839.50,318.50) w=142.00 h=45.00 subpaths=1 curves=32 r=5.50/5.50
+STROKE #c7cfde a=1 bbox=(697.50,273.50)-(839.50,318.50) w=142.00 h=45.00 subpaths=1 curves=32 lw=1 r=5.50/5.50
+TEXT   #f4f6fa a=1 Inter-Bold 9.6px @(704.95,288.00) lastglyph_x=772.2 |Runner isolated|
+TEXT   #c7cfde a=1 Inter-Regular 8.3px @(704.95,301.00) lastglyph_x=810.6 |Rest of the build farm keeps|
+TEXT   #c7cfde a=1 Inter-Regular 8.3px @(704.95,311.00) lastglyph_x=729.7 |running|
+FILL   #0d1424 a=1 bbox=(859.50,328.50)-(1001.50,373.50) w=142.00 h=45.00 subpaths=1 curves=32 r=5.50/5.50
+STROKE #02c8ff a=1 bbox=(859.50,328.50)-(1001.50,373.50) w=142.00 h=45.00 subpaths=1 curves=32 lw=1 r=5.50/5.50
+TEXT   #f4f6fa a=1 Inter-Bold 9.6px @(866.95,343.00) lastglyph_x=935.7 |Retries dropped|
+TEXT   #c7cfde a=1 Inter-Regular 8.3px @(866.95,356.00) lastglyph_x=972.2 |DROPPED by the quarantine|
+TEXT   #c7cfde a=1 Inter-Regular 8.3px @(866.95,366.00) lastglyph_x=885.6 |policy|
+FILL   #0d1424 a=1 bbox=(859.50,383.50)-(1001.50,428.50) w=142.00 h=45.00 subpaths=1 curves=32 r=5.50/5.50
+STROKE #ed0080 a=1 bbox=(859.50,383.50)-(1001.50,428.50) w=142.00 h=45.00 subpaths=1 curves=32 lw=1 r=5.50/5.50
+TEXT   #f4f6fa a=1 Inter-Bold 9.6px @(866.95,398.00) lastglyph_x=943.6 |Posture improves|
+TEXT   #c7cfde a=1 Inter-Regular 8.3px @(866.95,411.00) lastglyph_x=972.4 |Coverage 86.4%  87.9% ·|
+TEXT   #c7cfde a=1 Inter-Regular 8.3px @(866.95,421.00) lastglyph_x=908.8 |paths 9  8|
+FILL   #0d1424 a=1 bbox=(859.50,548.50)-(1001.50,593.50) w=142.00 h=45.00 subpaths=1 curves=32 r=5.50/5.50
+STROKE #ed0080 a=1 bbox=(859.50,548.50)-(1001.50,593.50) w=142.00 h=45.00 subpaths=1 curves=32 lw=1 r=5.50/5.50
+TEXT   #f4f6fa a=1 Inter-Bold 9.6px @(866.95,563.00) lastglyph_x=910.0 |Audit trail|
+TEXT   #c7cfde a=1 Inter-Regular 8.3px @(866.95,576.00) lastglyph_x=984.7 |Who approved, what changed,|
+TEXT   #c7cfde a=1 Inter-Regular 8.3px @(866.95,586.00) lastglyph_x=883.5 |when|

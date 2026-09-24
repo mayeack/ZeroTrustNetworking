@@ -21,6 +21,7 @@ from ztgen.streamer import Streamer
 log = logging.getLogger("ztlive")
 TICK_SECONDS = 4
 PIPELINE_SECONDS = 20
+VERSION_SECONDS = 300           # how often the stack app version is read again (an upload does not restart this app)
 LEASE_APP_VERSION = (1, 0, 3)     # the search head streamer honours the lease from this app version on
 SCRIPT_INPUT = "$SPLUNK_HOME/etc/apps/zt_incident_demo/bin/zt_stream.py"
 SUMMARY_LIMIT = 3000
@@ -357,8 +358,21 @@ class Engine:
             out["health"] = self.health()
         return out
 
+    def _refresh_stack_version(self):
+        v = self._stack_version()
+        if v == (0, 0, 0) or v == self.stack_version:
+            return
+        log.info("stack app now %s (was %s)", ".".join(map(str, v)), ".".join(map(str, self.stack_version)))
+        self.stack_version = v
+        if self.paused_input and v >= LEASE_APP_VERSION:
+            self._set_input(disabled=False)  # the upgraded input honours the lease itself
+
     def _pipeline_loop(self):
+        next_version = time.time() + VERSION_SECONDS
         while not self.stop_flag.is_set():
+            if time.time() >= next_version:
+                self._refresh_stack_version()
+                next_version = time.time() + VERSION_SECONDS
             try:
                 self.pipeline = {"incident": self._incident_pipeline(), "attacks": [self._attack_pipeline(r) for r in A.all_attacks(self.sd)[:3]]}
                 self.pipeline_at = time.time()

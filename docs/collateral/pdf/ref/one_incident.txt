@@ -1,0 +1,75 @@
+splunk>                                                                                                                                                                                            ZERO
+                                                                                                                                                                                                   CISCO
+                                                                                                                                                                                                           TRUST
+                                                                                                                                                                                                             +
+                                                                                                                                                                                                                      NETWORKING
+                                                                                                                                                                                                                 SPLUNK
+A   CISCO    COMPANY
+
+
+
+ONE    INCIDENT,        END   TO   END   ·    BUSINESS       VALUE       AND   SOLUTION       ARCHITECTURE
+
+
+From one risky connection to an enforced policy, and proof, in minutes
+    THE    RISKY    CONNECTION,     IN   THIS   EXAMPLE
+
+    A contractor's merge request adds a post-build script to a machine-learning repository. When the CI job runs, the build runner uses curl to copy model checkpoint files, the weights of a 512-GPU
+    training run, from the protected training store. Nothing was hacked: the runner simply had network reach it shouldn't, and the store's new allowlist was still in audit mode, so the copy went through.
+
+Cisco Isovalent observes it: Hubble records the connection with both workload identities and its policy verdict; Tetragon names the program that opened it. Splunk correlates it with the workload,
+the CI job and the server, raises one finding, and an agent gathers the evidence. A SOAR playbook enforces at the nearest point once a person approves; the posture dashboard proves it.
+
+                                                   1    Connect                           2    Observe                         3       Decide                        4    Enforce                           5    Verify
+
+    Workloads                              CI runner connects                                                                                                Runner isolated
+                                           Job 88213 → checkpoint store                                                                                      Rest of the build farm keeps
+    Build farm, AI training
+                                           :9000                                                                                                             running
+
+
+    Cisco Isovalent                                                               Isovalent observes                                                         Cilium enforces                       Retries dropped
+                                                                                  Hubble: AUDIT (would deny) ·                                               Quarantine policy isolates the        DROPPED by the quarantine
+    Cilium · Hubble · Tetragon                                                    Tetragon: curl from postbuild.sh                                           pod in the kernel                     policy
+
+
+    Splunk platform                                                               Events land                         Splunk correlates                                                            Posture improves
+                                                                                  zero_trust index, in seconds        Workload, CI job 88213, server                                               Coverage 86.4% → 87.9% ·
+    Ingest · correlate · posture
+                                                                                                                      bf-node-03                                                                   paths 9 → 8
+
+                                                                                                                      Finding group ES-1842                                    Enforce at the
+    Enterprise Security                                                                                                                                                        nearest point
+                                                                                                                      Two signals, 50 + 40 = risk 90,
+    Risk-based alerting
+                                                                                                                      over the threshold of 80
+
+
+    Agent Launchpad                                                                                                   Agent brief
+                                                                                                                      True positive · recommends
+    No-code agent
+                                                                                                                      quarantine
+
+
+    SOAR and people                                                                                                                                          Approve and apply                     Audit trail
+                                                                                                                                                             j.chen approves · Cilium policy       Who approved, what changed,
+    Playbook · approval
+                                                                                                                                                             applied                               when
+
+
+                                         Attributable                            Seen at the source                  One finding, evidence joined           Contained in minutes                  Proof, not assumption
+    WHAT   IT'S     WORTH
+                                         Every connection carries a              Hubble records the flow and         Workload, job and server already       Nearest enforcement point, with a     Coverage up, one fewer
+                                         workload identity, not just an IP.      Tetragon the program behind it.     correlated; the agent writes the       named approver on record.             unprotected path, a complete
+                                                                                 No sidecars.                        brief.                                                                       audit trail.
+
+
+    GETTING     DATA    IN                                                                                            DETECT       ·   INVESTIGATE      ·   ENFORCE
+
+    Hubble flow logs over HTTP Event Collector: every connection with both identities and its policy verdict          Enterprise Security risk-based alerting turns flow and process signals into one finding
+    Tetragon events through the Cisco Security Cloud App: the program, its arguments and parent, per pod              Agent Launchpad agent uses approved tools, keeps data in Splunk, leaves the decision to a person
+    Nexus data through Cisco's data center networking add-on · Live Protect exports from Nexus Dashboard              SOAR enforces at the nearest point: Cilium policy on the server, Hypershield rule on the DPU or switch,
+                                                                                                                      Nexus port or route change. Network changes need NetOps approval
+
+SPLUNK,     A   CISCO   COMPANY    ·   ZERO   TRUST    NETWORKING                                                                                                                                   ONE   INCIDENT,     END      TO   END
+

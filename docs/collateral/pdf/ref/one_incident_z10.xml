@@ -1,0 +1,517 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE pdf2xml SYSTEM "pdf2xml.dtd">
+
+<pdf2xml producer="poppler" version="26.06.0">
+<page number="1" position="absolute" top="0" left="0" height="1836" width="2376">
+	<fontspec id="0" size="55" family="AAAAAA+Inter-ExtraBold" color="#f4f6fa"/>
+	<fontspec id="1" size="55" family="AAAAAA+Inter-ExtraBold" color="#ed0080"/>
+	<fontspec id="2" size="16" family="BAAAAA+IBMPlexMono" color="#8b94aa"/>
+	<fontspec id="3" size="18" family="BAAAAA+IBMPlexMono" color="#8b94aa"/>
+	<fontspec id="4" size="18" family="CAAAAA+IBMPlexMono-SmBld" color="#ed0080"/>
+	<fontspec id="5" size="18" family="CAAAAA+IBMPlexMono-SmBld" color="#8b94aa"/>
+	<fontspec id="6" size="57" family="AAAAAA+Inter-ExtraBold" color="#f4f6fa"/>
+	<fontspec id="7" size="58" family="AAAAAA+Inter-ExtraBold" color="#f4f6fa"/>
+	<fontspec id="8" size="17" family="CAAAAA+IBMPlexMono-SmBld" color="#ed0080"/>
+	<fontspec id="9" size="25" family="DAAAAA+Inter" color="#f4f6fa"/>
+	<fontspec id="10" size="26" family="DAAAAA+Inter" color="#f4f6fa"/>
+	<fontspec id="11" size="22" family="BAAAAA+IBMPlexMono" color="#f4f6fa"/>
+	<fontspec id="12" size="26" family="EAAAAA+Inter" color="#f4f6fa"/>
+	<fontspec id="13" size="26" family="DAAAAA+Inter" color="#c7cfde"/>
+	<fontspec id="14" size="24" family="EAAAAA+Inter" color="#f4f6fa"/>
+	<fontspec id="15" size="21" family="DAAAAA+Inter" color="#c7cfde"/>
+	<fontspec id="16" size="18" family="CAAAAA+IBMPlexMono-SmBld" color="#01c7ff"/>
+	<fontspec id="17" size="22" family="EAAAAA+Inter" color="#f4f6fa"/>
+	<fontspec id="18" size="22" family="DAAAAA+Inter" color="#c7cfde"/>
+	<fontspec id="19" size="26" family="EAAAAA+Inter" color="#c7cfde"/>
+	<fontspec id="20" size="26" family="EAAAAA+Inter" color="#01c7ff"/>
+	<fontspec id="21" size="26" family="EAAAAA+Inter" color="#ed0080"/>
+	<fontspec id="22" size="27" family="EAAAAA+Inter" color="#ed0080"/>
+	<fontspec id="23" size="25" family="AAAAAA+Inter-ExtraBold" color="#ffffff"/>
+	<fontspec id="24" size="30" family="AAAAAA+Inter-ExtraBold" color="#f4f6fa"/>
+	<fontspec id="25" size="21" family="EAAAAA+Inter" color="#ed0080"/>
+<text top="69" left="93" width="161" height="72" font="0"><b>splunk</b></text>
+<text top="69" left="253" width="34" height="71" font="1"><b>&gt;</b></text>
+<text top="139" left="93" width="212" height="20" font="2">A   C I S C O   C O M P A N Y</text>
+<text top="103" left="1951" width="328" height="23" font="3">Z E R O   T R U S T   N E T W O R K I N G</text>
+<text top="132" left="1951" width="217" height="23" font="3">C I S C O   +   S P L U N K</text>
+<text top="202" left="93" width="367" height="23" font="4">O N E   I N C I D E N T ,   E N D   T O   E N D</text>
+<text top="202" left="482" width="11" height="23" font="5">·</text>
+<text top="202" left="516" width="615" height="23" font="4">B U S I N E S S   V A L U E   A N D   S O L U T I O N   A R C H I T E C T U R E</text>
+<text top="231" left="93" width="30" height="75" font="6"><b>F</b></text>
+<text top="231" left="121" width="98" height="75" font="7"><b>rom</b></text>
+<text top="231" left="219" width="11" height="75" font="6"><b> </b></text>
+<text top="231" left="229" width="64" height="75" font="7"><b>on</b></text>
+<text top="231" left="292" width="41" height="75" font="6"><b>e </b></text>
+<text top="231" left="332" width="22" height="75" font="7"><b>r</b></text>
+<text top="231" left="353" width="15" height="75" font="6"><b>i</b></text>
+<text top="231" left="366" width="30" height="75" font="7"><b>s</b></text>
+<text top="231" left="395" width="31" height="75" font="6"><b>k</b></text>
+<text top="231" left="425" width="32" height="75" font="7"><b>y</b></text>
+<text top="231" left="456" width="41" height="75" font="6"><b> c</b></text>
+<text top="231" left="496" width="96" height="75" font="7"><b>onn</b></text>
+<text top="231" left="591" width="61" height="75" font="6"><b>ec</b></text>
+<text top="231" left="651" width="20" height="75" font="7"><b>t</b></text>
+<text top="231" left="670" width="15" height="75" font="6"><b>i</b></text>
+<text top="231" left="683" width="64" height="75" font="7"><b>on</b></text>
+<text top="231" left="746" width="11" height="75" font="6"><b> </b></text>
+<text top="231" left="756" width="50" height="75" font="7"><b>to</b></text>
+<text top="231" left="806" width="41" height="75" font="6"><b> a</b></text>
+<text top="231" left="845" width="33" height="75" font="7"><b>n</b></text>
+<text top="231" left="877" width="41" height="75" font="6"><b> e</b></text>
+<text top="231" left="917" width="33" height="75" font="7"><b>n</b></text>
+<text top="231" left="949" width="21" height="75" font="6"><b>f</b></text>
+<text top="231" left="968" width="53" height="75" font="7"><b>or</b></text>
+<text top="231" left="1019" width="103" height="75" font="6"><b>ced </b></text>
+<text top="231" left="1121" width="64" height="75" font="7"><b>po</b></text>
+<text top="231" left="1184" width="58" height="75" font="6"><b>lic</b></text>
+<text top="231" left="1240" width="32" height="75" font="7"><b>y</b></text>
+<text top="231" left="1269" width="56" height="75" font="6"><b>, a</b></text>
+<text top="231" left="1324" width="33" height="75" font="7"><b>n</b></text>
+<text top="231" left="1355" width="43" height="75" font="6"><b>d </b></text>
+<text top="231" left="1398" width="114" height="75" font="7"><b>proo</b></text>
+<text top="231" left="1511" width="57" height="75" font="6"><b>f, i</b></text>
+<text top="231" left="1567" width="33" height="75" font="7"><b>n</b></text>
+<text top="231" left="1599" width="11" height="75" font="6"><b> </b></text>
+<text top="231" left="1609" width="48" height="75" font="7"><b>m</b></text>
+<text top="231" left="1656" width="15" height="75" font="6"><b>i</b></text>
+<text top="231" left="1670" width="83" height="75" font="7"><b>nut</b></text>
+<text top="231" left="1752" width="31" height="75" font="6"><b>e</b></text>
+<text top="231" left="1782" width="30" height="75" font="7"><b>s</b></text>
+<text top="329" left="124" width="515" height="22" font="8">T H E   R I S K Y   C O N N E C T I O N ,   I N   T H I S   E X A M P L E</text>
+<text top="358" left="124" width="22" height="33" font="9">A </text>
+<text top="358" left="147" width="57" height="33" font="10">contr</text>
+<text top="358" left="203" width="13" height="33" font="9">a</text>
+<text top="358" left="216" width="43" height="33" font="10">ctor</text>
+<text top="358" left="259" width="7" height="33" font="9">'</text>
+<text top="358" left="266" width="12" height="33" font="10">s</text>
+<text top="358" left="278" width="6" height="33" font="9"> </text>
+<text top="358" left="284" width="20" height="33" font="10">m</text>
+<text top="358" left="304" width="49" height="33" font="10">erge</text>
+<text top="358" left="353" width="6" height="33" font="9"> </text>
+<text top="358" left="360" width="9" height="33" font="10">r</text>
+<text top="358" left="368" width="74" height="33" font="10">equest</text>
+<text top="358" left="442" width="19" height="33" font="9"> a</text>
+<text top="358" left="461" width="40" height="33" font="10">dds</text>
+<text top="358" left="501" width="26" height="33" font="9"> a </text>
+<text top="358" left="527" width="47" height="33" font="10">post</text>
+<text top="358" left="574" width="11" height="33" font="9">-</text>
+<text top="358" left="585" width="53" height="33" font="10">build</text>
+<text top="358" left="637" width="6" height="33" font="9"> </text>
+<text top="358" left="644" width="12" height="33" font="10">s</text>
+<text top="358" left="656" width="49" height="33" font="10">cript</text>
+<text top="358" left="705" width="6" height="33" font="9"> </text>
+<text top="358" left="711" width="21" height="33" font="10">to</text>
+<text top="358" left="733" width="26" height="33" font="9"> a </text>
+<text top="358" left="758" width="20" height="33" font="10">m</text>
+<text top="358" left="778" width="13" height="33" font="9">a</text>
+<text top="358" left="791" width="59" height="33" font="10">chine</text>
+<text top="358" left="850" width="11" height="33" font="9">-</text>
+<text top="358" left="861" width="19" height="33" font="10">le</text>
+<text top="358" left="880" width="13" height="33" font="9">a</text>
+<text top="358" left="893" width="23" height="33" font="10">rn</text>
+<text top="358" left="915" width="33" height="33" font="10">ing</text>
+<text top="358" left="949" width="6" height="33" font="9"> </text>
+<text top="358" left="955" width="9" height="33" font="10">r</text>
+<text top="358" left="963" width="102" height="33" font="10">epository</text>
+<text top="358" left="1064" width="36" height="33" font="9">. W</text>
+<text top="358" left="1100" width="40" height="33" font="10">hen</text>
+<text top="358" left="1140" width="6" height="33" font="9"> </text>
+<text top="358" left="1146" width="8" height="33" font="10">t</text>
+<text top="358" left="1154" width="27" height="33" font="10">he</text>
+<text top="358" left="1181" width="36" height="33" font="9"> CI </text>
+<text top="358" left="1217" width="33" height="33" font="10">job</text>
+<text top="358" left="1250" width="6" height="33" font="9"> </text>
+<text top="358" left="1256" width="48" height="33" font="10">runs</text>
+<text top="358" left="1304" width="13" height="33" font="9">, </text>
+<text top="358" left="1317" width="8" height="33" font="10">t</text>
+<text top="358" left="1325" width="27" height="33" font="10">he</text>
+<text top="358" left="1352" width="6" height="33" font="9"> </text>
+<text top="358" left="1358" width="53" height="33" font="10">build</text>
+<text top="358" left="1411" width="6" height="33" font="9"> </text>
+<text top="358" left="1417" width="49" height="33" font="10">runn</text>
+<text top="358" left="1467" width="22" height="33" font="10">er</text>
+<text top="358" left="1489" width="6" height="33" font="9"> </text>
+<text top="358" left="1495" width="26" height="33" font="10">us</text>
+<text top="358" left="1521" width="25" height="33" font="10">es</text>
+<text top="358" left="1546" width="6" height="33" font="9"> </text>
+<text top="360" left="1553" width="52" height="28" font="11">curl</text>
+<text top="358" left="1604" width="6" height="33" font="9"> </text>
+<text top="358" left="1611" width="21" height="33" font="10">to</text>
+<text top="358" left="1632" width="6" height="33" font="9"> </text>
+<text top="358" left="1638" width="53" height="33" font="10">copy</text>
+<text top="358" left="1692" width="6" height="33" font="9"> </text>
+<text top="358" left="1698" width="34" height="33" font="10">mo</text>
+<text top="358" left="1732" width="33" height="33" font="10">del</text>
+<text top="358" left="1765" width="6" height="33" font="9"> </text>
+<text top="358" left="1771" width="120" height="33" font="10">checkpoint</text>
+<text top="358" left="1891" width="6" height="33" font="9"> </text>
+<text top="358" left="1898" width="45" height="33" font="10">files</text>
+<text top="358" left="1943" width="13" height="33" font="9">, </text>
+<text top="358" left="1956" width="8" height="33" font="10">t</text>
+<text top="358" left="1963" width="27" height="33" font="10">he</text>
+<text top="358" left="1990" width="6" height="33" font="9"> </text>
+<text top="358" left="1997" width="19" height="33" font="10">w</text>
+<text top="358" left="2015" width="66" height="33" font="10">eights</text>
+<text top="358" left="2081" width="6" height="33" font="9"> </text>
+<text top="358" left="2088" width="14" height="33" font="10">o</text>
+<text top="358" left="2101" width="8" height="33" font="10">f</text>
+<text top="358" left="2110" width="122" height="33" font="9"> a 512GPU</text>
+<text top="392" left="124" width="16" height="33" font="10">tr</text>
+<text top="392" left="140" width="13" height="33" font="9">a</text>
+<text top="392" left="153" width="52" height="33" font="10">ining</text>
+<text top="392" left="206" width="6" height="33" font="9"> </text>
+<text top="392" left="212" width="36" height="33" font="10">run</text>
+<text top="392" left="248" width="13" height="33" font="9">, </text>
+<text top="392" left="261" width="51" height="33" font="10">from</text>
+<text top="392" left="311" width="6" height="33" font="9"> </text>
+<text top="392" left="318" width="8" height="33" font="10">t</text>
+<text top="392" left="325" width="27" height="33" font="10">he</text>
+<text top="392" left="352" width="6" height="33" font="9"> </text>
+<text top="392" left="359" width="44" height="33" font="10">prot</text>
+<text top="392" left="402" width="61" height="33" font="10">ected</text>
+<text top="392" left="463" width="6" height="33" font="9"> </text>
+<text top="392" left="470" width="16" height="33" font="10">tr</text>
+<text top="392" left="486" width="13" height="33" font="9">a</text>
+<text top="392" left="499" width="52" height="33" font="10">ining</text>
+<text top="392" left="551" width="6" height="33" font="9"> </text>
+<text top="392" left="557" width="42" height="33" font="10">stor</text>
+<text top="392" left="599" width="13" height="33" font="10">e</text>
+<text top="392" left="612" width="30" height="33" font="9">. N</text>
+<text top="392" left="642" width="21" height="33" font="10">ot</text>
+<text top="392" left="664" width="47" height="33" font="10">hing</text>
+<text top="392" left="710" width="6" height="33" font="9"> </text>
+<text top="392" left="717" width="19" height="33" font="10">w</text>
+<text top="392" left="735" width="13" height="33" font="9">a</text>
+<text top="392" left="748" width="12" height="33" font="10">s</text>
+<text top="392" left="760" width="6" height="33" font="9"> </text>
+<text top="392" left="767" width="14" height="33" font="10">h</text>
+<text top="392" left="780" width="13" height="33" font="9">a</text>
+<text top="392" left="793" width="53" height="33" font="10">cked</text>
+<text top="392" left="846" width="13" height="33" font="9">: </text>
+<text top="392" left="859" width="8" height="33" font="10">t</text>
+<text top="392" left="866" width="27" height="33" font="10">he</text>
+<text top="392" left="893" width="6" height="33" font="9"> </text>
+<text top="392" left="900" width="49" height="33" font="10">runn</text>
+<text top="392" left="949" width="22" height="33" font="10">er</text>
+<text top="392" left="971" width="6" height="33" font="9"> </text>
+<text top="392" left="977" width="12" height="33" font="10">s</text>
+<text top="392" left="990" width="58" height="33" font="10">imply</text>
+<text top="392" left="1048" width="6" height="33" font="9"> </text>
+<text top="392" left="1054" width="14" height="33" font="10">h</text>
+<text top="392" left="1068" width="13" height="33" font="9">a</text>
+<text top="392" left="1081" width="14" height="33" font="10">d</text>
+<text top="392" left="1095" width="6" height="33" font="9"> </text>
+<text top="392" left="1101" width="14" height="33" font="10">n</text>
+<text top="392" left="1115" width="75" height="33" font="10">etwork</text>
+<text top="392" left="1190" width="6" height="33" font="9"> </text>
+<text top="392" left="1196" width="9" height="33" font="10">r</text>
+<text top="392" left="1204" width="13" height="33" font="10">e</text>
+<text top="392" left="1218" width="13" height="33" font="9">a</text>
+<text top="392" left="1231" width="27" height="33" font="10">ch</text>
+<text top="392" left="1257" width="6" height="33" font="9"> </text>
+<text top="392" left="1264" width="13" height="33" font="10">it</text>
+<text top="392" left="1277" width="6" height="33" font="9"> </text>
+<text top="392" left="1283" width="12" height="33" font="10">s</text>
+<text top="392" left="1295" width="74" height="33" font="10">houldn</text>
+<text top="392" left="1369" width="7" height="33" font="9">'</text>
+<text top="392" left="1376" width="8" height="33" font="10">t</text>
+<text top="392" left="1384" width="26" height="33" font="9">, a</text>
+<text top="392" left="1410" width="14" height="33" font="10">n</text>
+<text top="392" left="1423" width="14" height="33" font="10">d</text>
+<text top="392" left="1437" width="6" height="33" font="9"> </text>
+<text top="392" left="1444" width="8" height="33" font="10">t</text>
+<text top="392" left="1451" width="27" height="33" font="10">he</text>
+<text top="392" left="1478" width="6" height="33" font="9"> </text>
+<text top="392" left="1485" width="42" height="33" font="10">stor</text>
+<text top="392" left="1526" width="13" height="33" font="10">e</text>
+<text top="392" left="1539" width="7" height="33" font="9">'</text>
+<text top="392" left="1546" width="12" height="33" font="10">s</text>
+<text top="392" left="1558" width="6" height="33" font="9"> </text>
+<text top="392" left="1564" width="14" height="33" font="10">n</text>
+<text top="392" left="1578" width="32" height="33" font="10">ew</text>
+<text top="392" left="1610" width="19" height="33" font="9"> a</text>
+<text top="392" left="1629" width="74" height="33" font="10">llowlist</text>
+<text top="392" left="1703" width="6" height="33" font="9"> </text>
+<text top="392" left="1709" width="19" height="33" font="10">w</text>
+<text top="392" left="1728" width="13" height="33" font="9">a</text>
+<text top="392" left="1741" width="12" height="33" font="10">s</text>
+<text top="392" left="1753" width="6" height="33" font="9"> </text>
+<text top="392" left="1759" width="20" height="33" font="10">st</text>
+<text top="392" left="1779" width="17" height="33" font="10">ill</text>
+<text top="392" left="1796" width="6" height="33" font="9"> </text>
+<text top="392" left="1802" width="19" height="33" font="10">in</text>
+<text top="392" left="1821" width="19" height="33" font="9"> a</text>
+<text top="392" left="1841" width="14" height="33" font="10">u</text>
+<text top="392" left="1854" width="27" height="33" font="10">dit</text>
+<text top="392" left="1881" width="6" height="33" font="9"> </text>
+<text top="392" left="1888" width="34" height="33" font="10">mo</text>
+<text top="392" left="1921" width="27" height="33" font="10">de</text>
+<text top="392" left="1949" width="13" height="33" font="9">, </text>
+<text top="392" left="1962" width="26" height="33" font="10">so</text>
+<text top="392" left="1988" width="6" height="33" font="9"> </text>
+<text top="392" left="1994" width="8" height="33" font="10">t</text>
+<text top="392" left="2002" width="27" height="33" font="10">he</text>
+<text top="392" left="2029" width="6" height="33" font="9"> </text>
+<text top="392" left="2035" width="53" height="33" font="10">copy</text>
+<text top="392" left="2088" width="6" height="33" font="9"> </text>
+<text top="392" left="2095" width="19" height="33" font="10">w</text>
+<text top="392" left="2113" width="34" height="33" font="10">ent</text>
+<text top="392" left="2148" width="6" height="33" font="9"> </text>
+<text top="392" left="2154" width="8" height="33" font="10">t</text>
+<text top="392" left="2162" width="77" height="33" font="10">hrough</text>
+<text top="392" left="2238" width="7" height="33" font="9">.</text>
+<text top="455" left="93" width="17" height="34" font="12"><b>C</b></text>
+<text top="454" left="110" width="290" height="34" font="12"><b>isco Isovalent observes it</b></text>
+<text top="455" left="400" width="31" height="34" font="13"> H</text>
+<text top="454" left="431" width="14" height="34" font="13">u</text>
+<text top="454" left="445" width="1376" height="34" font="13">bble records the connection with both workload identities and its policy verdict; Tetragon names the program that opened it. </text>
+<text top="455" left="1820" width="15" height="34" font="12"><b>S</b></text>
+<text top="454" left="1835" width="15" height="34" font="12"><b>p</b></text>
+<text top="454" left="1850" width="191" height="34" font="12"><b>lunk correlates it</b></text>
+<text top="455" left="2041" width="7" height="34" font="13"> </text>
+<text top="454" left="2048" width="19" height="34" font="13">w</text>
+<text top="454" left="2067" width="184" height="34" font="13">ith the workload,</text>
+<text top="488" left="93" width="8" height="34" font="13">t</text>
+<text top="488" left="100" width="883" height="34" font="13">he CI job and the server, raises one finding, and an agent gathers the evidence. </text>
+<text top="488" left="983" width="94" height="34" font="12"><b>A SOAR </b></text>
+<text top="488" left="1077" width="15" height="34" font="12"><b>p</b></text>
+<text top="488" left="1092" width="198" height="34" font="12"><b>laybook enforces</b></text>
+<text top="488" left="1289" width="20" height="34" font="13"> a</text>
+<text top="488" left="1309" width="22" height="34" font="13">t t</text>
+<text top="488" left="1331" width="825" height="34" font="13">he nearest point once a person approves; the posture dashboard proves it.</text>
+<text top="1431" left="115" width="217" height="23" font="4">W H A T   I T ' S   W O R T H</text>
+<text top="1386" left="482" width="16" height="31" font="14"><b>A</b></text>
+<text top="1386" left="498" width="24" height="31" font="14"><b>ttr</b></text>
+<text top="1385" left="522" width="86" height="32" font="14"><b>ibutable</b></text>
+<text top="1418" left="482" width="11" height="27" font="15">E</text>
+<text top="1418" left="493" width="10" height="27" font="15">v</text>
+<text top="1418" left="503" width="214" height="27" font="15">ery connection carries a</text>
+<text top="1443" left="482" width="33" height="27" font="15">wor</text>
+<text top="1443" left="516" width="247" height="27" font="15">kload identity, not just an IP.</text>
+<text top="1386" left="847" width="14" height="31" font="14"><b>S</b></text>
+<text top="1385" left="861" width="182" height="32" font="14"><b>een at the source</b></text>
+<text top="1418" left="847" width="14" height="27" font="15">H</text>
+<text top="1418" left="860" width="11" height="27" font="15">u</text>
+<text top="1418" left="872" width="225" height="27" font="15">bble records the flow and</text>
+<text top="1443" left="847" width="12" height="27" font="15">T</text>
+<text top="1443" left="857" width="268" height="27" font="15">etragon the program behind it.</text>
+<text top="1468" left="847" width="14" height="27" font="15">N</text>
+<text top="1467" left="861" width="26" height="27" font="15">o s</text>
+<text top="1467" left="887" width="70" height="27" font="15">idecars.</text>
+<text top="1386" left="1211" width="17" height="31" font="14"><b>O</b></text>
+<text top="1386" left="1228" width="13" height="31" font="14"><b>n</b></text>
+<text top="1385" left="1241" width="271" height="32" font="14"><b>e finding, evidence joined</b></text>
+<text top="1418" left="1211" width="18" height="27" font="15">W</text>
+<text top="1418" left="1229" width="18" height="27" font="15">or</text>
+<text top="1418" left="1247" width="256" height="27" font="15">kload, job and server already</text>
+<text top="1443" left="1211" width="276" height="27" font="15">correlated; the agent writes the</text>
+<text top="1467" left="1211" width="45" height="27" font="15">brief.</text>
+<text top="1386" left="1576" width="16" height="31" font="14"><b>C</b></text>
+<text top="1386" left="1592" width="47" height="31" font="14"><b>onta</b></text>
+<text top="1385" left="1639" width="160" height="32" font="14"><b>ined in minutes</b></text>
+<text top="1418" left="1576" width="14" height="27" font="15">N</text>
+<text top="1418" left="1590" width="285" height="27" font="15">earest enforcement point, with a</text>
+<text top="1443" left="1576" width="38" height="27" font="15">nam</text>
+<text top="1443" left="1613" width="202" height="27" font="15">ed approver on record.</text>
+<text top="1386" left="1940" width="14" height="31" font="14"><b>P</b></text>
+<text top="1386" left="1954" width="35" height="31" font="14"><b>roo</b></text>
+<text top="1385" left="1989" width="183" height="32" font="14"><b>f, not assumption</b></text>
+<text top="1418" left="1940" width="14" height="27" font="15">C</text>
+<text top="1418" left="1954" width="21" height="27" font="15">ov</text>
+<text top="1418" left="1975" width="177" height="27" font="15">erage up, one fewer</text>
+<text top="1443" left="1940" width="58" height="27" font="15">unprot</text>
+<text top="1443" left="1997" width="202" height="27" font="15">ected path, a complete</text>
+<text top="1468" left="1940" width="10" height="27" font="15">a</text>
+<text top="1467" left="1951" width="11" height="27" font="15">u</text>
+<text top="1467" left="1962" width="65" height="27" font="15">dit trail.</text>
+<text top="1557" left="122" width="217" height="23" font="16">G E T T I N G   D A T A   I N</text>
+<text top="1592" left="122" width="15" height="29" font="17"><b>H</b></text>
+<text top="1592" left="137" width="12" height="29" font="17"><b>u</b></text>
+<text top="1592" left="149" width="135" height="29" font="17"><b>bble flow logs</b></text>
+<text top="1592" left="284" width="6" height="29" font="18"> </text>
+<text top="1592" left="289" width="23" height="29" font="18">ov</text>
+<text top="1592" left="312" width="780" height="29" font="18">er HTTP Event Collector: every connection with both identities and its policy verdict</text>
+<text top="1624" left="122" width="13" height="29" font="17"><b>T</b></text>
+<text top="1624" left="134" width="145" height="29" font="17"><b>etragon events</b></text>
+<text top="1624" left="279" width="6" height="29" font="18"> </text>
+<text top="1624" left="285" width="6" height="29" font="18">t</text>
+<text top="1624" left="291" width="801" height="29" font="18">hrough the Cisco Security Cloud App: the program, its arguments and parent, per pod</text>
+<text top="1653" left="122" width="15" height="29" font="17"><b>N</b></text>
+<text top="1653" left="137" width="94" height="29" font="17"><b>exus data</b></text>
+<text top="1653" left="231" width="6" height="29" font="18"> </text>
+<text top="1653" left="237" width="6" height="29" font="18">t</text>
+<text top="1653" left="243" width="454" height="29" font="18">hrough Cisco's data center networking add-on · </text>
+<text top="1653" left="697" width="11" height="29" font="17"><b>L</b></text>
+<text top="1653" left="708" width="104" height="29" font="17"><b>ive Protect</b></text>
+<text top="1653" left="811" width="6" height="29" font="18"> </text>
+<text top="1653" left="817" width="292" height="29" font="18">exports from Nexus Dashboard</text>
+<text top="1557" left="1228" width="439" height="23" font="4">D E T E C T   ·   I N V E S T I G A T E   ·   E N F O R C E</text>
+<text top="1592" left="1228" width="12" height="29" font="17"><b>E</b></text>
+<text top="1592" left="1241" width="20" height="29" font="17"><b>nt</b></text>
+<text top="1592" left="1260" width="155" height="29" font="17"><b>erprise Security</b></text>
+<text top="1592" left="1415" width="6" height="29" font="18"> </text>
+<text top="1592" left="1421" width="7" height="29" font="18">r</text>
+<text top="1592" left="1429" width="610" height="29" font="18">isk-based alerting turns flow and process signals into one finding</text>
+<text top="1624" left="1228" width="15" height="29" font="17"><b>A</b></text>
+<text top="1624" left="1243" width="156" height="29" font="17"><b>gent Launchpad</b></text>
+<text top="1624" left="1399" width="17" height="29" font="18"> a</text>
+<text top="1624" left="1416" width="743" height="29" font="18">gent uses approved tools, keeps data in Splunk, leaves the decision to a person</text>
+<text top="1653" left="1228" width="55" height="29" font="17"><b>SOAR</b></text>
+<text top="1653" left="1284" width="6" height="29" font="18"> </text>
+<text top="1653" left="1289" width="901" height="29" font="18">enforces at the nearest point: Cilium policy on the server, Hypershield rule on the DPU or switch,</text>
+<text top="1682" left="1228" width="15" height="29" font="18">N</text>
+<text top="1682" left="1243" width="633" height="29" font="18">exus port or route change. Network changes need NetOps approval</text>
+<text top="1759" left="93" width="309" height="21" font="2">S P L U N K ,   A   C I S C O   C O M P A N Y</text>
+<text top="1759" left="423" width="10" height="21" font="2">·</text>
+<text top="1759" left="455" width="282" height="21" font="2">Z E R O   T R U S T   N E T W O R K I N G</text>
+<text top="1759" left="1957" width="322" height="21" font="2">O N E   I N C I D E N T ,   E N D   T O   E N D</text>
+<text top="637" left="115" width="124" height="34" font="19"><b>Workloads</b></text>
+<text top="672" left="115" width="256" height="23" font="3">Build farm, AI training</text>
+<text top="760" left="115" width="177" height="34" font="20"><b>Cisco Isovalent</b></text>
+<text top="796" left="115" width="290" height="23" font="3">Cilium · Hubble · Tetragon</text>
+<text top="884" left="115" width="15" height="34" font="21"><b>S</b></text>
+<text top="884" left="131" width="15" height="34" font="21"><b>p</b></text>
+<text top="884" left="146" width="6" height="34" font="22"><b>l</b></text>
+<text top="884" left="152" width="29" height="34" font="21"><b>un</b></text>
+<text top="884" left="182" width="14" height="34" font="22"><b>k</b></text>
+<text top="884" left="195" width="6" height="34" font="21"><b> </b></text>
+<text top="884" left="201" width="15" height="34" font="21"><b>p</b></text>
+<text top="884" left="216" width="6" height="34" font="22"><b>l</b></text>
+<text top="884" left="222" width="14" height="34" font="21"><b>a</b></text>
+<text top="884" left="236" width="9" height="34" font="21"><b>t</b></text>
+<text top="884" left="244" width="9" height="34" font="22"><b>f</b></text>
+<text top="884" left="253" width="46" height="34" font="21"><b>orm</b></text>
+<text top="920" left="115" width="312" height="23" font="3">Ingest · correlate · posture</text>
+<text top="1008" left="115" width="14" height="34" font="21"><b>E</b></text>
+<text top="1008" left="130" width="23" height="34" font="21"><b>nt</b></text>
+<text top="1008" left="153" width="14" height="34" font="22"><b>e</b></text>
+<text top="1008" left="167" width="34" height="34" font="21"><b>rpr</b></text>
+<text top="1008" left="201" width="6" height="34" font="22"><b>i</b></text>
+<text top="1008" left="208" width="13" height="34" font="21"><b>s</b></text>
+<text top="1008" left="221" width="14" height="34" font="22"><b>e</b></text>
+<text top="1008" left="235" width="21" height="34" font="21"><b> S</b></text>
+<text top="1008" left="256" width="28" height="34" font="22"><b>ec</b></text>
+<text top="1008" left="284" width="24" height="34" font="21"><b>ur</b></text>
+<text top="1008" left="309" width="6" height="34" font="22"><b>i</b></text>
+<text top="1008" left="315" width="23" height="34" font="21"><b>ty</b></text>
+<text top="1044" left="115" width="212" height="23" font="3">Risk-based alerting</text>
+<text top="1132" left="115" width="18" height="34" font="21"><b>A</b></text>
+<text top="1131" left="132" width="29" height="34" font="22"><b>ge</b></text>
+<text top="1131" left="161" width="85" height="34" font="21"><b>nt Laun</b></text>
+<text top="1131" left="247" width="29" height="34" font="22"><b>ch</b></text>
+<text top="1131" left="275" width="29" height="34" font="21"><b>pa</b></text>
+<text top="1131" left="304" width="15" height="34" font="22"><b>d</b></text>
+<text top="1167" left="115" width="145" height="23" font="3">No-code agent</text>
+<text top="1255" left="115" width="85" height="34" font="21"><b>SOAR a</b></text>
+<text top="1255" left="200" width="15" height="34" font="21"><b>n</b></text>
+<text top="1255" left="215" width="15" height="34" font="22"><b>d</b></text>
+<text top="1255" left="230" width="6" height="34" font="21"><b> </b></text>
+<text top="1255" left="236" width="15" height="34" font="21"><b>p</b></text>
+<text top="1255" left="251" width="14" height="34" font="22"><b>e</b></text>
+<text top="1255" left="265" width="29" height="34" font="21"><b>op</b></text>
+<text top="1255" left="294" width="20" height="34" font="22"><b>le</b></text>
+<text top="1291" left="115" width="212" height="23" font="3">Playbook · approval</text>
+<text top="559" left="565" width="10" height="32" font="23"><b>1</b></text>
+<text top="554" left="607" width="20" height="39" font="24"><b>C</b></text>
+<text top="554" left="628" width="94" height="39" font="24"><b>onnect</b></text>
+<text top="559" left="928" width="14" height="32" font="23"><b>2</b></text>
+<text top="554" left="972" width="38" height="39" font="24"><b>Ob</b></text>
+<text top="554" left="1010" width="76" height="39" font="24"><b>serve</b></text>
+<text top="559" left="1302" width="15" height="32" font="23"><b>3</b></text>
+<text top="554" left="1347" width="93" height="39" font="24"><b>Decide</b></text>
+<text top="559" left="1661" width="15" height="32" font="23"><b>4</b></text>
+<text top="554" left="1706" width="16" height="39" font="24"><b>E</b></text>
+<text top="554" left="1722" width="87" height="39" font="24"><b>nforce</b></text>
+<text top="559" left="2037" width="15" height="32" font="23"><b>5</b></text>
+<text top="554" left="2081" width="35" height="39" font="24"><b>Ve</b></text>
+<text top="554" left="2117" width="47" height="39" font="24"><b>rify</b></text>
+<text top="995" left="1747" width="11" height="27" font="25"><b>E</b></text>
+<text top="995" left="1758" width="12" height="27" font="25"><b>n</b></text>
+<text top="995" left="1770" width="105" height="28" font="25"><b>force at the</b></text>
+<text top="1017" left="1747" width="12" height="27" font="25"><b>n</b></text>
+<text top="1017" left="1758" width="110" height="28" font="25"><b>earest point</b></text>
+<text top="625" left="493" width="27" height="31" font="14"><b>CI </b></text>
+<text top="625" left="520" width="49" height="31" font="14"><b>runn</b></text>
+<text top="625" left="569" width="125" height="32" font="14"><b>er connects</b></text>
+<text top="658" left="493" width="11" height="27" font="15">J</text>
+<text top="657" left="503" width="11" height="27" font="15">o</text>
+<text top="657" left="514" width="246" height="27" font="15">b 88213  checkpoint store</text>
+<text top="680" left="493" width="52" height="27" font="15">9000</text>
+<text top="749" left="857" width="6" height="31" font="14"><b>I</b></text>
+<text top="749" left="863" width="50" height="31" font="14"><b>sova</b></text>
+<text top="749" left="913" width="144" height="32" font="14"><b>lent observes</b></text>
+<text top="781" left="857" width="14" height="27" font="15">H</text>
+<text top="781" left="871" width="11" height="27" font="15">u</text>
+<text top="781" left="882" width="237" height="27" font="15">bble: AUDIT (would deny) ·</text>
+<text top="804" left="857" width="12" height="27" font="15">T</text>
+<text top="804" left="868" width="272" height="27" font="15">etragon: curl from postbuild.sh</text>
+<text top="884" left="857" width="13" height="31" font="14"><b>E</b></text>
+<text top="884" left="870" width="13" height="31" font="14"><b>v</b></text>
+<text top="884" left="883" width="97" height="32" font="14"><b>ents land</b></text>
+<text top="916" left="857" width="10" height="27" font="15">z</text>
+<text top="916" left="867" width="237" height="27" font="15">ero_trust index, in seconds</text>
+<text top="873" left="1222" width="14" height="31" font="14"><b>S</b></text>
+<text top="873" left="1236" width="14" height="31" font="14"><b>p</b></text>
+<text top="872" left="1249" width="157" height="32" font="14"><b>lunk correlates</b></text>
+<text top="905" left="1222" width="18" height="27" font="15">W</text>
+<text top="905" left="1239" width="18" height="27" font="15">or</text>
+<text top="905" left="1258" width="235" height="27" font="15">kload, CI job 88213, server</text>
+<text top="927" left="1222" width="103" height="27" font="15">bf-node-03</text>
+<text top="996" left="1222" width="13" height="31" font="14"><b>F</b></text>
+<text top="996" left="1234" width="227" height="32" font="14"><b>inding group ES1842</b></text>
+<text top="1029" left="1222" width="12" height="27" font="15">T</text>
+<text top="1029" left="1233" width="41" height="27" font="15">wo s</text>
+<text top="1029" left="1274" width="221" height="27" font="15">ignals, 50  40  risk 90,</text>
+<text top="1051" left="1222" width="21" height="27" font="15">ov</text>
+<text top="1051" left="1243" width="191" height="27" font="15">er the threshold of 80</text>
+<text top="1120" left="1222" width="16" height="31" font="14"><b>A</b></text>
+<text top="1120" left="1237" width="103" height="32" font="14"><b>gent brief</b></text>
+<text top="1153" left="1222" width="12" height="27" font="15">T</text>
+<text top="1152" left="1233" width="18" height="27" font="15">ru</text>
+<text top="1152" left="1251" width="216" height="27" font="15">e positive · recommends</text>
+<text top="1175" left="1222" width="68" height="27" font="15">quarant</text>
+<text top="1175" left="1289" width="26" height="27" font="15">ine</text>
+<text top="1244" left="1586" width="16" height="31" font="14"><b>A</b></text>
+<text top="1244" left="1602" width="61" height="31" font="14"><b>pprov</b></text>
+<text top="1244" left="1663" width="121" height="32" font="14"><b>e and apply</b></text>
+<text top="1276" left="1586" width="269" height="27" font="15">j.chen approves · Cilium policy</text>
+<text top="1299" left="1586" width="10" height="27" font="15">a</text>
+<text top="1299" left="1597" width="23" height="27" font="15">pp</text>
+<text top="1299" left="1619" width="31" height="27" font="15">lied</text>
+<text top="749" left="1586" width="16" height="31" font="14"><b>C</b></text>
+<text top="749" left="1602" width="149" height="32" font="14"><b>ilium enforces</b></text>
+<text top="781" left="1586" width="14" height="27" font="15">Q</text>
+<text top="781" left="1600" width="56" height="27" font="15">uarant</text>
+<text top="781" left="1657" width="190" height="27" font="15">ine policy isolates the</text>
+<text top="804" left="1586" width="23" height="27" font="15">po</text>
+<text top="804" left="1609" width="125" height="27" font="15">d in the kernel</text>
+<text top="625" left="1586" width="14" height="31" font="14"><b>R</b></text>
+<text top="625" left="1600" width="40" height="31" font="14"><b>unn</b></text>
+<text top="625" left="1641" width="110" height="32" font="14"><b>er isolated</b></text>
+<text top="658" left="1586" width="12" height="27" font="15">R</text>
+<text top="657" left="1598" width="236" height="27" font="15">est of the build farm keeps</text>
+<text top="680" left="1586" width="40" height="27" font="15">runn</text>
+<text top="680" left="1626" width="27" height="27" font="15">ing</text>
+<text top="749" left="1951" width="14" height="31" font="14"><b>R</b></text>
+<text top="749" left="1965" width="154" height="32" font="14"><b>etries dropped</b></text>
+<text top="781" left="1951" width="94" height="27" font="15">DROPPED </text>
+<text top="781" left="2044" width="154" height="27" font="15">by the quarantine</text>
+<text top="804" left="1951" width="23" height="27" font="15">po</text>
+<text top="804" left="1973" width="30" height="27" font="15">licy</text>
+<text top="873" left="1951" width="14" height="31" font="14"><b>P</b></text>
+<text top="873" left="1964" width="55" height="31" font="14"><b>ostur</b></text>
+<text top="872" left="2019" width="116" height="32" font="14"><b>e improves</b></text>
+<text top="905" left="1951" width="14" height="27" font="15">C</text>
+<text top="905" left="1964" width="21" height="27" font="15">ov</text>
+<text top="905" left="1985" width="208" height="27" font="15">erage 86.4%  87.9% ·</text>
+<text top="927" left="1951" width="28" height="27" font="15">pat</text>
+<text top="927" left="1979" width="78" height="27" font="15">hs 9  8</text>
+<text top="1244" left="1951" width="16" height="31" font="14"><b>A</b></text>
+<text top="1244" left="1967" width="13" height="31" font="14"><b>u</b></text>
+<text top="1244" left="1980" width="73" height="32" font="14"><b>dit trail</b></text>
+<text top="1276" left="1951" width="18" height="27" font="15">W</text>
+<text top="1276" left="1969" width="252" height="27" font="15">ho approved, what changed,</text>
+<text top="1299" left="1951" width="15" height="27" font="15">w</text>
+<text top="1299" left="1966" width="33" height="27" font="15">hen</text>
+</page>
+</pdf2xml>

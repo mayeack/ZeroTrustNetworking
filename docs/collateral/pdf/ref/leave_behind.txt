@@ -1,0 +1,44 @@
+ZERO    TRUST     NETWORKING        ·   CISCO     +   SPLUNK
+
+
+
+Splunk as the Control Plane for Zero Trust Networking
+Cisco enforces at the kernel, the NIC and the switch. Splunk sees every flow and every policy decision, and closes the loop.
+
+           The blind spot
+           Zero trust is written as policy and enforced in three places: the Linux kernel, the NIC or
+           DPU, and the switch. Each keeps its own verdicts in its own console, and none of it sits                   3                                   0
+           next to the identity, scheduler and security data your teams already investigate with.
+           Nobody can say whether the policy is enforced everywhere, or which job is paying
+           for a congested link.
+                                                                                                                                                          sidecars or per-app
+                                                                                                                                                          agents
+                                                                                                                      enforcement points
+           What you get                                                                                               kernel · DPU · switch,
+                                                                                                                                                          eBPF attaches at the Linux
+                                                                                                                                                          kernel; nothing to install per
+           Every flow with its workload identity and verdict, the process behind every connection,                    enforcing one policy                application
+           fabric-level enforcement events and BGP and EVPN state, joined in Splunk with job and
+           identity context. Enterprise Security turns them into findings; SOAR and Agent
+           Launchpad push the decision back to the nearest enforcement point, with approval
+           and an audit trail.
+                                                                                                                      L3–L7                               1
+           The business impact
+           Zero trust becomes a number your teams can move: policy coverage, audit-to-enforce
+           conversion, time to contain, and GPU-hours recovered from the fabric. New sites                            identity-aware policy               control plane
+           come up on the same design and are provable on day one, and the SOC and the                                workload identity, not IP,          flows, decisions and actions
+           network team work from the same evidence.                                                                  from the container to the VM        in the Splunk you already
+                                                                                                                      to the process                      run
+
+Built on: Isovalent (Cilium, Tetragon, Hubble) · Cisco Hypershield and Cisco N9300 Smart Switches · Cisco Live Protect for Nexus · Splunk Enterprise Security, Splunk SOAR and Agent
+Launchpad
+
+
+            GET STARTED: A conceptual demo of the loop, then a lab validation on one cluster and one Nexus leaf pair, with your Splunk and your
+            policies in audit mode. Four to six weeks to a proven segment, with success criteria agreed up front.
+
+
+
+
+                                                                           Cisco | Splunk · Zero Trust Networking
+
