@@ -72,10 +72,11 @@ def create_investigation(splunkd, name, finding_event_id, finding_time, descript
     return get_investigation(splunkd, guid) or {"id": guid, "investigation_guid": guid}
 
 
-def ensure_investigation(splunkd, finding, description=""):
-    """Return (investigation dict, created bool) for a ZT finding row from newest_zt_finding."""
+def ensure_investigation(splunkd, finding, description="", not_before=0):
+    """Return (investigation dict, created bool) for a ZT finding row from newest_zt_finding. An investigation from
+    before `not_before` (the last reset) is never reused, so every run gets its own."""
     inv = find_investigation_for_finding(splunkd, finding["event_id"], finding.get("rule_title"), finding.get("finding_epoch"))
-    if inv:
+    if inv and float(inv.get("create_time") or 0) >= float(not_before or 0):
         return inv, False
     inv = create_investigation(splunkd, finding.get("rule_title") or "Zero trust finding", finding["event_id"], finding.get("finding_time") or time.strftime("%Y-%m-%d %H:%M:%S", time.gmtime()), description)
     return inv, True

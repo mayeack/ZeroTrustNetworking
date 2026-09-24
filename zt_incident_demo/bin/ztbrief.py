@@ -126,18 +126,19 @@ class ZtBriefCommand(StreamingCommand):
         finding_id = (finding or {}).get("event_id") or brief.get("finding_id") or ""
         if not finding_id:
             return "no ZT finding group since the last reset; brief not stored"
-        existing = sd.kv_get(R.BRIEFS, finding_id) or {}
+        key = R.run_key(finding_id, ST.load(sd).get("last_reset_epoch") or 0)
+        existing = sd.kv_get(R.BRIEFS, key) or {}
         created = False
         if existing.get("investigation_guid"):
             guid, display = existing["investigation_guid"], existing.get("investigation_id") or existing["investigation_guid"]
         elif finding:
-            inv, created = es_api.ensure_investigation(sd, finding, description="Opened from the zero trust finding group by ZTFlowInvestigator.")
+            inv, created = es_api.ensure_investigation(sd, finding, description="Opened from the zero trust finding group by ZTFlowInvestigator.", not_before=ST.load(sd).get("last_reset_epoch") or 0)
             guid, display = es_api.investigation_ids(inv)
         else:
             guid, display = "", ""
         reco = brief.get("recommendation") or {}
         where = brief.get("where") or {}
-        record = {"_key": finding_id, "finding_id": finding_id, "finding_display_id": display, "investigation_id": display, "investigation_guid": guid,
+        record = {"_key": key, "finding_id": finding_id, "finding_display_id": display, "investigation_id": display, "investigation_guid": guid,
                   "workload": brief.get("entity") or canon.RUNNER_WORKLOAD, "pod": where.get("pod") or "", "node": where.get("node") or "",
                   "job_id": str(brief.get("job_id") or ""), "dest_workload": brief.get("dest_workload") or "", "data_class": brief.get("data_class") or "",
                   "disposition": brief.get("disposition") or "", "confidence": brief.get("confidence") or "", "enforcement_point": reco.get("enforcement_point") or "",

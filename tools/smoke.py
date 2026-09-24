@@ -203,7 +203,8 @@ def inject_brief(s, finding):
     from ztgen.restclient import Splunkd
     sd = Splunkd(ztrest.env("SPLUNK_URL"), basic=(ztrest.env("SPLUNK_USER"), ztrest.env("SPLUNK_PASS")), verify=False)
     row = {"event_id": finding["event_id"], "rule_title": finding.get("rule_title"), "finding_time": finding.get("_time"), "finding_epoch": time.time() - 600}
-    inv, created = es_api.ensure_investigation(sd, row, description="Opened for the local test run.")
+    state = sd.kv_get("zt_demo_state", "global") or {}
+    inv, created = es_api.ensure_investigation(sd, row, description="Opened for the local test run.", not_before=state.get("last_reset_epoch") or 0)
     guid, display = es_api.investigation_ids(inv)
     brief = {"finding_id": finding["event_id"], "entity": canon.RUNNER_WORKLOAD, "risk": 90, "job_id": str(canon.CI_JOB_ID), "dest_workload": canon.STORE_WORKLOAD, "data_class": "crown-jewel",
              "disposition": "true_positive", "confidence": "high",
@@ -213,7 +214,7 @@ def inject_brief(s, finding):
              "recommendation": {"enforcement_point": "kernel", "action": "Quarantine the runner pod at the kernel with a Cilium policy", "policy_name": canon.QUARANTINE_POLICY, "scope": "one pod", "blast_radius": "the one pod; the rest of the build farm keeps running", "approver_labels": ["SOC tier 2"]},
              "follow_up": ["Revert !4417", "rotate the runner's credentials", "review the allowlist rollout"], "evidence": [{"tool": "zt_finding_context", "fact": "risk 90 from 2 detections"}],
              "brief_text": "Disposition: True positive, high confidence.\nWhat happened: CI job 88213 ran scripts/postbuild.sh from merge request !4417 (contractor-dev-17), using curl to fetch a checkpoint of training job 7712.\nWhy it matters: Protected crown-jewel store; the runner is not on its allowlist, which is still in audit mode.\nWhere: Pod ci-runner-7d9f8-xk2lq on bf-node-03 (dc2-leaf-205 Eth1/12).\nRecommendation: Quarantine the runner pod at the kernel with a Cilium policy (zt-quarantine-ci-runner-88213). Approver: SOC tier 2.\nFollow-up: Revert !4417, rotate the runner's credentials, review the allowlist rollout."}
-    rec = {"_key": finding["event_id"], "finding_id": finding["event_id"], "finding_display_id": display, "investigation_id": display, "investigation_guid": guid, "workload": canon.RUNNER_WORKLOAD,
+    rec = {"_key": "%s@%d" % (finding["event_id"], int(float(state.get("last_reset_epoch") or 0))), "finding_id": finding["event_id"], "finding_display_id": display, "investigation_id": display, "investigation_guid": guid, "workload": canon.RUNNER_WORKLOAD,
            "pod": canon.RUNNER_POD, "node": canon.RUNNER_NODE, "job_id": str(canon.CI_JOB_ID), "dest_workload": canon.STORE_WORKLOAD, "data_class": "crown-jewel", "disposition": "true_positive",
            "confidence": "high", "enforcement_point": "kernel", "action": brief["recommendation"]["action"], "policy_name": canon.QUARANTINE_POLICY, "blast_radius": brief["recommendation"]["blast_radius"],
            "approver_labels": "SOC tier 2", "brief_json": json.dumps(brief), "brief_text": brief["brief_text"], "what_happened": brief["what_happened"], "session_id": "local-test", "run_epoch": time.time(), "note_added": 0}

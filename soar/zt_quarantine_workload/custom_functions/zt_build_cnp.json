@@ -1,0 +1,25 @@
+{
+    "create_time": "2026-09-23T00:00:00.000000+00:00",
+    "custom_function_id": "zt_build_cnp",
+    "description": "Build the quarantine request bodies for one workload: the pod label patch, the CiliumNetworkPolicy and the YAML shown to the approver. Naming zt-quarantine-<workload>-<job id>; the label value is the job id. Same logic as ztgen/cnp.py build() in the Splunk app.",
+    "draft_mode": false,
+    "inputs": [
+        {"name": "namespace", "description": "Namespace of the pod, for example build-farm", "contains": [], "placeholder": "build-farm"},
+        {"name": "pod", "description": "Pod name, for example ci-runner-7d9f8-xk2lq", "contains": [], "placeholder": "ci-runner-7d9f8-xk2lq"},
+        {"name": "workload", "description": "Workload as namespace/name or name, for example build-farm/ci-runner", "contains": [], "placeholder": "build-farm/ci-runner"},
+        {"name": "job_id", "description": "CI job id; becomes the label value", "contains": [], "placeholder": "88213"},
+        {"name": "finding_id", "description": "Finding id carried in the policy label zt/finding", "contains": [], "placeholder": ""}
+    ],
+    "outputs": [
+        {"name": "policy_name", "description": "zt-quarantine-<workload>-<job id>", "contains": [], "data_paths": ["policy_name"]},
+        {"name": "label_patch_json", "description": "JSON body for PATCH .../pods/<pod> (Content-Type application/merge-patch+json)", "contains": [], "data_paths": ["label_patch_json"]},
+        {"name": "label_key", "description": "The label key (zt-quarantine)", "contains": [], "data_paths": ["label_key"]},
+        {"name": "label_value", "description": "The label value (the job id)", "contains": [], "data_paths": ["label_value"]},
+        {"name": "cnp_json", "description": "JSON body for POST .../ciliumnetworkpolicies", "contains": [], "data_paths": ["cnp_json"]},
+        {"name": "policy_yaml", "description": "The policy as shown to the approver", "contains": [], "data_paths": ["policy_yaml"]},
+        {"name": "pod", "description": "The pod name, passed through", "contains": [], "data_paths": ["pod"]},
+        {"name": "namespace", "description": "The namespace, passed through", "contains": [], "data_paths": ["namespace"]}
+    ],
+    "platform_version": "8.7.0",
+    "python_version": "3.13"
+}

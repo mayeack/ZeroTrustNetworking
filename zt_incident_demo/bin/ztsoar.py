@@ -56,10 +56,10 @@ class ZtSoarCommand(GeneratingCommand):
             return
         cfg = ST.config(sd)
         hec = None
-        existing = {r.get("finding_id") for r in sd.kv_query(R.REQUESTS)}
+        existing = {r.get("_key") for r in sd.kv_query(R.REQUESTS)}
         made = 0
         for brief in sd.kv_query(R.BRIEFS, {"disposition": "true_positive"}):
-            if not brief.get("finding_id") or brief["finding_id"] in existing or float(brief.get("run_epoch") or 0) < float(st["last_reset_epoch"] or 0):
+            if not brief.get("finding_id") or brief.get("_key") in existing or float(brief.get("run_epoch") or 0) < float(st["last_reset_epoch"] or 0):
                 continue
             hec = hec or make_hec(sd, cfg)
             req = R.create_request(sd, hec, brief, now)

@@ -11,6 +11,11 @@ from .restclient import RestError
 
 REQUESTS = "zt_enforcement_requests"
 BRIEFS = "zt_agent_briefs"
+
+
+def run_key(finding_id, reset_epoch):
+    """KV key for briefs and requests: the finding id plus the run (ES reuses a finding group's id across re-fires)."""
+    return "%s@%d" % (finding_id, int(float(reset_epoch or 0)))
 APP_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 ROLE_LABELS = {"zt_soc_tier2": "SOC tier 2", "zt_netops": "NetOps", "zt_platform": "platform"}
 VERIFY_TIMEOUT = 180

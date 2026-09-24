@@ -1,0 +1,113 @@
+{
+  "_comment": "Assets used by the zt_quarantine_workload playbook on Splunk SOAR 8.7 (cloud). Placeholders in angle brackets are filled by tools/soar_setup.py from local/env; never commit real values. Version pins are the apps verified on the target.",
+  "assets": [
+    {
+      "name": "zt_splunk",
+      "description": "Splunk Cloud stack, user zt-soar (role zt_soar, inherits ess_analyst): reads zt_agent_briefs_lookup and verifies DROPPED flows in index=zero_trust.",
+      "product_vendor": "Splunk",
+      "product_name": "Splunk",
+      "app": "Splunk",
+      "app_version": "4.0.2",
+      "configuration": {
+        "device": "<SPLUNK_URL host, prd-shw-39d7bab80b2f9d.splunkcloud.com>",
+        "port": 8089,
+        "username": "zt-soar",
+        "password": "<ZT_PASS_ZT_SOAR from local/env>",
+        "verify_server_cert": true,
+        "timezone": "UTC",
+        "retry_count": 3
+      },
+      "used_by": ["read_brief (run query)", "verify (run query)", "request id (run query)"]
+    },
+    {
+      "name": "zt_k8s_api",
+      "description": "Kubernetes API (emulator) at the public URL; bearer token of the zt-enforcer service account; certificate verification off (self-signed).",
+      "product_vendor": "Generic",
+      "product_name": "HTTP",
+      "app": "HTTP",
+      "app_version": "4.0.1",
+      "configuration": {
+        "base_url": "https://zt-k8s.yeackbot.com",
+        "auth_token_name": "Authorization",
+        "auth_token": "Bearer <ZT_K8S_ENFORCER_TOKEN from local/env>",
+        "verify_server_cert": false,
+        "timeout": 30
+      },
+      "used_by": ["apply (patch data: pod labels; post data: CiliumNetworkPolicy)"]
+    },
+    {
+      "name": "zt_hec",
+      "description": "Splunk HTTP Event Collector of the stack; writes zt:enforcement:audit events to index zero_trust.",
+      "product_vendor": "Generic",
+      "product_name": "HTTP",
+      "app": "HTTP",
+      "app_version": "4.0.1",
+      "configuration": {
+        "base_url": "https://http-inputs-prd-shw-39d7bab80b2f9d.splunkcloud.com:443",
+        "auth_token_name": "Authorization",
+        "auth_token": "Splunk <SPLUNK_HEC_TOKEN from local/env>",
+        "verify_server_cert": true,
+        "timeout": 30
+      },
+      "used_by": ["record_and_resolve (post data /services/collector/event)"]
+    },
+    {
+      "name": "zt_hypershield",
+      "description": "Hypershield rules endpoint (stub on the emulator): POST /hypershield/v1/rules for the DPU enforcement point.",
+      "product_vendor": "Generic",
+      "product_name": "HTTP",
+      "app": "HTTP",
+      "app_version": "4.0.1",
+      "configuration": {
+        "base_url": "https://zt-k8s.yeackbot.com",
+        "auth_token_name": "Authorization",
+        "auth_token": "Bearer <ZT_K8S_ENFORCER_TOKEN from local/env>",
+        "verify_server_cert": false,
+        "timeout": 30
+      },
+      "used_by": ["apply (dpu branch)"]
+    },
+    {
+      "name": "zt_nexus_nxapi",
+      "description": "Nexus NX-API JSON-RPC endpoint (stub on the emulator): POST /ins with header X-Nexus-Device for the switch enforcement point.",
+      "product_vendor": "Generic",
+      "product_name": "HTTP",
+      "app": "HTTP",
+      "app_version": "4.0.1",
+      "configuration": {
+        "base_url": "https://zt-k8s.yeackbot.com",
+        "auth_token_name": "Authorization",
+        "auth_token": "Bearer <ZT_K8S_ENFORCER_TOKEN from local/env>",
+        "verify_server_cert": false,
+        "timeout": 30
+      },
+      "used_by": ["apply (switch branch)"]
+    },
+    {
+      "name": "builtin_mc_connector",
+      "description": "Existing Enterprise Security connector asset created by the ES pairing; not created by soar_setup.py.",
+      "product_vendor": "Splunk",
+      "product_name": "Enterprise Security",
+      "app": "Enterprise Security",
+      "app_version": "6.7.0",
+      "configuration": {},
+      "managed": false,
+      "used_by": ["start_from_finding (get related investigations for finding, start investigations)", "record_and_resolve (add finding or investigation note, update finding or investigation)"]
+    },
+    {
+      "name": "phantom",
+      "description": "Phantom utility app asset for the no op sleeps (30 s brief polling, 15 s verification polling). Create it in the SOAR UI if it does not exist; it needs the SOAR base URL and an automation user token. Not created by soar_setup.py.",
+      "product_vendor": "Phantom",
+      "product_name": "Phantom",
+      "app": "Phantom",
+      "app_version": "3.8.4",
+      "configuration": {
+        "phantom_server": "<SOAR base URL host>",
+        "auth_token": "<automation user token, created in the SOAR UI>",
+        "verify_certificate": true
+      },
+      "managed": false,
+      "used_by": ["read_brief wait (no op 30 s)", "verify wait (no op 15 s)"]
+    }
+  ]
+}

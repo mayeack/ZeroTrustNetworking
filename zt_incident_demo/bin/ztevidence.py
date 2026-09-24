@@ -39,7 +39,7 @@ class ZtEvidenceCommand(GeneratingCommand):
             if st["agent_mode"] != "inline":
                 return
             finding = es_api.newest_zt_finding(sd, canon.RULE_FBD, float(st["last_reset_epoch"] or 0))
-            if not finding or sd.kv_get(R.BRIEFS, finding["event_id"]):
+            if not finding or sd.kv_get(R.BRIEFS, R.run_key(finding["event_id"], st["last_reset_epoch"])):
                 return
             workload = finding.get("normalized_risk_object") or canon.RUNNER_WORKLOAD
             pod, node = canon.RUNNER_POD if workload == canon.RUNNER_WORKLOAD else "*", canon.RUNNER_NODE if workload == canon.RUNNER_WORKLOAD else "*"
