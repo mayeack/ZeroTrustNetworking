@@ -71,7 +71,7 @@ VM_LEGACY = ["erp-batch", "erp-web", "erp-db", "erp-print", "payroll-batch", "hr
 OBSERVABILITY = ["log-shipper", "metrics-collector", "otel-collector", "otel-gateway", "trace-collector",
                  "prometheus", "alertmanager", "grafana", "loki", "tempo", "mimir", "pushgateway", "blackbox-exporter",
                  "node-exporter", "snmp-exporter", "syslog-collector", "netflow-collector", "flow-aggregator",
-                 "profiler", "synthetic-checker".replace("synthetic", "uptime"), "sla-reporter", "oncall-bridge",
+                 "profiler", "uptime-checker", "sla-reporter", "oncall-bridge",
                  "status-exporter", "cost-collector", "gpu-exporter", "dcgm-exporter", "nvlink-monitor", "fabric-poller"]
 TEAM_APPS = ["api", "worker", "web", "cache", "cron"]
 

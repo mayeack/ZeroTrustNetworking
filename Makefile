@@ -84,6 +84,8 @@ tunnel-install: ## Create the zt-k8s Cloudflare tunnel and DNS route (shows the 
 	$(PY) tools/tunnel.py install
 smoke: ## Acceptance checks with a pass/fail table (FRESH=1 right after a fresh install)
 	$(PY) tools/smoke.py --fresh=$(FRESH)
+wording: ## Acceptance criterion 11: banned words in visible text of both apps, the agent and the playbook
+	$(PY) tools/wording.py
 reset-hard: ## Empty zero_trust and zt_summary on the stack and backfill again (asks first)
 	$(PY) tools/reset_hard.py
 collateral: ## Update the deck and the talk track from docs/collateral/collateral.yaml

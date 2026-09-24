@@ -71,6 +71,7 @@ make agent              # Agent Launchpad steps: LLM connection, MCP connection 
 make es-automation-rule # ES automation rule "Zero Trust Protected Paths" that starts the playbook (Mode A); RULE=off|on toggles it
 make soar-setup         # SOAR roles, users, assets, custom function and playbook (idempotent; --dry-run shows the plan)
 make smoke              # acceptance checks 2 to 8 with a pass/fail table; FRESH=1 right after a fresh install
+make wording            # acceptance criterion 11: banned words in the visible text of both apps, the agent and the playbook
 ```
 
 `make help` lists every target. `make local-install` copies both apps into the local Splunk Enterprise at `LOCAL_SPLUNK` (default `/opt/splunk104`) as a test bed for the Python code before an upload.
