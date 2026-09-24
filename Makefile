@@ -2,7 +2,7 @@
 PY ?= python3
 APP := zt_incident_demo
 DA := DA-ESS-zt_incident_demo
-VERSION := 1.0.0
+VERSION := 1.0.1
 LOCAL_SPLUNK ?= /opt/splunk104
 SPL := $(LOCAL_SPLUNK)/bin/splunk
 FRESH ?= 0

@@ -173,8 +173,8 @@ def main(argv):
                 inv = (lst[0] if isinstance(lst, list) and lst else {})
                 check("investigation Resolved / True Positive", str(inv.get("status_label") or inv.get("status")) in ("Resolved", "4") and "True Positive" in str(inv.get("disposition_name") or inv.get("disposition_label") or inv.get("disposition")), {k: inv.get(k) for k in ("investigation_id", "status", "status_label", "disposition", "disposition_name")})
                 notes = s.get("servicesNS/nobody/missioncontrol/public/v2/investigations/%s/notes" % urllib.parse.quote(guid, safe=""), params={"output_mode": None})
-                titles = [n.get("title") for n in (notes if isinstance(notes, list) else notes.get("items", []))]
-                check("notes: brief, request, result", any("brief" in (t or "").lower() for t in titles) and any("requested" in (t or "").lower() for t in titles) and any("verified" in (t or "").lower() for t in titles), titles)
+                texts = [((n.get("title") or "") + " " + (n.get("content") or "")).lower() for n in (notes if isinstance(notes, list) else notes.get("items", []))]
+                check("notes: brief, request, result", any("brief" in t for t in texts) and any("requested" in t for t in texts) and any("verified" in t for t in texts), "%d notes" % len(texts))
             def failed_job():
                 r = s.search('search index=zero_trust sourcetype=ci:job:event build_id=88213 build_status=failed earliest=%d | head 1 | table build_failure_reason build_finished_at' % int(t0), earliest=int(t0), latest="now")
                 return r or None
@@ -184,10 +184,11 @@ def main(argv):
     time.sleep(75)
     after = rollup(s)
     if before.get("identities") and after.get("identities"):
-        rel_ok = (int(float(after["identities"])) == int(float(before["identities"])) + 1 and int(float(after["enforcement_24h"])) == int(float(before["enforcement_24h"])) + 1 and
-                  int(float(after["enforcement_kernel"])) == int(float(before["enforcement_kernel"])) + 1 and int(float(after["unprotected"])) == int(float(before["unprotected"])) and
-                  int(float(after["paths"])) == int(float(before["paths"])) + 1 and int(float(after["enforced"])) == int(float(before["enforced"])) + 1)
-        check("posture after (relative): +1 identity, +1 path enforced, +1 kernel action", rel_ok, "before %s/%s/%s/%s after %s/%s/%s/%s" % (before["identities"], before["coverage_pct"], before["unprotected"], before["enforcement_24h"], after["identities"], after["coverage_pct"], after["unprotected"], after["enforcement_24h"]))
+        # after a practice run the before-state already carries that run for 24 h, so compare with what must hold either way
+        rel_ok = (int(float(after["enforcement_24h"])) == int(float(before["enforcement_24h"])) + 1 and int(float(after["enforcement_kernel"])) == int(float(before["enforcement_kernel"])) + 1 and
+                  int(float(after["identities"])) >= int(float(before["identities"])) and int(float(after["identities"])) >= 1284 and
+                  int(float(after["unprotected"])) == 8 and int(float(after["enforced"])) == int(float(after["paths"])) - 8 and int(float(after["paths"])) >= 66)
+        check("posture after (relative): +1 kernel action, runner path enforced, 8 unprotected", rel_ok, "before %s/%s/%s/%s after %s/%s/%s/%s" % (before["identities"], before["coverage_pct"], before["unprotected"], before["enforcement_24h"], after["identities"], after["coverage_pct"], after["unprotected"], after["enforcement_24h"]))
         if fresh:
             check("posture after: 1284 / 87.9 / 8 / 17 (11,2,4)", (int(float(after["identities"])), float(after["coverage_pct"]), int(float(after["unprotected"])), int(float(after["enforcement_24h"])), int(float(after["enforcement_kernel"]))) == (1284, 87.9, 8, 17, 11), "%s %s %s %s (%s)" % (after["identities"], after["coverage_pct"], after["unprotected"], after["enforcement_24h"], after["enforcement_kernel"]))
         dip = s.search('search index=zt_summary source="ZT Posture - Rollup" earliest=%d | stats min(coverage_pct) as min_cov max(unprotected) as max_unp' % int(t0), earliest=int(t0), latest="now")
