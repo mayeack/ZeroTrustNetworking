@@ -62,7 +62,7 @@ agent-inline: ## Agent gets the evidence inline
 	$(PY) tools/agent_mode.py inline
 mcp-tools: ## Create or update the five MCP tools and test them
 	$(PY) tools/mcp_tools.py
-agent: ## Agent Launchpad steps (and optional REST setup)
+agent: ## Create or update the SplunkMCP connection and the ZTFlowInvestigator agent by REST (needs the LLM connection)
 	$(PY) agent/setup_agent.py
 es-assets: ## Register the ES asset source
 	$(PY) tools/es_assets.py
