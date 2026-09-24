@@ -6,6 +6,7 @@ VERSION := 1.0.0
 LOCAL_SPLUNK ?= /opt/splunk104
 SPL := $(LOCAL_SPLUNK)/bin/splunk
 FRESH ?= 0
+PACKAGE_DIR ?= /Users/myeack/Library/CloudStorage/OneDrive-Cisco/Projects/Sales Plays/Zero Trust Networking/Splunk App Packages
 
 .PHONY: help check indexes hec secrets configure users lookups package appinspect sync-objects backfill fire reset status fast normal \
         mode-local mode-soar agent-mcp agent-inline mcp-tools agent es-assets es-automation-rule soar-setup soar-package \
@@ -34,6 +35,7 @@ package: lookups test ## Build both .tgz packages and run AppInspect with the cl
 	$(PY) tools/package.py $(APP) $(VERSION)
 	$(PY) tools/package.py $(DA) $(VERSION)
 	$(MAKE) appinspect
+	@mkdir -p "$(PACKAGE_DIR)" && cp $(APP)-$(VERSION).tgz $(DA)-$(VERSION).tgz "$(PACKAGE_DIR)/" && echo "packages copied to $(PACKAGE_DIR)"
 appinspect: ## AppInspect (cloud + private_victoria tags) on the built packages
 	@for p in $(APP)-$(VERSION).tgz $(DA)-$(VERSION).tgz; do echo "== $$p"; splunk-appinspect inspect $$p --mode precert --included-tags cloud --included-tags private_victoria --output-file local/appinspect-$$p.json > local/appinspect-$$p.txt 2>&1; grep -E "^(Failure|Error|Manual|Warning|Not Applicable|Success|Skipped)" -A0 local/appinspect-$$p.txt | tr '\n' ' '; echo; done
 sync-objects: ## Push knowledge objects (saved searches, macros, views, lookups) into the installed apps by REST
