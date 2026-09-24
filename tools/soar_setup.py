@@ -276,7 +276,7 @@ def import_playbook(soar, pb_tgz, dry):
     if pb:
         # ES 8.7 starts the playbook through its automation rule; "active" still lets the rule and manual runs use it
         soar.post("rest/playbook/%s" % pb["id"], json_body={"active": False})
-        say("playbook %s (id %s) active" % (PLAYBOOK, pb["id"]))
+        say("playbook %s (id %s) imported, label-inactive (the ES automation rule starts it)" % (PLAYBOOK, pb["id"]))
 
 
 # ------------------------------------------------------------------------------------------------ main
