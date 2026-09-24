@@ -3,7 +3,7 @@
   zt_incident_demo
 
   Mode B (local approvals, no SOAR): the pending quarantine requests, the request details and
-  policy YAML of the selected request, a comment box, Approve and Reject, the request history
+  policy YAML of the selected request, a comment box next to Approve and Reject, the request history
   and the enforcement audit trail. A click runs `| ztsoar action=approve|reject request_id=...`,
   which calls POST /services/zt_incident_demo/approvals as the signed-in user; the endpoint
   checks the caller's roles against zt_approvers and applies with system privileges.
@@ -19,15 +19,7 @@
     <set token="tick">0</set>
   </init>
   <label>Enforcement Approvals</label>
-  <description>Quarantine requests waiting for a named approver: the request, the policy to apply, a comment, Approve or Reject, the request history and the enforcement audit trail</description>
-
-  <fieldset submitButton="false" autoRun="true">
-    <input type="text" token="comment" searchWhenChanged="true">
-      <label>Comment (recorded with the decision)</label>
-      <default></default>
-      <initialValue></initialValue>
-    </input>
-  </fieldset>
+  <description>Quarantine requests waiting for a named approver. Click a pending request to review it, add a comment, then Approve or Reject; the request history and the enforcement audit trail follow</description>
 
   <row>
     <panel>
@@ -94,6 +86,17 @@
 
   <row depends="$req$">
     <panel>
+      <title>Decision on $req$</title>
+      <input type="text" token="comment" searchWhenChanged="false">
+        <label>Comment, recorded in the audit trail with the decision</label>
+        <default></default>
+        <initialValue></initialValue>
+      </input>
+      <html>
+        <p style="color:#8C9BA5">Click <b>Approve</b> or <b>Reject</b> on the right. The decision is made as the signed-in user; the approvals endpoint checks that user's roles against the request's approver labels and refuses anyone else.</p>
+      </html>
+    </panel>
+    <panel>
       <title>Approve</title>
       <!-- Runs once per click: the query carries $do_approve$, so it cannot dispatch until a click sets it,
            and the done/error handlers unset it so a reload or a comment change never re-runs the command -->
@@ -121,7 +124,7 @@
       </search>
       <table>
         <search>
-          <query>| makeresults | eval decision="Approve $req$ as the signed-in user and apply the policy" | table decision</query>
+          <query>| makeresults | eval decision="Approve $req$ and apply the policy (click)" | table decision</query>
         </search>
         <option name="count">1</option>
         <option name="drilldown">row</option>
@@ -162,7 +165,7 @@
       </search>
       <table>
         <search>
-          <query>| makeresults | eval decision="Reject $req$ (the request is closed, nothing is applied)" | table decision</query>
+          <query>| makeresults | eval decision="Reject $req$, nothing is applied (click)" | table decision</query>
         </search>
         <option name="count">1</option>
         <option name="drilldown">row</option>

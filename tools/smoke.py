@@ -1,9 +1,11 @@
 #!/usr/bin/env python3
 """make smoke: the acceptance criteria (design document section 15, items 2-8) through REST, with a pass/fail table.
 FRESH=1 checks the absolute posture numbers right after a fresh install; otherwise relative changes.
+--attach verifies the incident already running instead of firing a new one (t0 = last fire); --no-fire stops after the pre-fire checks.
 Runs a full incident: fire -> finding -> brief -> request -> approve as j.chen -> verified -> posture. Use --no-fire to
 only check the current state, --skip-agent to not wait for the brief, --approve-as USER to override the approver."""
 import json
+import re
 import os
 import sys
 import time
@@ -42,6 +44,7 @@ def rollup(s):
 def main(argv):
     fresh = any(a.startswith("--fresh=1") or a == "--fresh" for a in argv)
     no_fire = "--no-fire" in argv
+    attach = "--attach" in argv  # verify the incident already running (no new fire); t0 = last fire
     skip_agent = "--skip-agent" in argv
     approver = next((a.split("=", 1)[1] for a in argv if a.startswith("--approve-as=")), "j.chen")
     inject = "--inject-brief" in argv
@@ -68,15 +71,19 @@ def main(argv):
         check("detection quiet on background: %s" % rule.split(" - ")[1][:40], len(r) == 0, "%d rows" % len(r))
     before = rollup(s)
     check("posture rollup present", bool(before), {k: before.get(k) for k in ("identities", "coverage_pct", "unprotected", "audit_flows_24h", "enforcement_24h")})
-    if fresh and before:
+    if fresh and before and not attach:
         check("posture before: 1283 / 87.7 / 8 / 2306 / 16 (10,2,4)", (int(float(before["identities"])), float(before["coverage_pct"]), int(float(before["unprotected"])), int(float(before["audit_flows_24h"])), int(float(before["enforcement_24h"])), int(float(before["enforcement_kernel"])), int(float(before["enforcement_dpu"])), int(float(before["enforcement_switch"]))) == (1283, 87.7, 8, 2306, 16, 10, 2, 4),
               "%s %s %s %s %s (%s,%s,%s)" % (before["identities"], before["coverage_pct"], before["unprotected"], before["audit_flows_24h"], before["enforcement_24h"], before["enforcement_kernel"], before["enforcement_dpu"], before["enforcement_switch"]))
     if no_fire:
         return finish()
-    # 3. fire
-    fire = s.search("| ztdemo action=fire", earliest="-1m", latest="now", timeout=300)
-    t0 = float(fire[0].get("t0") or time.time()) if fire and fire[0].get("result") == "incident started" else None
-    check("fire accepted", t0 is not None, fire[0] if fire else "no row")
+    # 3. fire (or attach to the incident that is already running)
+    if attach:
+        t0 = float(st.get("last_fire_epoch") or 0) or None
+        check("attached to the running incident", t0 is not None and st.get("plan_status") == "running", "fired %s" % time.strftime("%H:%M:%SZ", time.gmtime(t0 or 0)))
+    else:
+        fire = s.search("| ztdemo action=fire", earliest="-1m", latest="now", timeout=300)
+        t0 = float(fire[0].get("t0") or time.time()) if fire and fire[0].get("result") == "incident started" else None
+        check("fire accepted", t0 is not None, fire[0] if fire else "no row")
     if t0 is None:
         return finish()
     q1 = 'search index=zero_trust sourcetype=cilium:hubble:flow verdict=AUDIT src_workload="build-farm/ci-runner" earliest=%d | head 1 | table src_pod dest_pod src_identity dest_identity _time' % (t0 - 60)
@@ -126,7 +133,7 @@ def main(argv):
         br, dtb = wait_for(brief, 420, 15)
         b0 = br[0] if br else {}
         check("agent brief within 7 min of fire", bool(br), "%.0fs" % dtb)
-        check("brief disposition true_positive / kernel / SOC tier 2", b0.get("disposition") == "true_positive" and b0.get("enforcement_point") == "kernel" and "SOC tier 2" in (b0.get("approver_labels") or ""), {k: b0.get(k) for k in ("disposition", "enforcement_point", "approver_labels")})
+        check("brief disposition true_positive / kernel / SOC tier 2", b0.get("disposition") == "true_positive" and b0.get("enforcement_point") == "kernel" and "soctier2" in re.sub(r"[^a-z0-9]", "", (b0.get("approver_labels") or "").lower()), {k: b0.get(k) for k in ("disposition", "enforcement_point", "approver_labels")})
         text = (b0.get("brief_json") or "") + (b0.get("brief_text") or "")
         for fact in ("88213", "4417", "contractor-dev-17", canon.RUNNER_POD, "bf-node-03", "dc2-leaf-205", "Eth1/12", "7712"):
             check("brief cites %s" % fact, fact in text)
@@ -177,9 +184,14 @@ def main(argv):
             check("verified within 2 min of applied", bool(vr), "%.0fs" % dtv)
             guid = r0.get("investigation_guid")
             if guid:
-                lst = s.get("servicesNS/nobody/missioncontrol/public/v2/investigations", params={"ids": guid, "output_mode": None})
-                inv = (lst[0] if isinstance(lst, list) and lst else {})
-                check("investigation Resolved / True Positive", str(inv.get("status_label") or inv.get("status")) in ("Resolved", "4") and "True Positive" in str(inv.get("disposition_name") or inv.get("disposition_label") or inv.get("disposition")), {k: inv.get(k) for k in ("investigation_id", "status", "status_label", "disposition", "disposition_name")})
+                def resolved():
+                    lst = s.get("servicesNS/nobody/missioncontrol/public/v2/investigations", params={"ids": guid, "output_mode": None})
+                    inv = (lst[0] if isinstance(lst, list) and lst else {})
+                    ok = str(inv.get("status_label") or inv.get("status")) in ("Resolved", "4") and "True Positive" in str(inv.get("disposition_name") or inv.get("disposition_label") or inv.get("disposition"))
+                    return [inv] if ok else None
+                rv, dtr = wait_for(resolved, 90, 10)  # the resolve follows the verification by a few seconds
+                inv = rv[0] if rv else {}
+                check("investigation Resolved / True Positive", bool(rv), "%.0fs %s" % (dtr, {k: inv.get(k) for k in ("investigation_id", "status", "disposition_name")}))
                 notes = s.get("servicesNS/nobody/missioncontrol/public/v2/investigations/%s/notes" % urllib.parse.quote(guid, safe=""), params={"output_mode": None})
                 texts = [((n.get("title") or "") + " " + (n.get("content") or "")).lower() for n in (notes if isinstance(notes, list) else notes.get("items", []))]
                 check("notes: brief, request, result", any("brief" in t for t in texts) and any("requested" in t for t in texts) and any("verified" in t for t in texts), "%d notes" % len(texts))

@@ -93,7 +93,7 @@ def candidate_texts(record):
         yield raw
 
 
-@Configuration()
+@Configuration(distributed=False)  # runs on the search head: needs the KV store and the app config
 class ZtBriefCommand(StreamingCommand):
     def stream(self, records):
         setup_logging()

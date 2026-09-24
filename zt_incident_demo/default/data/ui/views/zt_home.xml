@@ -1,0 +1,406 @@
+<!--
+  zt_home.xml - Zero Trust Incident (home)
+  zt_incident_demo
+
+  The app's landing page: one card per dashboard with a one-line purpose, an Open link and a live
+  number on the right, then a scoreboard row with the headline figures. Dashboard Studio, absolute
+  layout, dark theme, palette as the other views.
+-->
+<dashboard version="2" theme="dark">
+<label>Zero Trust Incident</label>
+<description>Home: the three dashboards of the app with a live number each, and the headline posture and incident figures</description>
+<definition><![CDATA[
+{
+ "title": "Zero Trust Incident",
+ "description": "Home: the three dashboards of the app with a live number each, and the headline posture and incident figures",
+ "visualizations": {
+  "viz_intro": {
+   "type": "splunk.markdown",
+   "options": {
+    "markdown": "### Zero Trust Incident\n\nOne CI runner reaches a protected AI data store. Cisco Isovalent sees the flow and the program behind it, Splunk correlates, Enterprise Security opens a finding, the ZTFlowInvestigator agent briefs, a named approver applies the Cilium quarantine, and the posture proves it. Three dashboards, one incident: open one from its card.",
+    "fontColor": "#FFFFFF"
+   }
+  },
+  "viz_card1": {
+   "type": "splunk.markdown",
+   "options": {
+    "markdown": "### 01 Zero Trust Fabric Posture\n\nProtected-path coverage, unprotected paths and every enforcement decision, from Isovalent flow and process data and the enforcement audit trail\n\n[Open Zero Trust Fabric Posture](/app/zt_incident_demo/zt_posture)",
+    "backgroundColor": "#1A2837",
+    "fontColor": "#FFFFFF"
+   }
+  },
+  "viz_kpi1": {
+   "type": "splunk.singlevalue",
+   "dataSources": {
+    "primary": "ds_rollup"
+   },
+   "options": {
+    "majorValue": "> primary | seriesByName(\"coverage_pct\") | lastPoint()",
+    "majorColor": "#F8BE34",
+    "majorFontSize": 44,
+    "underLabel": "protected-path coverage",
+    "underLabelFontSize": 13,
+    "sparklineDisplay": "off",
+    "trendDisplay": "off",
+    "backgroundColor": "#1A2837",
+    "unit": "%",
+    "unitPosition": "after",
+    "numberPrecision": 1
+   }
+  },
+  "viz_card2": {
+   "type": "splunk.markdown",
+   "options": {
+    "markdown": "### 02 Incident Timeline\n\nOne incident, end to end: connect, observe, decide, enforce, verify, with the evidence behind each of the twelve steps and a selector for the incident\n\n[Open Incident Timeline](/app/zt_incident_demo/zt_incident_timeline)",
+    "backgroundColor": "#1A2837",
+    "fontColor": "#FFFFFF"
+   }
+  },
+  "viz_kpi2": {
+   "type": "splunk.singlevalue",
+   "dataSources": {
+    "primary": "ds_incidents_24h"
+   },
+   "options": {
+    "majorValue": "> primary | seriesByName(\"count\") | lastPoint()",
+    "majorColor": "#009CEB",
+    "majorFontSize": 44,
+    "underLabel": "incidents, last 24h",
+    "underLabelFontSize": 13,
+    "sparklineDisplay": "off",
+    "trendDisplay": "off",
+    "backgroundColor": "#1A2837"
+   }
+  },
+  "viz_card3": {
+   "type": "splunk.markdown",
+   "options": {
+    "markdown": "### 03 Enforcement Approvals\n\nQuarantine requests waiting for a named approver: review the request and the policy, comment, approve or reject; the audit trail records who decided what\n\n[Open Enforcement Approvals](/app/zt_incident_demo/zt_enforcement_approvals)",
+    "backgroundColor": "#1A2837",
+    "fontColor": "#FFFFFF"
+   }
+  },
+  "viz_kpi3": {
+   "type": "splunk.singlevalue",
+   "dataSources": {
+    "primary": "ds_pending"
+   },
+   "options": {
+    "majorValue": "> primary | seriesByName(\"count\") | lastPoint()",
+    "majorColor": "#F1813F",
+    "majorFontSize": 44,
+    "underLabel": "pending approvals",
+    "underLabelFontSize": 13,
+    "sparklineDisplay": "off",
+    "trendDisplay": "off",
+    "backgroundColor": "#1A2837"
+   }
+  },
+  "viz_score_title": {
+   "type": "splunk.markdown",
+   "options": {
+    "markdown": "**Scoreboard** · [Zero Trust Fabric Posture](/app/zt_incident_demo/zt_posture) · [Incident Timeline](/app/zt_incident_demo/zt_incident_timeline) · [Search](/app/zt_incident_demo/search?q=search%20index%3Dzero_trust&earliest=-24h&latest=now)",
+    "fontColor": "#8C9BA5"
+   }
+  },
+  "viz_s1": {
+   "type": "splunk.singlevalue",
+   "dataSources": {
+    "primary": "ds_rollup"
+   },
+   "options": {
+    "majorValue": "> primary | seriesByName(\"identities\") | lastPoint()",
+    "majorColor": "#FFFFFF",
+    "majorFontSize": 44,
+    "underLabel": "Workload identities",
+    "underLabelFontSize": 13,
+    "sparklineDisplay": "off",
+    "trendDisplay": "off",
+    "backgroundColor": "transparent",
+    "shouldUseThousandSeparators": true
+   }
+  },
+  "viz_s2": {
+   "type": "splunk.singlevalue",
+   "dataSources": {
+    "primary": "ds_rollup"
+   },
+   "options": {
+    "majorValue": "> primary | seriesByName(\"coverage_pct\") | lastPoint()",
+    "majorColor": "#F8BE34",
+    "majorFontSize": 44,
+    "underLabel": "Protected-path coverage",
+    "underLabelFontSize": 13,
+    "sparklineDisplay": "off",
+    "trendDisplay": "off",
+    "backgroundColor": "transparent",
+    "unit": "%",
+    "unitPosition": "after",
+    "numberPrecision": 1
+   }
+  },
+  "viz_s3": {
+   "type": "splunk.singlevalue",
+   "dataSources": {
+    "primary": "ds_rollup"
+   },
+   "options": {
+    "majorValue": "> primary | seriesByName(\"unprotected\") | lastPoint()",
+    "majorColor": "#F1813F",
+    "majorFontSize": 44,
+    "underLabel": "Unprotected paths",
+    "underLabelFontSize": 13,
+    "sparklineDisplay": "off",
+    "trendDisplay": "off",
+    "backgroundColor": "transparent"
+   }
+  },
+  "viz_s4": {
+   "type": "splunk.singlevalue",
+   "dataSources": {
+    "primary": "ds_findings_24h"
+   },
+   "options": {
+    "majorValue": "> primary | seriesByName(\"count\") | lastPoint()",
+    "majorColor": "#CB2196",
+    "majorFontSize": 44,
+    "underLabel": "Findings, last 24h",
+    "underLabelFontSize": 13,
+    "sparklineDisplay": "off",
+    "trendDisplay": "off",
+    "backgroundColor": "transparent"
+   }
+  },
+  "viz_s5": {
+   "type": "splunk.singlevalue",
+   "dataSources": {
+    "primary": "ds_verified_24h"
+   },
+   "options": {
+    "majorValue": "> primary | seriesByName(\"count\") | lastPoint()",
+    "majorColor": "#53A051",
+    "majorFontSize": 44,
+    "underLabel": "Enforcements verified, last 24h",
+    "underLabelFontSize": 13,
+    "sparklineDisplay": "off",
+    "trendDisplay": "off",
+    "backgroundColor": "transparent"
+   }
+  }
+ },
+ "dataSources": {
+  "ds_rollup": {
+   "type": "ds.search",
+   "name": "ds_rollup",
+   "options": {
+    "query": "index=zt_summary source=\"ZT Posture - Rollup\" | head 1 | table identities coverage_pct unprotected enforcement_24h enforcement_kernel enforcement_dpu enforcement_switch audit_flows_24h",
+    "queryParameters": {
+     "earliest": "-24h",
+     "latest": "now"
+    }
+   }
+  },
+  "ds_incidents_24h": {
+   "type": "ds.search",
+   "name": "ds_incidents_24h",
+   "options": {
+    "query": "index=zero_trust sourcetype=ci:job:event build_id=88213 build_status=running | stats count",
+    "queryParameters": {
+     "earliest": "-24h",
+     "latest": "now"
+    }
+   }
+  },
+  "ds_pending": {
+   "type": "ds.search",
+   "name": "ds_pending",
+   "options": {
+    "query": "| inputlookup zt_enforcement_requests_lookup where status=\"pending\" | stats count",
+    "queryParameters": {
+     "earliest": "-24h",
+     "latest": "now"
+    }
+   }
+  },
+  "ds_findings_24h": {
+   "type": "ds.search",
+   "name": "ds_findings_24h",
+   "options": {
+    "query": "search earliest=-24h latest=now `notable` | search source=\"ZT - Workload Exceeded Risk Threshold on Protected-Path Signals - Rule\" | stats count",
+    "queryParameters": {
+     "earliest": "-24h",
+     "latest": "now"
+    }
+   }
+  },
+  "ds_verified_24h": {
+   "type": "ds.search",
+   "name": "ds_verified_24h",
+   "options": {
+    "query": "index=zero_trust sourcetype=zt:enforcement:audit state=verified | stats count",
+    "queryParameters": {
+     "earliest": "-24h",
+     "latest": "now"
+    }
+   }
+  }
+ },
+ "defaults": {
+  "dataSources": {
+   "ds.search": {
+    "options": {
+     "queryParameters": {
+      "earliest": "-24h",
+      "latest": "now"
+     }
+    }
+   }
+  }
+ },
+ "inputs": {},
+ "layout": {
+  "type": "absolute",
+  "options": {
+   "width": 1440,
+   "height": 760,
+   "display": "auto-scale",
+   "showTitleAndDescription": true,
+   "backgroundColor": "#0F1A2B"
+  },
+  "structure": [
+   {
+    "item": "viz_intro",
+    "type": "block",
+    "position": {
+     "x": 0,
+     "y": 0,
+     "w": 1440,
+     "h": 110
+    }
+   },
+   {
+    "item": "viz_card1",
+    "type": "block",
+    "position": {
+     "x": 0,
+     "y": 120,
+     "w": 1440,
+     "h": 130
+    }
+   },
+   {
+    "item": "viz_kpi1",
+    "type": "block",
+    "position": {
+     "x": 1060,
+     "y": 120,
+     "w": 380,
+     "h": 130
+    }
+   },
+   {
+    "item": "viz_card2",
+    "type": "block",
+    "position": {
+     "x": 0,
+     "y": 265,
+     "w": 1440,
+     "h": 130
+    }
+   },
+   {
+    "item": "viz_kpi2",
+    "type": "block",
+    "position": {
+     "x": 1060,
+     "y": 265,
+     "w": 380,
+     "h": 130
+    }
+   },
+   {
+    "item": "viz_card3",
+    "type": "block",
+    "position": {
+     "x": 0,
+     "y": 410,
+     "w": 1440,
+     "h": 130
+    }
+   },
+   {
+    "item": "viz_kpi3",
+    "type": "block",
+    "position": {
+     "x": 1060,
+     "y": 410,
+     "w": 380,
+     "h": 130
+    }
+   },
+   {
+    "item": "viz_score_title",
+    "type": "block",
+    "position": {
+     "x": 0,
+     "y": 560,
+     "w": 1440,
+     "h": 40
+    }
+   },
+   {
+    "item": "viz_s1",
+    "type": "block",
+    "position": {
+     "x": 0,
+     "y": 600,
+     "w": 280,
+     "h": 140
+    }
+   },
+   {
+    "item": "viz_s2",
+    "type": "block",
+    "position": {
+     "x": 288,
+     "y": 600,
+     "w": 280,
+     "h": 140
+    }
+   },
+   {
+    "item": "viz_s3",
+    "type": "block",
+    "position": {
+     "x": 576,
+     "y": 600,
+     "w": 280,
+     "h": 140
+    }
+   },
+   {
+    "item": "viz_s4",
+    "type": "block",
+    "position": {
+     "x": 864,
+     "y": 600,
+     "w": 280,
+     "h": 140
+    }
+   },
+   {
+    "item": "viz_s5",
+    "type": "block",
+    "position": {
+     "x": 1152,
+     "y": 600,
+     "w": 280,
+     "h": 140
+    }
+   }
+  ],
+  "globalInputs": []
+ }
+}
+]]></definition>
+</dashboard>

@@ -2,7 +2,7 @@
   zt_incident_timeline.xml - Incident Timeline
   zt_incident_demo
 
-  The latest incident since the last reset, step by step: five step cards, the journey grid
+  One incident, step by step, chosen with the incident selector: five step cards, the journey grid
   (six lanes x five steps) with live timestamps and evidence links, ingest tiles, the two
   step-2 events as raw JSON, the agent brief and every incident event with drilldowns.
   Dashboard Studio (version 2), absolute layout, dark theme, 1440px canvas.
@@ -10,1074 +10,1099 @@
 <dashboard version="2" theme="dark">
     <label>Incident Timeline</label>
     <description>The latest incident since the last reset, step by step: what connected, what Isovalent observed, what Splunk decided, what was enforced and the proof</description>
-    <definition><![CDATA[
-{
-    "title": "Incident Timeline",
-    "description": "The latest incident since the last reset, step by step: what connected, what Isovalent observed, what Splunk decided, what was enforced and the proof",
-    "inputs": {},
-    "defaults": {
-        "dataSources": {
-            "ds.search": {
-                "options": {
-                    "queryParameters": {
-                        "earliest": "-24h",
-                        "latest": "now"
-                    }
-                }
-            }
-        }
-    },
-    "visualizations": {
-        "viz_step1": {
-            "type": "splunk.markdown",
-            "options": {
-                "markdown": "### $ds_step1:result.mark$ $ds_step1:result.title$\n\n$ds_step1:result.line1$\n\n$ds_step1:result.line2$\n\n$ds_step1:result.line3$"
-            },
-            "dataSources": {
-                "primary": "ds_step1"
-            }
-        },
-        "viz_step2": {
-            "type": "splunk.markdown",
-            "options": {
-                "markdown": "### $ds_step2:result.mark$ $ds_step2:result.title$\n\n$ds_step2:result.line1$\n\n$ds_step2:result.line2$\n\n$ds_step2:result.line3$"
-            },
-            "dataSources": {
-                "primary": "ds_step2"
-            }
-        },
-        "viz_step3": {
-            "type": "splunk.markdown",
-            "options": {
-                "markdown": "### $ds_step3:result.mark$ $ds_step3:result.title$\n\n$ds_step3:result.line1$\n\n$ds_step3:result.line2$\n\n$ds_step3:result.line3$"
-            },
-            "dataSources": {
-                "primary": "ds_step3"
-            }
-        },
-        "viz_step4": {
-            "type": "splunk.markdown",
-            "options": {
-                "markdown": "### $ds_step4:result.mark$ $ds_step4:result.title$\n\n$ds_step4:result.line1$\n\n$ds_step4:result.line2$\n\n$ds_step4:result.line3$"
-            },
-            "dataSources": {
-                "primary": "ds_step4"
-            }
-        },
-        "viz_step5": {
-            "type": "splunk.markdown",
-            "options": {
-                "markdown": "### $ds_step5:result.mark$ $ds_step5:result.title$\n\n$ds_step5:result.line1$\n\n$ds_step5:result.line2$\n\n$ds_step5:result.line3$"
-            },
-            "dataSources": {
-                "primary": "ds_step5"
-            }
-        },
-        "viz_grid_title": {
-            "type": "splunk.markdown",
-            "options": {
-                "markdown": "**One incident, end to end**",
-                "fontColor": "#8C9BA5"
-            }
-        },
-        "viz_grid_h1": {
-            "type": "splunk.markdown",
-            "options": {
-                "markdown": "### 1 Connect"
-            }
-        },
-        "viz_grid_h2": {
-            "type": "splunk.markdown",
-            "options": {
-                "markdown": "### 2 Observe"
-            }
-        },
-        "viz_grid_h3": {
-            "type": "splunk.markdown",
-            "options": {
-                "markdown": "### 3 Decide"
-            }
-        },
-        "viz_grid_h4": {
-            "type": "splunk.markdown",
-            "options": {
-                "markdown": "### 4 Enforce"
-            }
-        },
-        "viz_grid_h5": {
-            "type": "splunk.markdown",
-            "options": {
-                "markdown": "### 5 Verify"
-            }
-        },
-        "viz_lane1": {
-            "type": "splunk.markdown",
-            "options": {
-                "markdown": "**Workloads**\n\nBuild farm, AI training",
-                "fontColor": "#FFFFFF",
-                "fontSize": "small"
-            }
-        },
-        "viz_lane2": {
-            "type": "splunk.markdown",
-            "options": {
-                "markdown": "**Cisco Isovalent**\n\nCilium · Hubble · Tetragon",
-                "fontColor": "#009CEB",
-                "fontSize": "small"
-            }
-        },
-        "viz_lane3": {
-            "type": "splunk.markdown",
-            "options": {
-                "markdown": "**Splunk platform**\n\nIngest · correlate · posture",
-                "fontColor": "#CB2196",
-                "fontSize": "small"
-            }
-        },
-        "viz_lane4": {
-            "type": "splunk.markdown",
-            "options": {
-                "markdown": "**Enterprise Security**\n\nRisk-based alerting",
-                "fontColor": "#CB2196",
-                "fontSize": "small"
-            }
-        },
-        "viz_lane5": {
-            "type": "splunk.markdown",
-            "options": {
-                "markdown": "**Agent Launchpad**\n\nNo-code agent",
-                "fontColor": "#CB2196",
-                "fontSize": "small"
-            }
-        },
-        "viz_lane6": {
-            "type": "splunk.markdown",
-            "options": {
-                "markdown": "**SOAR and people**\n\nPlaybook · approval",
-                "fontColor": "#CB2196",
-                "fontSize": "small"
-            }
-        },
-        "viz_cell1": {
-            "type": "splunk.markdown",
-            "options": {
-                "markdown": "**CI runner connects**\n\nJob 88213 → checkpoint store :9000\n\n$ds_grid:result.cell1_mark$ $ds_grid:result.cell1_time$ · [evidence](/app/zt_incident_demo/search?q=search%20index%3Dzero_trust%20%60zt_since_reset%60%20sourcetype%3Dcisco%3Aisovalent%3AprocessConnect%20src_pod%3D%22ci-runner-7d9f8-xk2lq%22%20dest_protected%3Dtrue&earliest=-24h&latest=now)",
-                "backgroundColor": "#1A2837",
-                "fontSize": "small"
-            },
-            "dataSources": {
-                "primary": "ds_grid"
-            }
-        },
-        "viz_cell2": {
-            "type": "splunk.markdown",
-            "options": {
-                "markdown": "**Isovalent observes**\n\nHubble: AUDIT (would deny) · Tetragon: curl from postbuild.sh\n\n$ds_grid:result.cell2_mark$ $ds_grid:result.cell2_time$ · [evidence](/app/zt_incident_demo/search?q=search%20index%3Dzero_trust%20%60zt_since_reset%60%20sourcetype%3Dcilium%3Ahubble%3Aflow%20src_pod%3D%22ci-runner-7d9f8-xk2lq%22%20verdict%3DAUDIT&earliest=-24h&latest=now)",
-                "backgroundColor": "#1A2837",
-                "fontSize": "small"
-            },
-            "dataSources": {
-                "primary": "ds_grid"
-            }
-        },
-        "viz_cell3": {
-            "type": "splunk.markdown",
-            "options": {
-                "markdown": "**Events land**\n\nzero_trust index, in seconds\n\n$ds_grid:result.cell3_mark$ $ds_grid:result.cell3_time$ · [evidence](/app/zt_incident_demo/search?q=search%20index%3Dzero_trust%20%60zt_since_reset%60%20%28src_pod%3D%22ci-runner-7d9f8-xk2lq%22%20OR%20pod%3D%22ci-runner-7d9f8-xk2lq%22%29%20%7C%20eval%20lag%3D_indextime-_time%20%7C%20stats%20count%20min%28_time%29%20as%20first_event%20max%28lag%29%20as%20max_lag_s%20avg%28lag%29%20as%20avg_lag_s%20by%20sourcetype&earliest=-24h&latest=now)",
-                "backgroundColor": "#1A2837",
-                "fontSize": "small"
-            },
-            "dataSources": {
-                "primary": "ds_grid"
-            }
-        },
-        "viz_cell4": {
-            "type": "splunk.markdown",
-            "options": {
-                "markdown": "**Splunk correlates**\n\nWorkload, CI job 88213, server bf-node-03\n\n$ds_grid:result.cell4_mark$ $ds_grid:result.cell4_time$ · [evidence](/app/zt_incident_demo/search?q=search%20index%3Drisk%20%60zt_since_reset%60%20source%3D%22ZT%20-%20%2A%22%20risk_object%3D%22build-farm%2Fci-runner%22%20%7C%20table%20_time%20source%20risk_score%20threat_object%20risk_message&earliest=-24h&latest=now)",
-                "backgroundColor": "#1A2837",
-                "fontSize": "small"
-            },
-            "dataSources": {
-                "primary": "ds_grid"
-            }
-        },
-        "viz_cell5": {
-            "type": "splunk.markdown",
-            "options": {
-                "markdown": "**Finding group $ds_grid:result.finding_label$**\n\nTwo signals, 50 + 40 = risk 90, over the threshold of 80\n\n$ds_grid:result.cell5_mark$ $ds_grid:result.cell5_time$ · [evidence](/app/zt_incident_demo/search?q=search%20%60notable%60%20%7C%20search%20source%3D%22ZT%20-%20Workload%20Exceeded%20Risk%20Threshold%20on%20Protected-Path%20Signals%20-%20Rule%22%20%7C%20where%20_time%3E%3D%60zt_last_reset%60%20%7C%20eval%20rule_title%3Dcoalesce%28orig_rule_title%2C%20rule_title%29%20%7C%20table%20_time%20event_id%20rule_title%20risk_score%20source_count%20threat_object%20status_label&earliest=-24h&latest=now)",
-                "backgroundColor": "#1A2837",
-                "fontSize": "small"
-            },
-            "dataSources": {
-                "primary": "ds_grid"
-            }
-        },
-        "viz_cell6": {
-            "type": "splunk.markdown",
-            "options": {
-                "markdown": "**Agent brief**\n\nTrue positive · recommends quarantine\n\n$ds_grid:result.cell6_mark$ $ds_grid:result.cell6_time$ · [evidence](/app/zt_incident_demo/search?q=%7C%20inputlookup%20zt_agent_briefs_lookup%20%7C%20where%20run_epoch%3E%3D%60zt_last_reset%60%20%7C%20sort%20-%20run_epoch%20%7C%20head%201%20%7C%20eval%20brief_at%3Dstrftime%28run_epoch%2C%22%25Y-%25m-%25d%20%25H%3A%25M%3A%25S%22%29%20%7C%20table%20brief_at%20investigation_id%20finding_id%20disposition%20confidence%20enforcement_point%20action%20policy_name%20approver_labels%20brief_text&earliest=-24h&latest=now)",
-                "backgroundColor": "#1A2837",
-                "fontSize": "small"
-            },
-            "dataSources": {
-                "primary": "ds_grid"
-            }
-        },
-        "viz_cell7": {
-            "type": "splunk.markdown",
-            "options": {
-                "markdown": "**Approve and apply**\n\nj.chen approves · Cilium policy applied\n\n$ds_grid:result.cell7_mark$ $ds_grid:result.cell7_time$ · [evidence](/app/zt_incident_demo/search?q=search%20index%3Dzero_trust%20%60zt_since_reset%60%20sourcetype%3Dzt%3Aenforcement%3Aaudit%20state%20IN%20%28%22requested%22%2C%22approved%22%2C%22rejected%22%2C%22refused%22%2C%22applied%22%29%20%7C%20table%20_time%20state%20request_id%20action%20policy_name%20approved_by_label%20executed_by%20comment&earliest=-24h&latest=now)",
-                "backgroundColor": "#1A2837",
-                "fontSize": "small"
-            },
-            "dataSources": {
-                "primary": "ds_grid"
-            }
-        },
-        "viz_cell8": {
-            "type": "splunk.markdown",
-            "options": {
-                "markdown": "**Cilium enforces**\n\nQuarantine policy isolates the pod in the kernel\n\n$ds_grid:result.cell8_mark$ $ds_grid:result.cell8_time$ · [evidence](/app/zt_incident_demo/search?q=search%20index%3Dzero_trust%20%60zt_since_reset%60%20sourcetype%3Dkube%3Aapiserver%3Aaudit%20k8s_user%3D%22system%3Aserviceaccount%3Asoar%3Azt-enforcer%22%20%7C%20table%20_time%20k8s_verb%20k8s_resource%20k8s_namespace%20k8s_name%20status_code%20audit_id&earliest=-24h&latest=now)",
-                "backgroundColor": "#1A2837",
-                "fontSize": "small"
-            },
-            "dataSources": {
-                "primary": "ds_grid"
-            }
-        },
-        "viz_cell9": {
-            "type": "splunk.markdown",
-            "options": {
-                "markdown": "**Runner isolated**\n\nRest of the build farm keeps running\n\n$ds_grid:result.cell9_mark$ $ds_grid:result.cell9_time$ · [evidence](/app/zt_incident_demo/search?q=search%20index%3Dzero_trust%20%60zt_since_reset%60%20sourcetype%3Dcilium%3Ahubble%3Aflow%20src_workload%3D%22build-farm%2F%2A%22%20%7C%20eval%20state%3Dif%28src_pod%3D%22ci-runner-7d9f8-xk2lq%22%2C%22quarantined%20runner%22%2C%22rest%20of%20the%20build%20farm%22%29%20%7C%20stats%20count%20count%28eval%28verdict%3D%22DROPPED%22%29%29%20as%20dropped%20count%28eval%28verdict%3D%22FORWARDED%22%29%29%20as%20forwarded%20by%20state&earliest=-24h&latest=now)",
-                "backgroundColor": "#1A2837",
-                "fontSize": "small"
-            },
-            "dataSources": {
-                "primary": "ds_grid"
-            }
-        },
-        "viz_cell10": {
-            "type": "splunk.markdown",
-            "options": {
-                "markdown": "**Retries dropped**\n\nDROPPED by the quarantine policy\n\n$ds_grid:result.cell10_mark$ $ds_grid:result.cell10_time$ · [evidence](/app/zt_incident_demo/search?q=search%20index%3Dzero_trust%20%60zt_since_reset%60%20sourcetype%3Dcilium%3Ahubble%3Aflow%20src_pod%3D%22ci-runner-7d9f8-xk2lq%22%20verdict%3DDROPPED%20%7C%20table%20_time%20src_identity%20dest_identity%20node%20policy_denied%20drop_reason&earliest=-24h&latest=now)",
-                "backgroundColor": "#1A2837",
-                "fontSize": "small"
-            },
-            "dataSources": {
-                "primary": "ds_grid"
-            }
-        },
-        "viz_cell11": {
-            "type": "splunk.markdown",
-            "options": {
-                "markdown": "**Posture improves**\n\n$ds_grid:result.posture_line$\n\n$ds_grid:result.cell11_mark$ $ds_grid:result.cell11_time$ · [evidence](/app/zt_incident_demo/search?q=search%20index%3Dzt_summary%20source%3D%22ZT%20Posture%20-%20Rollup%22%20earliest%3D-24h%20%7C%20table%20_time%20coverage_pct%20unprotected%20enforced%20paths%20enforcement_24h%20identities%20%7C%20sort%20-%20_time&earliest=-24h&latest=now)",
-                "backgroundColor": "#1A2837",
-                "fontSize": "small"
-            },
-            "dataSources": {
-                "primary": "ds_grid"
-            }
-        },
-        "viz_cell12": {
-            "type": "splunk.markdown",
-            "options": {
-                "markdown": "**Audit trail**\n\nWho approved, what changed, when\n\n$ds_grid:result.cell12_mark$ $ds_grid:result.cell12_time$ · [evidence](/app/zt_incident_demo/search?q=search%20index%3Dzero_trust%20%60zt_since_reset%60%20sourcetype%3Dzt%3Aenforcement%3Aaudit%20%7C%20table%20_time%20state%20request_id%20finding_id%20investigation_id%20action%20policy_name%20approved_by_label%20executed_by%20k8s_audit_ids%20status%20%7C%20sort%20_time&earliest=-24h&latest=now)",
-                "backgroundColor": "#1A2837",
-                "fontSize": "small"
-            },
-            "dataSources": {
-                "primary": "ds_grid"
-            }
-        },
-        "viz_gdi_hubble": {
-            "type": "splunk.singlevalue",
-            "title": "Hubble flows (24h)",
-            "description": "over HTTP Event Collector",
-            "dataSources": {
-                "primary": "ds_gdi_hubble"
-            },
-            "options": {
-                "majorValue": "> primary | seriesByName(\"count\") | lastPoint()",
-                "majorColor": "#009CEB",
-                "majorFontSize": 48,
-                "shouldUseThousandSeparators": true,
-                "underLabel": "$ds_gdi_hubble:result.age_label$",
-                "underLabelFontSize": 14,
-                "sparklineDisplay": "off",
-                "trendDisplay": "off"
-            }
-        },
-        "viz_gdi_tetragon": {
-            "type": "splunk.singlevalue",
-            "title": "Tetragon events (24h)",
-            "description": "Cisco Security Cloud App sourcetypes",
-            "dataSources": {
-                "primary": "ds_gdi_tetragon"
-            },
-            "options": {
-                "majorValue": "> primary | seriesByName(\"count\") | lastPoint()",
-                "majorColor": "#00CDAF",
-                "majorFontSize": 48,
-                "shouldUseThousandSeparators": true,
-                "underLabel": "$ds_gdi_tetragon:result.age_label$",
-                "underLabelFontSize": 14,
-                "sparklineDisplay": "off",
-                "trendDisplay": "off"
-            }
-        },
-        "viz_gdi_nexus": {
-            "type": "splunk.singlevalue",
-            "title": "Nexus switch data (24h)",
-            "description": "cisco:nexus:endpoint, cisco:nexus:config",
-            "dataSources": {
-                "primary": "ds_gdi_nexus"
-            },
-            "options": {
-                "majorValue": "> primary | seriesByName(\"count\") | lastPoint()",
-                "majorColor": "#7B56DB",
-                "majorFontSize": 48,
-                "shouldUseThousandSeparators": true,
-                "underLabel": "$ds_gdi_nexus:result.age_label$",
-                "underLabelFontSize": 14,
-                "sparklineDisplay": "off",
-                "trendDisplay": "off"
-            }
-        },
-        "viz_gdi_liveprotect": {
-            "type": "splunk.singlevalue",
-            "title": "Live Protect (24h)",
-            "description": "cisco:nexus:liveprotect",
-            "dataSources": {
-                "primary": "ds_gdi_liveprotect"
-            },
-            "options": {
-                "majorValue": "> primary | seriesByName(\"count\") | lastPoint()",
-                "majorColor": "#DD9900",
-                "majorFontSize": 48,
-                "shouldUseThousandSeparators": true,
-                "underLabel": "$ds_gdi_liveprotect:result.age_label$",
-                "underLabelFontSize": 14,
-                "sparklineDisplay": "off",
-                "trendDisplay": "off"
-            }
-        },
-        "viz_raw_audit": {
-            "type": "splunk.table",
-            "title": "Hubble flow: first AUDIT at the store (raw JSON)",
-            "dataSources": {
-                "primary": "ds_raw_audit"
-            },
-            "options": {
-                "count": 1,
-                "headerVisibility": "none",
-                "font": "monospace",
-                "fontSize": "small",
-                "columnFormat": {
-                    "_raw": {
-                        "textOverflow": "anywhere"
-                    }
-                }
-            },
-            "hideWhenNoData": true
-        },
-        "viz_raw_audit_empty": {
-            "type": "splunk.markdown",
-            "options": {
-                "markdown": "\n\n### No incident since the last reset\n\nThe first Hubble AUDIT flow from the runner to the checkpoint store appears here as raw JSON."
-            },
-            "title": "Hubble flow: first AUDIT at the store (raw JSON)"
-        },
-        "viz_raw_tetragon": {
-            "type": "splunk.table",
-            "title": "Tetragon: the program behind the connection (raw JSON)",
-            "dataSources": {
-                "primary": "ds_raw_tetragon"
-            },
-            "options": {
-                "count": 1,
-                "headerVisibility": "none",
-                "font": "monospace",
-                "fontSize": "small",
-                "columnFormat": {
-                    "_raw": {
-                        "textOverflow": "anywhere"
-                    }
-                }
-            },
-            "hideWhenNoData": true
-        },
-        "viz_raw_tetragon_empty": {
-            "type": "splunk.markdown",
-            "options": {
-                "markdown": "\n\n### No incident since the last reset\n\nThe Tetragon connect event naming the program behind the connection appears here as raw JSON."
-            },
-            "title": "Tetragon: the program behind the connection (raw JSON)"
-        },
-        "viz_brief": {
-            "type": "splunk.markdown",
-            "options": {
-                "markdown": "$ds_brief:result.brief_md$"
-            },
-            "title": "Agent brief (ZTFlowInvestigator)",
-            "dataSources": {
-                "primary": "ds_brief"
-            }
-        },
-        "viz_incident_events": {
-            "type": "splunk.table",
-            "title": "Every incident event since the reset",
-            "description": "Click a row to open the raw event in search",
-            "dataSources": {
-                "primary": "ds_incident"
-            },
-            "eventHandlers": [
-                {
-                    "type": "drilldown.linkToSearch",
-                    "options": {
-                        "type": "custom",
-                        "query": "index=zero_trust `zt_since_reset` sourcetype=\"$row.sourcetype.value$\" (src_pod=\"ci-runner-7d9f8-xk2lq\" OR pod=\"ci-runner-7d9f8-xk2lq\" OR build_id=88213 OR sourcetype=zt:enforcement:audit OR k8s_user=\"system:serviceaccount:soar:zt-enforcer\") | where abs(_time - coalesce(strptime(\"$row._time.value$\", \"%Y-%m-%dT%H:%M:%S.%3Q%:z\"), strptime(\"$row._time.value$\", \"%Y-%m-%dT%H:%M:%S%:z\"))) < 1",
-                        "earliest": "-24h",
-                        "latest": "now",
-                        "newTab": true
-                    }
-                }
-            ],
-            "context": {
-                "timeConfig": {
-                    "time": {
-                        "format": "MM-DD HH:mm:ss"
-                    }
-                },
-                "stepColorConfig": [
-                    {
-                        "match": "1 Connect",
-                        "value": "#7B56DB"
-                    },
-                    {
-                        "match": "2 Observe",
-                        "value": "#009CEB"
-                    },
-                    {
-                        "match": "3 Decide",
-                        "value": "#00CDAF"
-                    },
-                    {
-                        "match": "4 Enforce",
-                        "value": "#DD9900"
-                    },
-                    {
-                        "match": "5 Verify",
-                        "value": "#FF677B"
-                    }
-                ]
-            },
-            "options": {
-                "count": 20,
-                "columnFormat": {
-                    "_time": {
-                        "data": "> table | seriesByName(\"_time\") | formatByType(timeConfig)"
-                    },
-                    "step": {
-                        "rowColors": "> table | seriesByName(\"step\") | matchValue(stepColorConfig)"
-                    },
-                    "summary": {
-                        "textOverflow": "anywhere"
-                    }
-                }
-            },
-            "hideWhenNoData": true
-        },
-        "viz_incident_empty": {
-            "type": "splunk.markdown",
-            "options": {
-                "markdown": "\n\n### No incident since the last reset\n\nEvery event of the incident (CI job, Hubble flows, Tetragon events, enforcement audit trail, Kubernetes API audit) is listed here with its step once the incident starts."
-            },
-            "title": "Every incident event since the reset"
-        }
-    },
-    "dataSources": {
-        "ds_step1": {
-            "type": "ds.search",
-            "name": "ds_step1",
-            "options": {
-                "query": "index=zero_trust `zt_since_reset` ((sourcetype=ci:job:event build_id=88213) OR (sourcetype=cisco:isovalent:processConnect src_pod=\"ci-runner-7d9f8-xk2lq\" dest_protected=true)) | eval job_t=if(sourcetype=\"ci:job:event\",_time,null()), job_s=if(sourcetype=\"ci:job:event\",build_status,null()), conn_t=if(sourcetype=\"cisco:isovalent:processConnect\",_time,null()), conn_p=if(sourcetype=\"cisco:isovalent:processConnect\",process,null()), conn_d=if(sourcetype=\"cisco:isovalent:processConnect\",dest_workload.\":\".dest_port,null()), conn_pod=if(sourcetype=\"cisco:isovalent:processConnect\",dest_pod,null()) | stats count min(job_t) as job_start latest(job_s) as job_status min(conn_t) as first_conn earliest(conn_p) as process earliest(conn_d) as dest earliest(conn_pod) as dest_pod | eval title=\"1 Connect\", mark=if(isnotnull(job_start) AND isnotnull(first_conn),\"✓\",\"…\"), line1=if(isnotnull(job_start), \"CI job 88213 \".job_status.\" · started \".strftime(job_start,\"%H:%M:%S\").\" · MR !4417 by contractor-dev-17\", \"No incident since the last reset\"), line2=if(isnotnull(first_conn), \"First connection \".strftime(first_conn,\"%H:%M:%S\").\" · \".process.\" → \".dest, if(isnotnull(job_start), \"Waiting for the first connection to the checkpoint store\", \"The CI job starts the story: job 88213 on the build farm runner\")), line3=if(isnotnull(first_conn), \"Pod ci-runner-7d9f8-xk2lq on bf-node-03 → \".dest_pod.\" on ai-train-stor-02\", \"\") | eval line1=coalesce(line1,\"\"), line2=coalesce(line2,\"\"), line3=coalesce(line3,\"\") | table title mark line1 line2 line3",
-                "queryParameters": {
-                    "earliest": "-24h",
-                    "latest": "now"
-                },
-                "enableSmartSources": true
-            }
-        },
-        "ds_step2": {
-            "type": "ds.search",
-            "name": "ds_step2",
-            "options": {
-                "query": "index=zero_trust `zt_since_reset` ((sourcetype=cilium:hubble:flow src_pod=\"ci-runner-7d9f8-xk2lq\" verdict=AUDIT) OR (sourcetype=cisco:isovalent:processConnect src_pod=\"ci-runner-7d9f8-xk2lq\" dest_protected=true)) | eval hub=if(sourcetype=\"cilium:hubble:flow\",1,0), a_t=if(hub=1,_time,null()), a_src=if(hub=1,src_identity,null()), a_dst=if(hub=1,dest_identity,null()), a_node=if(hub=1,node,null()), t_t=if(hub=0,_time,null()), t_p=if(hub=0,process,null()), t_pp=if(hub=0,parent_process,null()) | stats count min(a_t) as first_audit earliest(a_src) as src_identity earliest(a_dst) as dest_identity earliest(a_node) as node min(t_t) as first_tetragon earliest(t_p) as process earliest(t_pp) as parent_process | eval title=\"2 Observe\", mark=if(isnotnull(first_audit) AND isnotnull(first_tetragon),\"✓\",\"…\"), line1=if(isnotnull(first_audit), \"Hubble AUDIT (would deny) \".strftime(first_audit,\"%H:%M:%S\").\" · identity \".src_identity.\" → \".dest_identity.\" at \".node, \"No incident since the last reset\"), line2=if(isnotnull(first_tetragon), \"Tetragon \".strftime(first_tetragon,\"%H:%M:%S\").\" · \".process.\" from \".parent_process, \"Waiting for the first AUDIT flow and the Tetragon connect event\"), line3=if(isnotnull(first_audit) AND isnotnull(first_tetragon), \"Both workload identities and the program, seen at the source\", \"\") | eval line1=coalesce(line1,\"\"), line2=coalesce(line2,\"\"), line3=coalesce(line3,\"\") | table title mark line1 line2 line3",
-                "queryParameters": {
-                    "earliest": "-24h",
-                    "latest": "now"
-                },
-                "enableSmartSources": true
-            }
-        },
-        "ds_step3": {
-            "type": "ds.search",
-            "name": "ds_step3",
-            "options": {
-                "query": "search `notable` | search source=\"ZT - Workload Exceeded Risk Threshold on Protected-Path Signals - Rule\" | where _time>=`zt_last_reset` | stats count as finding_count min(_time) as finding_time latest(risk_score) as finding_risk latest(source_count) as finding_sources | eval k=1 | append [search index=risk `zt_since_reset` source=\"ZT - *\" risk_object=\"build-farm/ci-runner\" | stats count as risk_count sum(risk_score) as risk_total min(_time) as first_risk max(_time) as last_risk | eval k=1] | append [| inputlookup zt_agent_briefs_lookup | where run_epoch>=`zt_last_reset` | sort - run_epoch | head 1 | eval k=1 | fields k run_epoch investigation_id disposition confidence action enforcement_point policy_name] | stats max(finding_count) as finding_count min(finding_time) as finding_time max(finding_risk) as finding_risk max(finding_sources) as finding_sources max(risk_count) as risk_count max(risk_total) as risk_total min(first_risk) as first_risk max(last_risk) as last_risk max(run_epoch) as brief_time first(investigation_id) as investigation_id first(disposition) as disposition first(confidence) as confidence first(action) as action first(enforcement_point) as enforcement_point by k | eval title=\"3 Decide\", mark=if(finding_count>0 AND isnotnull(brief_time),\"✓\",\"…\"), line1=if(risk_count>0, \"Risk events \".strftime(first_risk,\"%H:%M:%S\").\" → \".strftime(last_risk,\"%H:%M:%S\").\" · \".risk_count.\" signals · \".risk_total.\" risk on build-farm/ci-runner\", \"No incident since the last reset\"), line2=if(finding_count>0, \"Finding group \".if(isnotnull(investigation_id), investigation_id.\" \", \"\").strftime(finding_time,\"%H:%M:%S\").\" · risk \".finding_risk.\" from \".finding_sources.\" detections, over the threshold of 80\", if(risk_count>0, \"Waiting for the finding group (risk threshold 80)\", \"\")), line3=if(isnotnull(brief_time), \"Agent brief \".strftime(brief_time,\"%H:%M:%S\").\" · \".replace(disposition,\"_\",\" \").\" (\".confidence.\") · recommends \".action.\" at the \".enforcement_point, if(finding_count>0, \"Waiting for the ZTFlowInvestigator brief\", \"\")) | eval line1=coalesce(line1,\"\"), line2=coalesce(line2,\"\"), line3=coalesce(line3,\"\") | table title mark line1 line2 line3",
-                "queryParameters": {
-                    "earliest": "-24h",
-                    "latest": "now"
-                },
-                "enableSmartSources": true
-            }
-        },
-        "ds_step4": {
-            "type": "ds.search",
-            "name": "ds_step4",
-            "options": {
-                "query": "index=zero_trust `zt_since_reset` ((sourcetype=zt:enforcement:audit state IN (\"requested\",\"approved\",\"rejected\",\"refused\",\"applied\")) OR (sourcetype=kube:apiserver:audit k8s_user=\"system:serviceaccount:soar:zt-enforcer\" k8s_resource=ciliumnetworkpolicies)) | eval req_t=if(state=\"requested\",_time,null()), app_t=if(state=\"approved\",_time,null()), app_by=if(state=\"approved\",approved_by_label,null()), rej_t=if(state IN (\"rejected\",\"refused\"),_time,null()), rej_s=if(state IN (\"rejected\",\"refused\"),state.\" by \".approved_by_label,null()), apl_t=if(state=\"applied\",_time,null()), apl_p=if(state=\"applied\",policy_name,null()), apl_by=if(state=\"applied\",executed_by,null()), k8s_t=if(sourcetype=\"kube:apiserver:audit\",_time,null()), k8s_n=if(sourcetype=\"kube:apiserver:audit\",k8s_name.\" \".status_code,null()) | stats count min(req_t) as requested_at min(app_t) as approved_at earliest(app_by) as approved_by max(rej_t) as rejected_at latest(rej_s) as rejected_how min(apl_t) as applied_at earliest(apl_p) as policy earliest(apl_by) as applied_by min(k8s_t) as k8s_at earliest(k8s_n) as k8s_obj | eval title=\"4 Enforce\", mark=if(isnotnull(applied_at),\"✓\",\"…\"), line1=case(isnotnull(approved_at), \"Approved \".strftime(approved_at,\"%H:%M:%S\").\" by \".approved_by, isnotnull(rejected_at), strftime(rejected_at,\"%H:%M:%S\").\" \".rejected_how, isnotnull(requested_at), \"Quarantine requested \".strftime(requested_at,\"%H:%M:%S\").\" · waiting for SOC tier 2 approval\", true(), \"No incident since the last reset\"), line2=if(isnotnull(applied_at), \"Applied \".strftime(applied_at,\"%H:%M:%S\").\" · CiliumNetworkPolicy \".policy.\" by \".applied_by, if(isnotnull(approved_at), \"Applying the quarantine policy in the kernel\", \"\")), line3=if(isnotnull(k8s_at), \"Kubernetes API \".strftime(k8s_at,\"%H:%M:%S\").\" · create ciliumnetworkpolicies/\".k8s_obj.\" as zt-enforcer\", \"\") | eval line1=coalesce(line1,\"\"), line2=coalesce(line2,\"\"), line3=coalesce(line3,\"\") | table title mark line1 line2 line3",
-                "queryParameters": {
-                    "earliest": "-24h",
-                    "latest": "now"
-                },
-                "enableSmartSources": true
-            }
-        },
-        "ds_step5": {
-            "type": "ds.search",
-            "name": "ds_step5",
-            "options": {
-                "query": "index=zero_trust `zt_since_reset` ((sourcetype=cilium:hubble:flow src_pod=\"ci-runner-7d9f8-xk2lq\" verdict=DROPPED) OR (sourcetype=zt:enforcement:audit state IN (\"applied\",\"verified\",\"failed\"))) | eval d_t=if(verdict=\"DROPPED\",_time,null()), d_p=if(verdict=\"DROPPED\",mvindex(policy_denied,0),null()), d_id=if(verdict=\"DROPPED\",src_identity,null()), v_t=if(state IN (\"verified\",\"failed\"),_time,null()), v_s=if(state IN (\"verified\",\"failed\"),state,null()), a_t=if(state=\"applied\",_time,null()) | stats count min(d_t) as first_drop count(d_t) as drops earliest(d_p) as policy earliest(d_id) as identity min(v_t) as verified_at earliest(v_s) as verdict_state min(a_t) as applied_at | eval k=1 | append [search index=zt_summary source=\"ZT Posture - Rollup\" earliest=-24h | eval fire=[| makeresults | eval t=0 | append [| inputlookup zt_demo_state_lookup | fields plan_t0 | rename plan_t0 as t] | stats max(t) as t | return $t] | eval before=if(_time<fire, 1, 0) | stats latest(coverage_pct) as cov_after latest(unprotected) as unp_after latest(eval(if(before=1,coverage_pct,null()))) as cov_before latest(eval(if(before=1,unprotected,null()))) as unp_before latest(enforcement_24h) as enf_after | eval k=1] | stats min(first_drop) as first_drop max(drops) as drops first(policy) as policy first(identity) as identity min(verified_at) as verified_at first(verdict_state) as verdict_state min(applied_at) as applied_at first(cov_before) as cov_before first(cov_after) as cov_after first(unp_before) as unp_before first(unp_after) as unp_after by k | eval title=\"5 Verify\", mark=if(isnotnull(first_drop) AND verdict_state=\"verified\",\"✓\",\"…\"), line1=if(isnotnull(first_drop), \"First DROPPED \".strftime(first_drop,\"%H:%M:%S\").\" · \".drops.\" retries dropped by \".policy.\" · identity \".identity, if(isnotnull(applied_at), \"Waiting for the first dropped retry\", \"No incident since the last reset\")), line2=case(verdict_state=\"verified\", \"Verified \".strftime(verified_at,\"%H:%M:%S\").\" · quarantine confirmed, ES investigation resolved\", verdict_state=\"failed\", \"Verification failed \".strftime(verified_at,\"%H:%M:%S\"), isnotnull(applied_at), \"Waiting for verification\", true(), \"\"), line3=if(isnotnull(first_drop) AND isnotnull(cov_before), \"Posture: coverage \".cov_before.\"% → \".cov_after.\"% · unprotected paths \".unp_before.\" → \".unp_after, if(isnotnull(cov_after), \"Posture now: coverage \".cov_after.\"% · unprotected paths \".unp_after, \"\")) | eval line1=coalesce(line1,\"\"), line2=coalesce(line2,\"\"), line3=coalesce(line3,\"\") | table title mark line1 line2 line3",
-                "queryParameters": {
-                    "earliest": "-24h",
-                    "latest": "now"
-                },
-                "enableSmartSources": true
-            }
-        },
-        "ds_grid": {
-            "type": "ds.search",
-            "name": "ds_grid",
-            "options": {
-                "query": "| makeresults count=12 | streamstats count as cell | fields cell | append [search index=zero_trust `zt_since_reset` sourcetype=cisco:isovalent:processConnect src_pod=\"ci-runner-7d9f8-xk2lq\" dest_protected=true | stats min(_time) as t | eval cell=1] | append [search index=zero_trust `zt_since_reset` sourcetype=cilium:hubble:flow src_pod=\"ci-runner-7d9f8-xk2lq\" verdict=AUDIT | stats min(_time) as t | eval cell=2] | append [search index=zero_trust `zt_since_reset` (sourcetype=cilium:hubble:flow OR sourcetype=cisco:isovalent:*) src_pod=\"ci-runner-7d9f8-xk2lq\" | eval it=_indextime | stats min(it) as t | eval cell=3] | append [search index=risk `zt_since_reset` source=\"ZT - *\" risk_object=\"build-farm/ci-runner\" | stats min(_time) as t | eval cell=4] | append [search `notable` | search source=\"ZT - Workload Exceeded Risk Threshold on Protected-Path Signals - Rule\" | where _time>=`zt_last_reset` | stats min(_time) as t | eval cell=5] | append [| inputlookup zt_agent_briefs_lookup | where run_epoch>=`zt_last_reset` | stats min(run_epoch) as t | eval cell=6] | append [search index=zero_trust `zt_since_reset` sourcetype=zt:enforcement:audit state=applied | stats min(_time) as t | eval cell=7] | append [search index=zero_trust `zt_since_reset` sourcetype=kube:apiserver:audit k8s_user=\"system:serviceaccount:soar:zt-enforcer\" k8s_verb=create k8s_resource=ciliumnetworkpolicies | stats min(_time) as t | eval cell=8] | append [search index=zero_trust `zt_since_reset` sourcetype=kube:apiserver:audit k8s_user=\"system:serviceaccount:soar:zt-enforcer\" k8s_verb=patch k8s_resource=pods k8s_name=\"ci-runner-7d9f8-xk2lq\" | stats min(_time) as t | eval cell=9] | append [search index=zero_trust `zt_since_reset` sourcetype=cilium:hubble:flow src_pod=\"ci-runner-7d9f8-xk2lq\" verdict=DROPPED | stats min(_time) as t | eval cell=10] | append [search index=zt_summary source=\"ZT Posture - Rollup\" earliest=-24h | eval applied=[search index=zero_trust `zt_since_reset` sourcetype=zt:enforcement:audit state=applied | stats min(_time) as t | append [| makeresults | eval t=9999999999 | fields t] | stats min(t) as t | return $t] | where _time>=applied | stats min(_time) as t | eval cell=11] | append [search index=zero_trust `zt_since_reset` sourcetype=zt:enforcement:audit state=verified | stats min(_time) as t | eval cell=12] | stats min(t) as t by cell | eval mark=if(isnotnull(t),\"✓\",\"…\"), time=if(isnotnull(t), strftime(t,\"%H:%M:%S\"), \"No incident since the last reset\"), k=1 | eval pair=mvappend(\"cell\".cell.\"_mark=\".mark, \"cell\".cell.\"_time=\".time) | mvexpand pair | rex field=pair \"^(?<name>[^=]+)=(?<value>.*)$\" | xyseries k name value | fields - k | appendcols [search index=zt_summary source=\"ZT Posture - Rollup\" earliest=-24h | eval fire=[| makeresults | eval t=0 | append [| inputlookup zt_demo_state_lookup | fields plan_t0 | rename plan_t0 as t] | stats max(t) as t | return $t] | eval before=if(_time<fire,1,0) | stats count latest(coverage_pct) as cov_after latest(unprotected) as unp_after latest(eval(if(before=1,coverage_pct,null()))) as cov_before latest(eval(if(before=1,unprotected,null()))) as unp_before | eval posture_line=case(isnotnull(cov_before) AND isnotnull(cov_after), \"Coverage \".cov_before.\"% → \".cov_after.\"% · paths \".unp_before.\" → \".unp_after, isnotnull(cov_after), \"Coverage \".cov_after.\"% · paths \".unp_after, true(), \"Posture rollup pending\") | fields posture_line] | appendcols [| inputlookup zt_agent_briefs_lookup | where run_epoch>=`zt_last_reset` | sort - run_epoch | stats count first(investigation_id) as finding_label | eval finding_label=coalesce(finding_label, \"\") | fields finding_label]",
-                "queryParameters": {
-                    "earliest": "-24h",
-                    "latest": "now"
-                },
-                "enableSmartSources": true
-            }
-        },
-        "ds_gdi_hubble": {
-            "type": "ds.search",
-            "name": "ds_gdi_hubble",
-            "options": {
-                "query": "index=zero_trust sourcetype=cilium:hubble:flow earliest=-24h | stats count max(_time) as last | eval age=if(isnotnull(last), tostring(now()-last,\"duration\"), \"none\"), age_label=if(isnotnull(last), \"last event \".age.\" ago\", \"no events in 24 h\") | table count age age_label",
-                "queryParameters": {
-                    "earliest": "-24h",
-                    "latest": "now"
-                },
-                "enableSmartSources": true
-            }
-        },
-        "ds_gdi_tetragon": {
-            "type": "ds.search",
-            "name": "ds_gdi_tetragon",
-            "options": {
-                "query": "index=zero_trust sourcetype=cisco:isovalent* earliest=-24h | stats count max(_time) as last | eval age=if(isnotnull(last), tostring(now()-last,\"duration\"), \"none\"), age_label=if(isnotnull(last), \"last event \".age.\" ago\", \"no events in 24 h\") | table count age age_label",
-                "queryParameters": {
-                    "earliest": "-24h",
-                    "latest": "now"
-                },
-                "enableSmartSources": true
-            }
-        },
-        "ds_gdi_nexus": {
-            "type": "ds.search",
-            "name": "ds_gdi_nexus",
-            "options": {
-                "query": "index=zero_trust (sourcetype=cisco:nexus:endpoint OR sourcetype=cisco:nexus:config) earliest=-24h | stats count max(_time) as last | eval age=if(isnotnull(last), tostring(now()-last,\"duration\"), \"none\"), age_label=if(isnotnull(last), \"last event \".age.\" ago\", \"no events in 24 h\") | table count age age_label",
-                "queryParameters": {
-                    "earliest": "-24h",
-                    "latest": "now"
-                },
-                "enableSmartSources": true
-            }
-        },
-        "ds_gdi_liveprotect": {
-            "type": "ds.search",
-            "name": "ds_gdi_liveprotect",
-            "options": {
-                "query": "index=zero_trust sourcetype=cisco:nexus:liveprotect earliest=-24h | stats count max(_time) as last | eval age=if(isnotnull(last), tostring(now()-last,\"duration\"), \"none\"), age_label=if(isnotnull(last), \"last event \".age.\" ago\", \"no events in 24 h\") | table count age age_label",
-                "queryParameters": {
-                    "earliest": "-24h",
-                    "latest": "now"
-                },
-                "enableSmartSources": true
-            }
-        },
-        "ds_raw_audit": {
-            "type": "ds.search",
-            "name": "ds_raw_audit",
-            "options": {
-                "query": "index=zero_trust `zt_since_reset` sourcetype=cilium:hubble:flow src_pod=\"ci-runner-7d9f8-xk2lq\" verdict=AUDIT | sort _time | head 1 | table _raw",
-                "queryParameters": {
-                    "earliest": "-24h",
-                    "latest": "now"
-                },
-                "enableSmartSources": true
-            }
-        },
-        "ds_raw_tetragon": {
-            "type": "ds.search",
-            "name": "ds_raw_tetragon",
-            "options": {
-                "query": "index=zero_trust `zt_since_reset` sourcetype=cisco:isovalent:processConnect src_pod=\"ci-runner-7d9f8-xk2lq\" dest_protected=true | sort _time | head 1 | table _raw",
-                "queryParameters": {
-                    "earliest": "-24h",
-                    "latest": "now"
-                },
-                "enableSmartSources": true
-            }
-        },
-        "ds_brief": {
-            "type": "ds.search",
-            "name": "ds_brief",
-            "options": {
-                "query": "| inputlookup zt_agent_briefs_lookup | where run_epoch>=`zt_last_reset` | sort - run_epoch | stats count first(brief_text) as brief_text first(run_epoch) as run_epoch first(investigation_id) as investigation_id first(disposition) as disposition first(confidence) as confidence | eval nl=urldecode(\"%0A\"), head=if(isnotnull(investigation_id), investigation_id.\" · \", \"\").strftime(run_epoch,\"%Y-%m-%d %H:%M:%S\").\" · \".replace(coalesce(disposition,\"\"),\"_\",\" \").\" (\".coalesce(confidence,\"\").\" confidence)\" | eval brief_md=if(count>0, \"**\".head.\"**\".nl.nl.replace(coalesce(brief_text, \"(the brief has no text)\"), \"\\r?\\n\", nl.nl), \"### No incident since the last reset\".nl.nl.\"The ZTFlowInvestigator brief appears here once the finding group opens and the agent has run.\") | table brief_md",
-                "queryParameters": {
-                    "earliest": "-24h",
-                    "latest": "now"
-                },
-                "enableSmartSources": true
-            }
-        },
-        "ds_incident": {
-            "type": "ds.search",
-            "name": "ds_incident",
-            "options": {
-                "query": "index=zero_trust `zt_since_reset` (src_pod=\"ci-runner-7d9f8-xk2lq\" OR pod=\"ci-runner-7d9f8-xk2lq\" OR (sourcetype=ci:job:event build_id=88213) OR sourcetype=zt:enforcement:audit OR (sourcetype=kube:apiserver:audit k8s_user=\"system:serviceaccount:soar:zt-enforcer\")) | eval step=case(sourcetype=\"ci:job:event\",\"1 Connect\", sourcetype=\"cisco:isovalent:processConnect\" OR sourcetype=\"cisco:isovalent:processExec\",\"2 Observe\", sourcetype=\"cilium:hubble:flow\" AND verdict!=\"DROPPED\",\"2 Observe\", sourcetype=\"zt:enforcement:audit\" AND state IN (\"requested\",\"approved\",\"rejected\",\"refused\",\"applied\"),\"4 Enforce\", sourcetype=\"kube:apiserver:audit\",\"4 Enforce\", sourcetype=\"cilium:hubble:flow\" AND verdict=\"DROPPED\",\"5 Verify\", sourcetype=\"zt:enforcement:audit\",\"5 Verify\", true(),\"3 Decide\"), summary=case(sourcetype=\"ci:job:event\",\"CI job \".build_id.\" \".build_status, sourcetype=\"cisco:isovalent:processConnect\", process.\" -> \".dest_workload.\":\".dest_port, sourcetype=\"cisco:isovalent:processExec\", \"exec \".process.\" \".process_args, sourcetype=\"cilium:hubble:flow\", verdict.\" \".traffic_direction.\" \".src_identity.\" -> \".dest_identity.\" at \".node, sourcetype=\"zt:enforcement:audit\", state.\" \".action.\" (\".approved_by_label.\")\", sourcetype=\"kube:apiserver:audit\", k8s_verb.\" \".k8s_resource.\"/\".k8s_name.\" \".status_code, true(), sourcetype) | table _time step sourcetype summary | sort _time",
-                "queryParameters": {
-                    "earliest": "-24h",
-                    "latest": "now"
-                },
-                "enableSmartSources": true
-            }
-        }
-    },
-    "layout": {
-        "type": "absolute",
-        "options": {
-            "width": 1440,
-            "height": 2100,
-            "display": "auto-scale",
-            "showTitleAndDescription": true
-        },
-        "globalInputs": [],
-        "structure": [
-            {
-                "item": "viz_raw_audit_empty",
-                "type": "block",
-                "position": {
-                    "x": 0,
-                    "y": 1260,
-                    "w": 470,
-                    "h": 380
-                }
-            },
-            {
-                "item": "viz_raw_tetragon_empty",
-                "type": "block",
-                "position": {
-                    "x": 485,
-                    "y": 1260,
-                    "w": 470,
-                    "h": 380
-                }
-            },
-            {
-                "item": "viz_incident_empty",
-                "type": "block",
-                "position": {
-                    "x": 0,
-                    "y": 1660,
-                    "w": 1440,
-                    "h": 440
-                }
-            },
-            {
-                "item": "viz_step1",
-                "type": "block",
-                "position": {
-                    "x": 0,
-                    "y": 0,
-                    "w": 280,
-                    "h": 170
-                }
-            },
-            {
-                "item": "viz_step2",
-                "type": "block",
-                "position": {
-                    "x": 290,
-                    "y": 0,
-                    "w": 280,
-                    "h": 170
-                }
-            },
-            {
-                "item": "viz_step3",
-                "type": "block",
-                "position": {
-                    "x": 580,
-                    "y": 0,
-                    "w": 280,
-                    "h": 170
-                }
-            },
-            {
-                "item": "viz_step4",
-                "type": "block",
-                "position": {
-                    "x": 870,
-                    "y": 0,
-                    "w": 280,
-                    "h": 170
-                }
-            },
-            {
-                "item": "viz_step5",
-                "type": "block",
-                "position": {
-                    "x": 1160,
-                    "y": 0,
-                    "w": 280,
-                    "h": 170
-                }
-            },
-            {
-                "item": "viz_grid_title",
-                "type": "block",
-                "position": {
-                    "x": 0,
-                    "y": 190,
-                    "w": 190,
-                    "h": 40
-                }
-            },
-            {
-                "item": "viz_grid_h1",
-                "type": "block",
-                "position": {
-                    "x": 200,
-                    "y": 190,
-                    "w": 240,
-                    "h": 40
-                }
-            },
-            {
-                "item": "viz_grid_h2",
-                "type": "block",
-                "position": {
-                    "x": 450,
-                    "y": 190,
-                    "w": 240,
-                    "h": 40
-                }
-            },
-            {
-                "item": "viz_grid_h3",
-                "type": "block",
-                "position": {
-                    "x": 700,
-                    "y": 190,
-                    "w": 240,
-                    "h": 40
-                }
-            },
-            {
-                "item": "viz_grid_h4",
-                "type": "block",
-                "position": {
-                    "x": 950,
-                    "y": 190,
-                    "w": 240,
-                    "h": 40
-                }
-            },
-            {
-                "item": "viz_grid_h5",
-                "type": "block",
-                "position": {
-                    "x": 1200,
-                    "y": 190,
-                    "w": 240,
-                    "h": 40
-                }
-            },
-            {
-                "item": "viz_lane1",
-                "type": "block",
-                "position": {
-                    "x": 0,
-                    "y": 240,
-                    "w": 190,
-                    "h": 130
-                }
-            },
-            {
-                "item": "viz_lane2",
-                "type": "block",
-                "position": {
-                    "x": 0,
-                    "y": 380,
-                    "w": 190,
-                    "h": 130
-                }
-            },
-            {
-                "item": "viz_lane3",
-                "type": "block",
-                "position": {
-                    "x": 0,
-                    "y": 520,
-                    "w": 190,
-                    "h": 130
-                }
-            },
-            {
-                "item": "viz_lane4",
-                "type": "block",
-                "position": {
-                    "x": 0,
-                    "y": 660,
-                    "w": 190,
-                    "h": 130
-                }
-            },
-            {
-                "item": "viz_lane5",
-                "type": "block",
-                "position": {
-                    "x": 0,
-                    "y": 800,
-                    "w": 190,
-                    "h": 130
-                }
-            },
-            {
-                "item": "viz_lane6",
-                "type": "block",
-                "position": {
-                    "x": 0,
-                    "y": 940,
-                    "w": 190,
-                    "h": 130
-                }
-            },
-            {
-                "item": "viz_cell1",
-                "type": "block",
-                "position": {
-                    "x": 200,
-                    "y": 240,
-                    "w": 240,
-                    "h": 130
-                }
-            },
-            {
-                "item": "viz_cell2",
-                "type": "block",
-                "position": {
-                    "x": 450,
-                    "y": 380,
-                    "w": 240,
-                    "h": 130
-                }
-            },
-            {
-                "item": "viz_cell3",
-                "type": "block",
-                "position": {
-                    "x": 450,
-                    "y": 520,
-                    "w": 240,
-                    "h": 130
-                }
-            },
-            {
-                "item": "viz_cell4",
-                "type": "block",
-                "position": {
-                    "x": 700,
-                    "y": 520,
-                    "w": 240,
-                    "h": 130
-                }
-            },
-            {
-                "item": "viz_cell5",
-                "type": "block",
-                "position": {
-                    "x": 700,
-                    "y": 660,
-                    "w": 240,
-                    "h": 130
-                }
-            },
-            {
-                "item": "viz_cell6",
-                "type": "block",
-                "position": {
-                    "x": 700,
-                    "y": 800,
-                    "w": 240,
-                    "h": 130
-                }
-            },
-            {
-                "item": "viz_cell7",
-                "type": "block",
-                "position": {
-                    "x": 950,
-                    "y": 940,
-                    "w": 240,
-                    "h": 130
-                }
-            },
-            {
-                "item": "viz_cell8",
-                "type": "block",
-                "position": {
-                    "x": 950,
-                    "y": 380,
-                    "w": 240,
-                    "h": 130
-                }
-            },
-            {
-                "item": "viz_cell9",
-                "type": "block",
-                "position": {
-                    "x": 950,
-                    "y": 240,
-                    "w": 240,
-                    "h": 130
-                }
-            },
-            {
-                "item": "viz_cell10",
-                "type": "block",
-                "position": {
-                    "x": 1200,
-                    "y": 380,
-                    "w": 240,
-                    "h": 130
-                }
-            },
-            {
-                "item": "viz_cell11",
-                "type": "block",
-                "position": {
-                    "x": 1200,
-                    "y": 520,
-                    "w": 240,
-                    "h": 130
-                }
-            },
-            {
-                "item": "viz_cell12",
-                "type": "block",
-                "position": {
-                    "x": 1200,
-                    "y": 940,
-                    "w": 240,
-                    "h": 130
-                }
-            },
-            {
-                "item": "viz_gdi_hubble",
-                "type": "block",
-                "position": {
-                    "x": 0,
-                    "y": 1090,
-                    "w": 350,
-                    "h": 150
-                }
-            },
-            {
-                "item": "viz_gdi_tetragon",
-                "type": "block",
-                "position": {
-                    "x": 363,
-                    "y": 1090,
-                    "w": 350,
-                    "h": 150
-                }
-            },
-            {
-                "item": "viz_gdi_nexus",
-                "type": "block",
-                "position": {
-                    "x": 726,
-                    "y": 1090,
-                    "w": 350,
-                    "h": 150
-                }
-            },
-            {
-                "item": "viz_gdi_liveprotect",
-                "type": "block",
-                "position": {
-                    "x": 1090,
-                    "y": 1090,
-                    "w": 350,
-                    "h": 150
-                }
-            },
-            {
-                "item": "viz_raw_audit",
-                "type": "block",
-                "position": {
-                    "x": 0,
-                    "y": 1260,
-                    "w": 470,
-                    "h": 380
-                }
-            },
-            {
-                "item": "viz_raw_tetragon",
-                "type": "block",
-                "position": {
-                    "x": 485,
-                    "y": 1260,
-                    "w": 470,
-                    "h": 380
-                }
-            },
-            {
-                "item": "viz_brief",
-                "type": "block",
-                "position": {
-                    "x": 970,
-                    "y": 1260,
-                    "w": 470,
-                    "h": 380
-                }
-            },
-            {
-                "item": "viz_incident_events",
-                "type": "block",
-                "position": {
-                    "x": 0,
-                    "y": 1660,
-                    "w": 1440,
-                    "h": 440
-                }
-            }
-        ]
+    <definition><![CDATA[{
+ "title": "Incident Timeline",
+ "description": "One incident, step by step: what connected, what Isovalent observed, what Splunk decided, what was enforced and the proof. Pick the incident at the top; the newest is selected by default",
+ "inputs": {
+  "input_incident": {
+   "type": "input.dropdown",
+   "title": "Incident (newest first)",
+   "dataSources": {
+    "primary": "ds_incidents"
+   },
+   "options": {
+    "items": "> frame(label, value) | prepend(formattedStatics) | objects()",
+    "token": "incident",
+    "selectFirstSearchResult": true
+   }
+  }
+ },
+ "defaults": {
+  "dataSources": {
+   "ds.search": {
+    "options": {
+     "queryParameters": {
+      "earliest": "-24h",
+      "latest": "now"
+     }
     }
-}
-]]></definition>
+   }
+  }
+ },
+ "visualizations": {
+  "viz_step1": {
+   "type": "splunk.markdown",
+   "options": {
+    "markdown": "### $ds_step1:result.mark$ $ds_step1:result.title$\n\n$ds_step1:result.line1$\n\n$ds_step1:result.line2$\n\n$ds_step1:result.line3$"
+   },
+   "dataSources": {
+    "primary": "ds_step1"
+   }
+  },
+  "viz_step2": {
+   "type": "splunk.markdown",
+   "options": {
+    "markdown": "### $ds_step2:result.mark$ $ds_step2:result.title$\n\n$ds_step2:result.line1$\n\n$ds_step2:result.line2$\n\n$ds_step2:result.line3$"
+   },
+   "dataSources": {
+    "primary": "ds_step2"
+   }
+  },
+  "viz_step3": {
+   "type": "splunk.markdown",
+   "options": {
+    "markdown": "### $ds_step3:result.mark$ $ds_step3:result.title$\n\n$ds_step3:result.line1$\n\n$ds_step3:result.line2$\n\n$ds_step3:result.line3$"
+   },
+   "dataSources": {
+    "primary": "ds_step3"
+   }
+  },
+  "viz_step4": {
+   "type": "splunk.markdown",
+   "options": {
+    "markdown": "### $ds_step4:result.mark$ $ds_step4:result.title$\n\n$ds_step4:result.line1$\n\n$ds_step4:result.line2$\n\n$ds_step4:result.line3$"
+   },
+   "dataSources": {
+    "primary": "ds_step4"
+   }
+  },
+  "viz_step5": {
+   "type": "splunk.markdown",
+   "options": {
+    "markdown": "### $ds_step5:result.mark$ $ds_step5:result.title$\n\n$ds_step5:result.line1$\n\n$ds_step5:result.line2$\n\n$ds_step5:result.line3$"
+   },
+   "dataSources": {
+    "primary": "ds_step5"
+   }
+  },
+  "viz_grid_title": {
+   "type": "splunk.markdown",
+   "options": {
+    "markdown": "**One incident, end to end**",
+    "fontColor": "#8C9BA5"
+   }
+  },
+  "viz_grid_h1": {
+   "type": "splunk.markdown",
+   "options": {
+    "markdown": "### 1 Connect"
+   }
+  },
+  "viz_grid_h2": {
+   "type": "splunk.markdown",
+   "options": {
+    "markdown": "### 2 Observe"
+   }
+  },
+  "viz_grid_h3": {
+   "type": "splunk.markdown",
+   "options": {
+    "markdown": "### 3 Decide"
+   }
+  },
+  "viz_grid_h4": {
+   "type": "splunk.markdown",
+   "options": {
+    "markdown": "### 4 Enforce"
+   }
+  },
+  "viz_grid_h5": {
+   "type": "splunk.markdown",
+   "options": {
+    "markdown": "### 5 Verify"
+   }
+  },
+  "viz_lane1": {
+   "type": "splunk.markdown",
+   "options": {
+    "markdown": "**Workloads**\n\nBuild farm, AI training",
+    "fontColor": "#FFFFFF",
+    "fontSize": "small"
+   }
+  },
+  "viz_lane2": {
+   "type": "splunk.markdown",
+   "options": {
+    "markdown": "**Cisco Isovalent**\n\nCilium · Hubble · Tetragon",
+    "fontColor": "#009CEB",
+    "fontSize": "small"
+   }
+  },
+  "viz_lane3": {
+   "type": "splunk.markdown",
+   "options": {
+    "markdown": "**Splunk platform**\n\nIngest · correlate · posture",
+    "fontColor": "#CB2196",
+    "fontSize": "small"
+   }
+  },
+  "viz_lane4": {
+   "type": "splunk.markdown",
+   "options": {
+    "markdown": "**Enterprise Security**\n\nRisk-based alerting",
+    "fontColor": "#CB2196",
+    "fontSize": "small"
+   }
+  },
+  "viz_lane5": {
+   "type": "splunk.markdown",
+   "options": {
+    "markdown": "**Agent Launchpad**\n\nNo-code agent",
+    "fontColor": "#CB2196",
+    "fontSize": "small"
+   }
+  },
+  "viz_lane6": {
+   "type": "splunk.markdown",
+   "options": {
+    "markdown": "**SOAR and people**\n\nPlaybook · approval",
+    "fontColor": "#CB2196",
+    "fontSize": "small"
+   }
+  },
+  "viz_cell1": {
+   "type": "splunk.markdown",
+   "options": {
+    "markdown": "**CI runner connects**\n\nJob 88213 → checkpoint store :9000\n\n$ds_grid:result.cell1_mark$ $ds_grid:result.cell1_time$ · [evidence](/app/zt_incident_demo/search?q=search%20index%3Dzero_trust%20$incident$%20sourcetype%3Dcisco%3Aisovalent%3AprocessConnect%20src_pod%3D%22ci-runner-7d9f8-xk2lq%22%20dest_protected%3Dtrue%20%7C%20table%20_time%20process%20parent_process%20src_pod%20dest_pod%20dest_workload%20dest_port&earliest=-30d&latest=now)",
+    "backgroundColor": "#1A2837",
+    "fontSize": "small"
+   },
+   "dataSources": {
+    "primary": "ds_grid"
+   }
+  },
+  "viz_cell2": {
+   "type": "splunk.markdown",
+   "options": {
+    "markdown": "**Isovalent observes**\n\nHubble: AUDIT (would deny) · Tetragon: curl from postbuild.sh\n\n$ds_grid:result.cell2_mark$ $ds_grid:result.cell2_time$ · [evidence](/app/zt_incident_demo/search?q=search%20index%3Dzero_trust%20$incident$%20sourcetype%3Dcilium%3Ahubble%3Aflow%20src_pod%3D%22ci-runner-7d9f8-xk2lq%22%20verdict%3DAUDIT%20%7C%20table%20_time%20verdict%20traffic_direction%20src_identity%20dest_identity%20node%20policy_match_type&earliest=-30d&latest=now)",
+    "backgroundColor": "#1A2837",
+    "fontSize": "small"
+   },
+   "dataSources": {
+    "primary": "ds_grid"
+   }
+  },
+  "viz_cell3": {
+   "type": "splunk.markdown",
+   "options": {
+    "markdown": "**Events land**\n\nzero_trust index, seconds after the connection\n\n$ds_grid:result.cell3_mark$ $ds_grid:result.cell3_time$ · [evidence](/app/zt_incident_demo/search?q=search%20index%3Dzero_trust%20$incident$%20%28src_pod%3D%22ci-runner-7d9f8-xk2lq%22%20OR%20pod%3D%22ci-runner-7d9f8-xk2lq%22%29%20%7C%20eval%20lag%3D_indextime-_time%20%7C%20stats%20count%20min%28_time%29%20as%20first_event%20max%28lag%29%20as%20max_lag_s%20avg%28lag%29%20as%20avg_lag_s%20by%20sourcetype&earliest=-30d&latest=now)",
+    "backgroundColor": "#1A2837",
+    "fontSize": "small"
+   },
+   "dataSources": {
+    "primary": "ds_grid"
+   }
+  },
+  "viz_cell4": {
+   "type": "splunk.markdown",
+   "options": {
+    "markdown": "**Splunk correlates**\n\nTwo risk signals (50 + 40) tie the flow to the workload, CI job 88213 and bf-node-03\n\n$ds_grid:result.cell4_mark$ $ds_grid:result.cell4_time$ · [evidence](/app/zt_incident_demo/search?q=search%20index%3Drisk%20$incident$%20source%3D%22ZT%20-%20%2A%22%20risk_object%3D%22build-farm%2Fci-runner%22%20%7C%20table%20_time%20source%20risk_score%20threat_object%20risk_message&earliest=-30d&latest=now)",
+    "backgroundColor": "#1A2837",
+    "fontSize": "small"
+   },
+   "dataSources": {
+    "primary": "ds_grid"
+   }
+  },
+  "viz_cell5": {
+   "type": "splunk.markdown",
+   "options": {
+    "markdown": "**Finding group**\n\n$ds_grid:result.finding_line$\n\n$ds_grid:result.cell5_mark$ $ds_grid:result.cell5_time$ · [evidence](/app/zt_incident_demo/search?q=search%20$incident$%20%60notable%60%20%7C%20search%20source%3D%22ZT%20-%20Workload%20Exceeded%20Risk%20Threshold%20on%20Protected-Path%20Signals%20-%20Rule%22%20%7C%20eval%20rule_title%3Dcoalesce%28orig_rule_title%2C%20rule_title%29%20%7C%20table%20_time%20event_id%20rule_title%20risk_score%20source_count%20threat_object%20annotations.mitre_attack.mitre_technique_id&earliest=-30d&latest=now)",
+    "backgroundColor": "#1A2837",
+    "fontSize": "small"
+   },
+   "dataSources": {
+    "primary": "ds_grid"
+   }
+  },
+  "viz_cell6": {
+   "type": "splunk.markdown",
+   "options": {
+    "markdown": "**Agent brief**\n\nTrue positive · recommends the kernel quarantine\n\n$ds_grid:result.cell6_mark$ $ds_grid:result.cell6_time$ · [evidence](/app/zt_incident_demo/search?q=%7C%20inputlookup%20zt_agent_briefs_lookup%20%7C%20%60zt_incident_window%28%22$incident$%22%29%60%20%7C%20where%20run_epoch%3E%3Dzt_s%20AND%20run_epoch%3C%3Dzt_e%20%7C%20sort%20-%20run_epoch%20%7C%20head%201%20%7C%20eval%20brief_at%3Dstrftime%28run_epoch%2C%22%25Y-%25m-%25d%20%25H%3A%25M%3A%25S%22%29%20%7C%20table%20brief_at%20investigation_id%20finding_id%20disposition%20confidence%20enforcement_point%20action%20policy_name%20approver_labels%20brief_text&earliest=-30d&latest=now)",
+    "backgroundColor": "#1A2837",
+    "fontSize": "small"
+   },
+   "dataSources": {
+    "primary": "ds_grid"
+   }
+  },
+  "viz_cell7": {
+   "type": "splunk.markdown",
+   "options": {
+    "markdown": "**Approve and apply**\n\nj.chen (SOC tier 2) approves · CiliumNetworkPolicy applied\n\n$ds_grid:result.cell7_mark$ $ds_grid:result.cell7_time$ · [evidence](/app/zt_incident_demo/search?q=search%20index%3Dzero_trust%20$incident$%20sourcetype%3Dzt%3Aenforcement%3Aaudit%20state%20IN%20%28%22requested%22%2C%22approved%22%2C%22rejected%22%2C%22refused%22%2C%22applied%22%29%20%7C%20table%20_time%20state%20request_id%20action%20policy_name%20approved_by_label%20executed_by%20comment%20status&earliest=-30d&latest=now)",
+    "backgroundColor": "#1A2837",
+    "fontSize": "small"
+   },
+   "dataSources": {
+    "primary": "ds_grid"
+   }
+  },
+  "viz_cell8": {
+   "type": "splunk.markdown",
+   "options": {
+    "markdown": "**Cilium enforces**\n\nQuarantine policy isolates the pod in the kernel\n\n$ds_grid:result.cell8_mark$ $ds_grid:result.cell8_time$ · [evidence](/app/zt_incident_demo/search?q=search%20index%3Dzero_trust%20$incident$%20sourcetype%3Dkube%3Aapiserver%3Aaudit%20k8s_user%3D%22system%3Aserviceaccount%3Asoar%3Azt-enforcer%22%20%7C%20table%20_time%20k8s_verb%20k8s_resource%20k8s_namespace%20k8s_name%20status_code%20audit_id&earliest=-30d&latest=now)",
+    "backgroundColor": "#1A2837",
+    "fontSize": "small"
+   },
+   "dataSources": {
+    "primary": "ds_grid"
+   }
+  },
+  "viz_cell9": {
+   "type": "splunk.markdown",
+   "options": {
+    "markdown": "**Runner isolated**\n\nPod labelled quarantined · the rest of the build farm keeps running\n\n$ds_grid:result.cell9_mark$ $ds_grid:result.cell9_time$ · [evidence](/app/zt_incident_demo/search?q=search%20index%3Dzero_trust%20$incident$%20sourcetype%3Dcilium%3Ahubble%3Aflow%20src_workload%3D%22build-farm%2F%2A%22%20%7C%20eval%20state%3Dif%28src_pod%3D%22ci-runner-7d9f8-xk2lq%22%2C%22quarantined%20runner%22%2C%22rest%20of%20the%20build%20farm%22%29%20%7C%20stats%20count%20by%20state%20verdict&earliest=-30d&latest=now)",
+    "backgroundColor": "#1A2837",
+    "fontSize": "small"
+   },
+   "dataSources": {
+    "primary": "ds_grid"
+   }
+  },
+  "viz_cell10": {
+   "type": "splunk.markdown",
+   "options": {
+    "markdown": "**Retries dropped**\n\nDROPPED by the quarantine policy, new identity 48291\n\n$ds_grid:result.cell10_mark$ $ds_grid:result.cell10_time$ · [evidence](/app/zt_incident_demo/search?q=search%20index%3Dzero_trust%20$incident$%20sourcetype%3Dcilium%3Ahubble%3Aflow%20src_pod%3D%22ci-runner-7d9f8-xk2lq%22%20verdict%3DDROPPED%20%7C%20table%20_time%20src_identity%20dest_identity%20node%20policy_denied%20drop_reason&earliest=-30d&latest=now)",
+    "backgroundColor": "#1A2837",
+    "fontSize": "small"
+   },
+   "dataSources": {
+    "primary": "ds_grid"
+   }
+  },
+  "viz_cell11": {
+   "type": "splunk.markdown",
+   "options": {
+    "markdown": "**Posture improves**\n\n$ds_grid:result.posture_line$\n\n$ds_grid:result.cell11_mark$ $ds_grid:result.cell11_time$ · [evidence](/app/zt_incident_demo/search?q=search%20index%3Dzt_summary%20source%3D%22ZT%20Posture%20-%20Rollup%22%20%5B%7C%20makeresults%20%7C%20%60zt_incident_window%28%22$incident$%22%29%60%20%7C%20eval%20earliest%3Dzt_s-3600%2C%20latest%3Dzt_e%20%7C%20fields%20earliest%20latest%20%7C%20return%20earliest%20latest%5D%20%7C%20table%20_time%20coverage_pct%20unprotected%20enforced%20paths%20enforcement_24h%20identities%20%7C%20sort%20-%20_time&earliest=-30d&latest=now)",
+    "backgroundColor": "#1A2837",
+    "fontSize": "small"
+   },
+   "dataSources": {
+    "primary": "ds_grid"
+   }
+  },
+  "viz_cell12": {
+   "type": "splunk.markdown",
+   "options": {
+    "markdown": "**Audit trail**\n\nWho approved, what changed, when · request verified\n\n$ds_grid:result.cell12_mark$ $ds_grid:result.cell12_time$ · [evidence](/app/zt_incident_demo/search?q=search%20index%3Dzero_trust%20$incident$%20sourcetype%3Dzt%3Aenforcement%3Aaudit%20%7C%20table%20_time%20state%20request_id%20finding_id%20investigation_id%20action%20policy_name%20approved_by_label%20executed_by%20k8s_audit_id%20status&earliest=-30d&latest=now)",
+    "backgroundColor": "#1A2837",
+    "fontSize": "small"
+   },
+   "dataSources": {
+    "primary": "ds_grid"
+   }
+  },
+  "viz_gdi_hubble": {
+   "type": "splunk.singlevalue",
+   "title": "Hubble flows (24h)",
+   "description": "over HTTP Event Collector",
+   "dataSources": {
+    "primary": "ds_gdi_hubble"
+   },
+   "options": {
+    "majorValue": "> primary | seriesByName(\"count\") | lastPoint()",
+    "majorColor": "#009CEB",
+    "majorFontSize": 48,
+    "shouldUseThousandSeparators": true,
+    "underLabel": "$ds_gdi_hubble:result.age_label$",
+    "underLabelFontSize": 14,
+    "sparklineDisplay": "off",
+    "trendDisplay": "off"
+   }
+  },
+  "viz_gdi_tetragon": {
+   "type": "splunk.singlevalue",
+   "title": "Tetragon events (24h)",
+   "description": "Cisco Security Cloud App sourcetypes",
+   "dataSources": {
+    "primary": "ds_gdi_tetragon"
+   },
+   "options": {
+    "majorValue": "> primary | seriesByName(\"count\") | lastPoint()",
+    "majorColor": "#00CDAF",
+    "majorFontSize": 48,
+    "shouldUseThousandSeparators": true,
+    "underLabel": "$ds_gdi_tetragon:result.age_label$",
+    "underLabelFontSize": 14,
+    "sparklineDisplay": "off",
+    "trendDisplay": "off"
+   }
+  },
+  "viz_gdi_nexus": {
+   "type": "splunk.singlevalue",
+   "title": "Nexus switch data (24h)",
+   "description": "cisco:nexus:endpoint, cisco:nexus:config",
+   "dataSources": {
+    "primary": "ds_gdi_nexus"
+   },
+   "options": {
+    "majorValue": "> primary | seriesByName(\"count\") | lastPoint()",
+    "majorColor": "#7B56DB",
+    "majorFontSize": 48,
+    "shouldUseThousandSeparators": true,
+    "underLabel": "$ds_gdi_nexus:result.age_label$",
+    "underLabelFontSize": 14,
+    "sparklineDisplay": "off",
+    "trendDisplay": "off"
+   }
+  },
+  "viz_gdi_liveprotect": {
+   "type": "splunk.singlevalue",
+   "title": "Live Protect (24h)",
+   "description": "cisco:nexus:liveprotect",
+   "dataSources": {
+    "primary": "ds_gdi_liveprotect"
+   },
+   "options": {
+    "majorValue": "> primary | seriesByName(\"count\") | lastPoint()",
+    "majorColor": "#DD9900",
+    "majorFontSize": 48,
+    "shouldUseThousandSeparators": true,
+    "underLabel": "$ds_gdi_liveprotect:result.age_label$",
+    "underLabelFontSize": 14,
+    "sparklineDisplay": "off",
+    "trendDisplay": "off"
+   }
+  },
+  "viz_raw_audit": {
+   "type": "splunk.table",
+   "title": "Hubble flow: first AUDIT at the store (raw JSON)",
+   "dataSources": {
+    "primary": "ds_raw_audit"
+   },
+   "options": {
+    "count": 1,
+    "headerVisibility": "none",
+    "font": "monospace",
+    "fontSize": "small",
+    "columnFormat": {
+     "_raw": {
+      "textOverflow": "anywhere"
+     }
+    }
+   },
+   "hideWhenNoData": true
+  },
+  "viz_raw_audit_empty": {
+   "type": "splunk.markdown",
+   "options": {
+    "markdown": "\n\n### No incident yet\n\nThe first Hubble AUDIT flow from the runner to the checkpoint store appears here as raw JSON."
+   },
+   "title": "Hubble flow: first AUDIT at the store (raw JSON)"
+  },
+  "viz_raw_tetragon": {
+   "type": "splunk.table",
+   "title": "Tetragon: the program behind the connection (raw JSON)",
+   "dataSources": {
+    "primary": "ds_raw_tetragon"
+   },
+   "options": {
+    "count": 1,
+    "headerVisibility": "none",
+    "font": "monospace",
+    "fontSize": "small",
+    "columnFormat": {
+     "_raw": {
+      "textOverflow": "anywhere"
+     }
+    }
+   },
+   "hideWhenNoData": true
+  },
+  "viz_raw_tetragon_empty": {
+   "type": "splunk.markdown",
+   "options": {
+    "markdown": "\n\n### No incident yet\n\nThe Tetragon connect event naming the program behind the connection appears here as raw JSON."
+   },
+   "title": "Tetragon: the program behind the connection (raw JSON)"
+  },
+  "viz_brief": {
+   "type": "splunk.markdown",
+   "options": {
+    "markdown": "$ds_brief:result.brief_md$"
+   },
+   "title": "Agent brief (ZTFlowInvestigator)",
+   "dataSources": {
+    "primary": "ds_brief"
+   }
+  },
+  "viz_incident_events": {
+   "type": "splunk.table",
+   "title": "Every event of the selected incident",
+   "description": "Click a row to open the raw event in search",
+   "dataSources": {
+    "primary": "ds_incident"
+   },
+   "eventHandlers": [
+    {
+     "type": "drilldown.linkToSearch",
+     "options": {
+      "type": "custom",
+      "query": "index=zero_trust $incident$ sourcetype=\"$row.sourcetype.value$\" (src_pod=\"ci-runner-7d9f8-xk2lq\" OR pod=\"ci-runner-7d9f8-xk2lq\" OR build_id=88213 OR sourcetype=zt:enforcement:audit OR k8s_user=\"system:serviceaccount:soar:zt-enforcer\") | where abs(_time - coalesce(strptime(\"$row._time.value$\", \"%Y-%m-%dT%H:%M:%S.%3Q%:z\"), strptime(\"$row._time.value$\", \"%Y-%m-%dT%H:%M:%S%:z\"))) < 1",
+      "earliest": "-30d",
+      "latest": "now",
+      "newTab": true
+     }
+    }
+   ],
+   "context": {
+    "timeConfig": {
+     "time": {
+      "format": "MM-DD HH:mm:ss"
+     }
+    },
+    "stepColorConfig": [
+     {
+      "match": "1 Connect",
+      "value": "#7B56DB"
+     },
+     {
+      "match": "2 Observe",
+      "value": "#009CEB"
+     },
+     {
+      "match": "3 Decide",
+      "value": "#00CDAF"
+     },
+     {
+      "match": "4 Enforce",
+      "value": "#DD9900"
+     },
+     {
+      "match": "5 Verify",
+      "value": "#FF677B"
+     }
+    ]
+   },
+   "options": {
+    "count": 20,
+    "columnFormat": {
+     "_time": {
+      "data": "> table | seriesByName(\"_time\") | formatByType(timeConfig)"
+     },
+     "step": {
+      "rowColors": "> table | seriesByName(\"step\") | matchValue(stepColorConfig)"
+     },
+     "summary": {
+      "textOverflow": "anywhere"
+     }
+    }
+   },
+   "hideWhenNoData": true
+  },
+  "viz_incident_empty": {
+   "type": "splunk.markdown",
+   "options": {
+    "markdown": "\n\n### No incident yet\n\nEvery event of the incident (CI job, Hubble flows, Tetragon events, enforcement audit trail, Kubernetes API audit) is listed here with its step once the incident starts."
+   },
+   "title": "Every event of the selected incident"
+  }
+ },
+ "dataSources": {
+  "ds_step1": {
+   "type": "ds.search",
+   "name": "ds_step1",
+   "options": {
+    "query": "index=zero_trust $incident$ ((sourcetype=ci:job:event build_id=88213) OR (sourcetype=cisco:isovalent:processConnect src_pod=\"ci-runner-7d9f8-xk2lq\" dest_protected=true)) | eval job_t=if(sourcetype=\"ci:job:event\",_time,null()), job_s=if(sourcetype=\"ci:job:event\",build_status,null()), conn_t=if(sourcetype=\"cisco:isovalent:processConnect\",_time,null()), conn_p=if(sourcetype=\"cisco:isovalent:processConnect\",process,null()), conn_d=if(sourcetype=\"cisco:isovalent:processConnect\",dest_workload.\":\".dest_port,null()), conn_pod=if(sourcetype=\"cisco:isovalent:processConnect\",dest_pod,null()) | stats count min(job_t) as job_start latest(job_s) as job_status min(conn_t) as first_conn earliest(conn_p) as process earliest(conn_d) as dest earliest(conn_pod) as dest_pod | eval title=\"1 Connect\", mark=if(isnotnull(job_start) AND isnotnull(first_conn),\"✓\",\"…\"), line1=if(isnotnull(job_start), \"CI job 88213 \".job_status.\" · started \".strftime(job_start,\"%H:%M:%S\").\" · MR !4417 by contractor-dev-17\", \"No incident yet\"), line2=if(isnotnull(first_conn), \"First connection \".strftime(first_conn,\"%H:%M:%S\").\" · \".process.\" → \".dest, if(isnotnull(job_start), \"Waiting for the first connection to the checkpoint store\", \"The CI job starts the story: job 88213 on the build farm runner\")), line3=if(isnotnull(first_conn), \"Pod ci-runner-7d9f8-xk2lq on bf-node-03 → \".dest_pod.\" on ai-train-stor-02\", \"\") | eval line1=coalesce(line1,\"\"), line2=coalesce(line2,\"\"), line3=coalesce(line3,\"\") | table title mark line1 line2 line3",
+    "queryParameters": {
+     "earliest": "-24h",
+     "latest": "now"
+    },
+    "enableSmartSources": true
+   }
+  },
+  "ds_step2": {
+   "type": "ds.search",
+   "name": "ds_step2",
+   "options": {
+    "query": "index=zero_trust $incident$ ((sourcetype=cilium:hubble:flow src_pod=\"ci-runner-7d9f8-xk2lq\" verdict=AUDIT) OR (sourcetype=cisco:isovalent:processConnect src_pod=\"ci-runner-7d9f8-xk2lq\" dest_protected=true)) | eval hub=if(sourcetype=\"cilium:hubble:flow\",1,0), a_t=if(hub=1,_time,null()), a_src=if(hub=1,src_identity,null()), a_dst=if(hub=1,dest_identity,null()), a_node=if(hub=1,node,null()), t_t=if(hub=0,_time,null()), t_p=if(hub=0,process,null()), t_pp=if(hub=0,parent_process,null()) | stats count min(a_t) as first_audit earliest(a_src) as src_identity earliest(a_dst) as dest_identity earliest(a_node) as node min(t_t) as first_tetragon earliest(t_p) as process earliest(t_pp) as parent_process | eval title=\"2 Observe\", mark=if(isnotnull(first_audit) AND isnotnull(first_tetragon),\"✓\",\"…\"), line1=if(isnotnull(first_audit), \"Hubble AUDIT (would deny) \".strftime(first_audit,\"%H:%M:%S\").\" · identity \".src_identity.\" → \".dest_identity.\" at \".node, \"No incident yet\"), line2=if(isnotnull(first_tetragon), \"Tetragon \".strftime(first_tetragon,\"%H:%M:%S\").\" · \".process.\" from \".parent_process, \"Waiting for the first AUDIT flow and the Tetragon connect event\"), line3=if(isnotnull(first_audit) AND isnotnull(first_tetragon), \"Both workload identities and the program, seen at the source\", \"\") | eval line1=coalesce(line1,\"\"), line2=coalesce(line2,\"\"), line3=coalesce(line3,\"\") | table title mark line1 line2 line3",
+    "queryParameters": {
+     "earliest": "-24h",
+     "latest": "now"
+    },
+    "enableSmartSources": true
+   }
+  },
+  "ds_step3": {
+   "type": "ds.search",
+   "name": "ds_step3",
+   "options": {
+    "query": "search $incident$ `notable` | search source=\"ZT - Workload Exceeded Risk Threshold on Protected-Path Signals - Rule\" | stats count as finding_count min(_time) as finding_time latest(risk_score) as finding_risk latest(source_count) as finding_sources | eval k=1 | append [search index=risk $incident$ source=\"ZT - *\" risk_object=\"build-farm/ci-runner\" | stats count as risk_count sum(risk_score) as risk_total min(_time) as first_risk max(_time) as last_risk | eval k=1] | append [| inputlookup zt_agent_briefs_lookup | `zt_incident_window(\"$incident$\")` | where run_epoch>=zt_s AND run_epoch<=zt_e | sort - run_epoch | head 1 | eval k=1 | fields k run_epoch investigation_id disposition confidence action enforcement_point policy_name] | stats max(finding_count) as finding_count min(finding_time) as finding_time max(finding_risk) as finding_risk max(finding_sources) as finding_sources max(risk_count) as risk_count max(risk_total) as risk_total min(first_risk) as first_risk max(last_risk) as last_risk max(run_epoch) as brief_time first(investigation_id) as investigation_id first(disposition) as disposition first(confidence) as confidence first(action) as action first(enforcement_point) as enforcement_point by k | appendcols [search index=zero_trust $incident$ sourcetype=ci:job:event build_id=88213 build_status=running | stats count as have] | eval title=\"3 Decide\", mark=if(finding_count>0 AND isnotnull(brief_time),\"✓\",\"…\"), line1=if(risk_count>0, \"Risk events \".strftime(first_risk,\"%H:%M:%S\").\" → \".strftime(last_risk,\"%H:%M:%S\").\" · \".risk_count.\" signals · \".risk_total.\" risk on build-farm/ci-runner\", if(have>0, \"Waiting for the risk events (the two detections run every minute)\", \"No incident yet\")), line2=if(finding_count>0, \"Finding group \".if(isnotnull(investigation_id), investigation_id.\" \", \"\").strftime(finding_time,\"%H:%M:%S\").\" · risk \".finding_risk.\" from \".finding_sources.\" detections, over the threshold of 80\", if(risk_count>0, \"Waiting for the finding group (risk threshold 80)\", \"\")), line3=if(isnotnull(brief_time), \"Agent brief \".strftime(brief_time,\"%H:%M:%S\").\" · \".replace(disposition,\"_\",\" \").\" (\".confidence.\") · recommends \".action.\" at the \".enforcement_point, if(finding_count>0, \"Waiting for the ZTFlowInvestigator brief\", \"\")) | eval line1=coalesce(line1,\"\"), line2=coalesce(line2,\"\"), line3=coalesce(line3,\"\") | table title mark line1 line2 line3",
+    "queryParameters": {
+     "earliest": "-24h",
+     "latest": "now"
+    },
+    "enableSmartSources": true
+   }
+  },
+  "ds_step4": {
+   "type": "ds.search",
+   "name": "ds_step4",
+   "options": {
+    "query": "index=zero_trust $incident$ ((sourcetype=zt:enforcement:audit state IN (\"requested\",\"approved\",\"rejected\",\"refused\",\"applied\")) OR (sourcetype=kube:apiserver:audit k8s_user=\"system:serviceaccount:soar:zt-enforcer\" k8s_resource=ciliumnetworkpolicies)) | eval req_t=if(state=\"requested\",_time,null()), app_t=if(state=\"approved\",_time,null()), app_by=if(state=\"approved\",approved_by_label,null()), rej_t=if(state IN (\"rejected\",\"refused\"),_time,null()), rej_s=if(state IN (\"rejected\",\"refused\"),state.\" by \".approved_by_label,null()), apl_t=if(state=\"applied\",_time,null()), apl_p=if(state=\"applied\",policy_name,null()), apl_by=if(state=\"applied\",executed_by,null()), k8s_t=if(sourcetype=\"kube:apiserver:audit\",_time,null()), k8s_n=if(sourcetype=\"kube:apiserver:audit\",k8s_name.\" \".status_code,null()) | stats count min(req_t) as requested_at min(app_t) as approved_at earliest(app_by) as approved_by max(rej_t) as rejected_at latest(rej_s) as rejected_how min(apl_t) as applied_at earliest(apl_p) as policy earliest(apl_by) as applied_by min(k8s_t) as k8s_at earliest(k8s_n) as k8s_obj | appendcols [search index=zero_trust $incident$ sourcetype=ci:job:event build_id=88213 build_status=running | stats count as have] | eval title=\"4 Enforce\", mark=if(isnotnull(applied_at),\"✓\",\"…\"), line1=case(isnotnull(approved_at), \"Approved \".strftime(approved_at,\"%H:%M:%S\").\" by \".approved_by, isnotnull(rejected_at), strftime(rejected_at,\"%H:%M:%S\").\" \".rejected_how, isnotnull(requested_at), \"Quarantine requested \".strftime(requested_at,\"%H:%M:%S\").\" · waiting for SOC tier 2 approval\", true(), if(have>0, \"Waiting for the quarantine request (the agent brief comes first)\", \"No incident yet\")), line2=if(isnotnull(applied_at), \"Applied \".strftime(applied_at,\"%H:%M:%S\").\" · CiliumNetworkPolicy \".policy.\" by \".applied_by, if(isnotnull(approved_at), \"Applying the quarantine policy in the kernel\", \"\")), line3=if(isnotnull(k8s_at), \"Kubernetes API \".strftime(k8s_at,\"%H:%M:%S\").\" · create ciliumnetworkpolicies/\".k8s_obj.\" as zt-enforcer\", \"\") | eval line1=coalesce(line1,\"\"), line2=coalesce(line2,\"\"), line3=coalesce(line3,\"\") | table title mark line1 line2 line3",
+    "queryParameters": {
+     "earliest": "-24h",
+     "latest": "now"
+    },
+    "enableSmartSources": true
+   }
+  },
+  "ds_step5": {
+   "type": "ds.search",
+   "name": "ds_step5",
+   "options": {
+    "query": "index=zero_trust $incident$ ((sourcetype=cilium:hubble:flow src_pod=\"ci-runner-7d9f8-xk2lq\" verdict=DROPPED) OR (sourcetype=zt:enforcement:audit state IN (\"applied\",\"verified\",\"failed\"))) | eval d_t=if(verdict=\"DROPPED\",_time,null()), d_p=if(verdict=\"DROPPED\",mvindex(policy_denied,0),null()), d_id=if(verdict=\"DROPPED\",src_identity,null()), v_t=if(state IN (\"verified\",\"failed\"),_time,null()), v_s=if(state IN (\"verified\",\"failed\"),state,null()), a_t=if(state=\"applied\",_time,null()) | stats count min(d_t) as first_drop count(d_t) as drops earliest(d_p) as policy earliest(d_id) as identity min(v_t) as verified_at earliest(v_s) as verdict_state min(a_t) as applied_at | eval k=1 | append [search index=zt_summary source=\"ZT Posture - Rollup\" [| makeresults | `zt_incident_window(\"$incident$\")` | eval earliest=zt_s-3600, latest=zt_e | fields earliest latest | return earliest latest] | `zt_incident_window(\"$incident$\")` | eval fire=zt_s+60 | eval before=if(_time<fire, 1, 0) | stats latest(coverage_pct) as cov_after latest(unprotected) as unp_after latest(eval(if(before=1,coverage_pct,null()))) as cov_before latest(eval(if(before=1,unprotected,null()))) as unp_before latest(enforcement_24h) as enf_after | eval k=1] | stats min(first_drop) as first_drop max(drops) as drops first(policy) as policy first(identity) as identity min(verified_at) as verified_at first(verdict_state) as verdict_state min(applied_at) as applied_at first(cov_before) as cov_before first(cov_after) as cov_after first(unp_before) as unp_before first(unp_after) as unp_after by k | appendcols [search index=zero_trust $incident$ sourcetype=ci:job:event build_id=88213 build_status=running | stats count as have] | eval title=\"5 Verify\", mark=if(isnotnull(first_drop) AND verdict_state=\"verified\",\"✓\",\"…\"), line1=if(isnotnull(first_drop), \"First DROPPED \".strftime(first_drop,\"%H:%M:%S\").\" · \".drops.\" retries dropped by \".policy.\" · identity \".identity, if(isnotnull(applied_at), \"Waiting for the first dropped retry\", if(have>0, \"Waiting for the enforcement (approve the request on the Enforcement Approvals page)\", \"No incident yet\"))), line2=case(verdict_state=\"verified\", \"Verified \".strftime(verified_at,\"%H:%M:%S\").\" · quarantine confirmed, ES investigation resolved\", verdict_state=\"failed\", \"Verification failed \".strftime(verified_at,\"%H:%M:%S\"), isnotnull(applied_at), \"Waiting for verification\", true(), \"\"), line3=if(isnotnull(first_drop) AND isnotnull(cov_before), \"Posture: coverage \".cov_before.\"% → \".cov_after.\"% · unprotected paths \".unp_before.\" → \".unp_after, if(isnotnull(cov_after), \"Posture now: coverage \".cov_after.\"% · unprotected paths \".unp_after, \"\")) | eval line1=coalesce(line1,\"\"), line2=coalesce(line2,\"\"), line3=coalesce(line3,\"\") | table title mark line1 line2 line3",
+    "queryParameters": {
+     "earliest": "-24h",
+     "latest": "now"
+    },
+    "enableSmartSources": true
+   }
+  },
+  "ds_grid": {
+   "type": "ds.search",
+   "name": "ds_grid",
+   "options": {
+    "query": "| makeresults count=12 | streamstats count as cell | fields cell | append [search index=zero_trust $incident$ sourcetype=cisco:isovalent:processConnect src_pod=\"ci-runner-7d9f8-xk2lq\" dest_protected=true | stats min(_time) as t | eval cell=1] | append [search index=zero_trust $incident$ sourcetype=cilium:hubble:flow src_pod=\"ci-runner-7d9f8-xk2lq\" verdict=AUDIT | stats min(_time) as t | eval cell=2] | append [search index=zero_trust $incident$ (sourcetype=cilium:hubble:flow OR sourcetype=cisco:isovalent:*) src_pod=\"ci-runner-7d9f8-xk2lq\" | eval it=_indextime | stats min(it) as t | eval cell=3] | append [search index=risk $incident$ source=\"ZT - *\" risk_object=\"build-farm/ci-runner\" | stats min(_time) as t | eval cell=4] | append [search $incident$ `notable` | search source=\"ZT - Workload Exceeded Risk Threshold on Protected-Path Signals - Rule\" | stats min(_time) as t | eval cell=5] | append [| inputlookup zt_agent_briefs_lookup | `zt_incident_window(\"$incident$\")` | where run_epoch>=zt_s AND run_epoch<=zt_e | stats min(run_epoch) as t | eval cell=6] | append [search index=zero_trust $incident$ sourcetype=zt:enforcement:audit state=applied | stats min(_time) as t | eval cell=7] | append [search index=zero_trust $incident$ sourcetype=kube:apiserver:audit k8s_user=\"system:serviceaccount:soar:zt-enforcer\" k8s_verb=create k8s_resource=ciliumnetworkpolicies | stats min(_time) as t | eval cell=8] | append [search index=zero_trust $incident$ sourcetype=kube:apiserver:audit k8s_user=\"system:serviceaccount:soar:zt-enforcer\" k8s_verb=patch k8s_resource=pods k8s_name=\"ci-runner-7d9f8-xk2lq\" | stats min(_time) as t | eval cell=9] | append [search index=zero_trust $incident$ sourcetype=cilium:hubble:flow src_pod=\"ci-runner-7d9f8-xk2lq\" verdict=DROPPED | stats min(_time) as t | eval cell=10] | append [search index=zt_summary source=\"ZT Posture - Rollup\" [| makeresults | `zt_incident_window(\"$incident$\")` | eval earliest=zt_s-3600, latest=zt_e | fields earliest latest | return earliest latest] | eval applied=[search index=zero_trust $incident$ sourcetype=zt:enforcement:audit state=applied | stats min(_time) as t | append [| makeresults | eval t=9999999999 | fields t] | stats min(t) as t | return $t] | where _time>=applied | stats min(_time) as t | eval cell=11] | append [search index=zero_trust $incident$ sourcetype=zt:enforcement:audit state=verified | stats min(_time) as t | eval cell=12] | stats min(t) as t by cell | eventstats max(eval(if(cell=1 AND isnotnull(t),1,0))) as have | eval mark=if(isnotnull(t),\"✓\",\"…\"), time=if(isnotnull(t), strftime(t,\"%H:%M:%S\"), if(have=1, case(cell=4,\"waiting for the risk events\", cell=5,\"waiting for the finding group\", cell=6,\"waiting for the agent brief\", cell=7,\"waiting for the approval\", cell=8 OR cell=9,\"waiting for the policy\", cell=10,\"waiting for the next retry\", cell=11,\"waiting for the next posture rollup\", cell=12,\"waiting for verification\", true(),\"pending\"), \"no incident yet\")), k=1 | eval pair=mvappend(\"cell\".cell.\"_mark=\".mark, \"cell\".cell.\"_time=\".time) | mvexpand pair | rex field=pair \"^(?<name>[^=]+)=(?<value>.*)$\" | xyseries k name value | fields - k | appendcols [search index=zt_summary source=\"ZT Posture - Rollup\" [| makeresults | `zt_incident_window(\"$incident$\")` | eval earliest=zt_s-3600, latest=zt_e | fields earliest latest | return earliest latest] | `zt_incident_window(\"$incident$\")` | eval fire=zt_s+60 | eval before=if(_time<fire,1,0) | stats count latest(coverage_pct) as cov_after latest(unprotected) as unp_after latest(eval(if(before=1,coverage_pct,null()))) as cov_before latest(eval(if(before=1,unprotected,null()))) as unp_before | eval posture_line=case(isnotnull(cov_before) AND isnotnull(cov_after), \"Coverage \".cov_before.\"% → \".cov_after.\"% · paths \".unp_before.\" → \".unp_after, isnotnull(cov_after), \"Coverage \".cov_after.\"% · paths \".unp_after, true(), \"Posture rollup pending\") | fields posture_line] | appendcols [| inputlookup zt_agent_briefs_lookup | `zt_incident_window(\"$incident$\")` | where run_epoch>=zt_s AND run_epoch<=zt_e | sort - run_epoch | stats count first(investigation_id) as inv | eval finding_line=if(isnotnull(inv), inv.\" · two signals, 50 + 40 = risk 90, over the threshold of 80\", \"Two signals, 50 + 40 = risk 90, over the threshold of 80\") | fields finding_line]",
+    "queryParameters": {
+     "earliest": "-24h",
+     "latest": "now"
+    },
+    "enableSmartSources": true
+   }
+  },
+  "ds_gdi_hubble": {
+   "type": "ds.search",
+   "name": "ds_gdi_hubble",
+   "options": {
+    "query": "index=zero_trust sourcetype=cilium:hubble:flow earliest=-24h | stats count max(_time) as last | eval age=if(isnotnull(last), tostring(now()-last,\"duration\"), \"none\"), age_label=if(isnotnull(last), \"last event \".age.\" ago\", \"no events in 24 h\") | table count age age_label",
+    "queryParameters": {
+     "earliest": "-24h",
+     "latest": "now"
+    },
+    "enableSmartSources": true
+   }
+  },
+  "ds_gdi_tetragon": {
+   "type": "ds.search",
+   "name": "ds_gdi_tetragon",
+   "options": {
+    "query": "index=zero_trust sourcetype=cisco:isovalent* earliest=-24h | stats count max(_time) as last | eval age=if(isnotnull(last), tostring(now()-last,\"duration\"), \"none\"), age_label=if(isnotnull(last), \"last event \".age.\" ago\", \"no events in 24 h\") | table count age age_label",
+    "queryParameters": {
+     "earliest": "-24h",
+     "latest": "now"
+    },
+    "enableSmartSources": true
+   }
+  },
+  "ds_gdi_nexus": {
+   "type": "ds.search",
+   "name": "ds_gdi_nexus",
+   "options": {
+    "query": "index=zero_trust (sourcetype=cisco:nexus:endpoint OR sourcetype=cisco:nexus:config) earliest=-24h | stats count max(_time) as last | eval age=if(isnotnull(last), tostring(now()-last,\"duration\"), \"none\"), age_label=if(isnotnull(last), \"last event \".age.\" ago\", \"no events in 24 h\") | table count age age_label",
+    "queryParameters": {
+     "earliest": "-24h",
+     "latest": "now"
+    },
+    "enableSmartSources": true
+   }
+  },
+  "ds_gdi_liveprotect": {
+   "type": "ds.search",
+   "name": "ds_gdi_liveprotect",
+   "options": {
+    "query": "index=zero_trust sourcetype=cisco:nexus:liveprotect earliest=-24h | stats count max(_time) as last | eval age=if(isnotnull(last), tostring(now()-last,\"duration\"), \"none\"), age_label=if(isnotnull(last), \"last event \".age.\" ago\", \"no events in 24 h\") | table count age age_label",
+    "queryParameters": {
+     "earliest": "-24h",
+     "latest": "now"
+    },
+    "enableSmartSources": true
+   }
+  },
+  "ds_raw_audit": {
+   "type": "ds.search",
+   "name": "ds_raw_audit",
+   "options": {
+    "query": "index=zero_trust $incident$ sourcetype=cilium:hubble:flow src_pod=\"ci-runner-7d9f8-xk2lq\" verdict=AUDIT | sort _time | head 1 | table _raw",
+    "queryParameters": {
+     "earliest": "-24h",
+     "latest": "now"
+    },
+    "enableSmartSources": true
+   }
+  },
+  "ds_raw_tetragon": {
+   "type": "ds.search",
+   "name": "ds_raw_tetragon",
+   "options": {
+    "query": "index=zero_trust $incident$ sourcetype=cisco:isovalent:processConnect src_pod=\"ci-runner-7d9f8-xk2lq\" dest_protected=true | sort _time | head 1 | table _raw",
+    "queryParameters": {
+     "earliest": "-24h",
+     "latest": "now"
+    },
+    "enableSmartSources": true
+   }
+  },
+  "ds_brief": {
+   "type": "ds.search",
+   "name": "ds_brief",
+   "options": {
+    "query": "| inputlookup zt_agent_briefs_lookup | `zt_incident_window(\"$incident$\")` | where run_epoch>=zt_s AND run_epoch<=zt_e | sort - run_epoch | stats count first(brief_text) as brief_text first(run_epoch) as run_epoch first(investigation_id) as investigation_id first(disposition) as disposition first(confidence) as confidence | eval nl=urldecode(\"%0A\"), head=if(isnotnull(investigation_id), investigation_id.\" · \", \"\").strftime(run_epoch,\"%Y-%m-%d %H:%M:%S\").\" · \".replace(coalesce(disposition,\"\"),\"_\",\" \").\" (\".coalesce(confidence,\"\").\" confidence)\" | eval brief_md=if(count>0, \"**\".head.\"**\".nl.nl.replace(coalesce(brief_text, \"(the brief has no text)\"), \"\\r?\\n\", nl.nl), \"### No brief yet\".nl.nl.\"The ZTFlowInvestigator brief appears here once the finding group opens and the agent has run.\") | table brief_md",
+    "queryParameters": {
+     "earliest": "-24h",
+     "latest": "now"
+    },
+    "enableSmartSources": true
+   }
+  },
+  "ds_incident": {
+   "type": "ds.search",
+   "name": "ds_incident",
+   "options": {
+    "query": "index=zero_trust $incident$ (src_pod=\"ci-runner-7d9f8-xk2lq\" OR pod=\"ci-runner-7d9f8-xk2lq\" OR (sourcetype=ci:job:event build_id=88213) OR sourcetype=zt:enforcement:audit OR (sourcetype=kube:apiserver:audit k8s_user=\"system:serviceaccount:soar:zt-enforcer\")) | eval step=case(sourcetype=\"ci:job:event\",\"1 Connect\", sourcetype=\"cisco:isovalent:processConnect\" OR sourcetype=\"cisco:isovalent:processExec\",\"2 Observe\", sourcetype=\"cilium:hubble:flow\" AND verdict!=\"DROPPED\",\"2 Observe\", sourcetype=\"zt:enforcement:audit\" AND state IN (\"requested\",\"approved\",\"rejected\",\"refused\",\"applied\"),\"4 Enforce\", sourcetype=\"kube:apiserver:audit\",\"4 Enforce\", sourcetype=\"cilium:hubble:flow\" AND verdict=\"DROPPED\",\"5 Verify\", sourcetype=\"zt:enforcement:audit\",\"5 Verify\", true(),\"3 Decide\"), summary=case(sourcetype=\"ci:job:event\",\"CI job \".build_id.\" \".build_status, sourcetype=\"cisco:isovalent:processConnect\", process.\" -> \".dest_workload.\":\".dest_port, sourcetype=\"cisco:isovalent:processExec\", \"exec \".process.\" \".process_args, sourcetype=\"cilium:hubble:flow\", verdict.\" \".traffic_direction.\" \".src_identity.\" -> \".dest_identity.\" at \".node, sourcetype=\"zt:enforcement:audit\", state.\" \".action.\" (\".approved_by_label.\")\", sourcetype=\"kube:apiserver:audit\", k8s_verb.\" \".k8s_resource.\"/\".k8s_name.\" \".status_code, true(), sourcetype) | table _time step sourcetype summary | sort _time",
+    "queryParameters": {
+     "earliest": "-24h",
+     "latest": "now"
+    },
+    "enableSmartSources": true
+   }
+  },
+  "ds_incidents": {
+   "type": "ds.search",
+   "name": "ds_incidents",
+   "options": {
+    "query": "index=zero_trust sourcetype=ci:job:event build_id=88213 build_status=running | stats count by _time | sort 0 - _time | streamstats current=f last(_time) as next_start | eval start=_time-60, end=if(isnotnull(next_start), tostring(next_start-60), \"now\"), label=strftime(_time,\"%Y-%m-%d %H:%M:%S\").\" UTC · CI job 88213 · MR !4417\", value=\"earliest=\".start.\" latest=\".end | table label value",
+    "queryParameters": {
+     "earliest": "-30d",
+     "latest": "now"
+    },
+    "enableSmartSources": true
+   }
+  }
+ },
+ "layout": {
+  "type": "absolute",
+  "options": {
+   "width": 1440,
+   "height": 2100,
+   "display": "auto-scale",
+   "showTitleAndDescription": true
+  },
+  "globalInputs": [
+   "input_incident"
+  ],
+  "structure": [
+   {
+    "item": "viz_raw_audit_empty",
+    "type": "block",
+    "position": {
+     "x": 0,
+     "y": 1260,
+     "w": 470,
+     "h": 380
+    }
+   },
+   {
+    "item": "viz_raw_tetragon_empty",
+    "type": "block",
+    "position": {
+     "x": 485,
+     "y": 1260,
+     "w": 470,
+     "h": 380
+    }
+   },
+   {
+    "item": "viz_incident_empty",
+    "type": "block",
+    "position": {
+     "x": 0,
+     "y": 1660,
+     "w": 1440,
+     "h": 440
+    }
+   },
+   {
+    "item": "viz_step1",
+    "type": "block",
+    "position": {
+     "x": 0,
+     "y": 0,
+     "w": 280,
+     "h": 170
+    }
+   },
+   {
+    "item": "viz_step2",
+    "type": "block",
+    "position": {
+     "x": 290,
+     "y": 0,
+     "w": 280,
+     "h": 170
+    }
+   },
+   {
+    "item": "viz_step3",
+    "type": "block",
+    "position": {
+     "x": 580,
+     "y": 0,
+     "w": 280,
+     "h": 170
+    }
+   },
+   {
+    "item": "viz_step4",
+    "type": "block",
+    "position": {
+     "x": 870,
+     "y": 0,
+     "w": 280,
+     "h": 170
+    }
+   },
+   {
+    "item": "viz_step5",
+    "type": "block",
+    "position": {
+     "x": 1160,
+     "y": 0,
+     "w": 280,
+     "h": 170
+    }
+   },
+   {
+    "item": "viz_grid_title",
+    "type": "block",
+    "position": {
+     "x": 0,
+     "y": 190,
+     "w": 190,
+     "h": 40
+    }
+   },
+   {
+    "item": "viz_grid_h1",
+    "type": "block",
+    "position": {
+     "x": 200,
+     "y": 190,
+     "w": 240,
+     "h": 40
+    }
+   },
+   {
+    "item": "viz_grid_h2",
+    "type": "block",
+    "position": {
+     "x": 450,
+     "y": 190,
+     "w": 240,
+     "h": 40
+    }
+   },
+   {
+    "item": "viz_grid_h3",
+    "type": "block",
+    "position": {
+     "x": 700,
+     "y": 190,
+     "w": 240,
+     "h": 40
+    }
+   },
+   {
+    "item": "viz_grid_h4",
+    "type": "block",
+    "position": {
+     "x": 950,
+     "y": 190,
+     "w": 240,
+     "h": 40
+    }
+   },
+   {
+    "item": "viz_grid_h5",
+    "type": "block",
+    "position": {
+     "x": 1200,
+     "y": 190,
+     "w": 240,
+     "h": 40
+    }
+   },
+   {
+    "item": "viz_lane1",
+    "type": "block",
+    "position": {
+     "x": 0,
+     "y": 240,
+     "w": 190,
+     "h": 130
+    }
+   },
+   {
+    "item": "viz_lane2",
+    "type": "block",
+    "position": {
+     "x": 0,
+     "y": 380,
+     "w": 190,
+     "h": 130
+    }
+   },
+   {
+    "item": "viz_lane3",
+    "type": "block",
+    "position": {
+     "x": 0,
+     "y": 520,
+     "w": 190,
+     "h": 130
+    }
+   },
+   {
+    "item": "viz_lane4",
+    "type": "block",
+    "position": {
+     "x": 0,
+     "y": 660,
+     "w": 190,
+     "h": 130
+    }
+   },
+   {
+    "item": "viz_lane5",
+    "type": "block",
+    "position": {
+     "x": 0,
+     "y": 800,
+     "w": 190,
+     "h": 130
+    }
+   },
+   {
+    "item": "viz_lane6",
+    "type": "block",
+    "position": {
+     "x": 0,
+     "y": 940,
+     "w": 190,
+     "h": 130
+    }
+   },
+   {
+    "item": "viz_cell1",
+    "type": "block",
+    "position": {
+     "x": 200,
+     "y": 240,
+     "w": 240,
+     "h": 130
+    }
+   },
+   {
+    "item": "viz_cell2",
+    "type": "block",
+    "position": {
+     "x": 450,
+     "y": 380,
+     "w": 240,
+     "h": 130
+    }
+   },
+   {
+    "item": "viz_cell3",
+    "type": "block",
+    "position": {
+     "x": 450,
+     "y": 520,
+     "w": 240,
+     "h": 130
+    }
+   },
+   {
+    "item": "viz_cell4",
+    "type": "block",
+    "position": {
+     "x": 700,
+     "y": 520,
+     "w": 240,
+     "h": 130
+    }
+   },
+   {
+    "item": "viz_cell5",
+    "type": "block",
+    "position": {
+     "x": 700,
+     "y": 660,
+     "w": 240,
+     "h": 130
+    }
+   },
+   {
+    "item": "viz_cell6",
+    "type": "block",
+    "position": {
+     "x": 700,
+     "y": 800,
+     "w": 240,
+     "h": 130
+    }
+   },
+   {
+    "item": "viz_cell7",
+    "type": "block",
+    "position": {
+     "x": 950,
+     "y": 940,
+     "w": 240,
+     "h": 130
+    }
+   },
+   {
+    "item": "viz_cell8",
+    "type": "block",
+    "position": {
+     "x": 950,
+     "y": 380,
+     "w": 240,
+     "h": 130
+    }
+   },
+   {
+    "item": "viz_cell9",
+    "type": "block",
+    "position": {
+     "x": 950,
+     "y": 240,
+     "w": 240,
+     "h": 130
+    }
+   },
+   {
+    "item": "viz_cell10",
+    "type": "block",
+    "position": {
+     "x": 1200,
+     "y": 380,
+     "w": 240,
+     "h": 130
+    }
+   },
+   {
+    "item": "viz_cell11",
+    "type": "block",
+    "position": {
+     "x": 1200,
+     "y": 520,
+     "w": 240,
+     "h": 130
+    }
+   },
+   {
+    "item": "viz_cell12",
+    "type": "block",
+    "position": {
+     "x": 1200,
+     "y": 940,
+     "w": 240,
+     "h": 130
+    }
+   },
+   {
+    "item": "viz_gdi_hubble",
+    "type": "block",
+    "position": {
+     "x": 0,
+     "y": 1090,
+     "w": 350,
+     "h": 150
+    }
+   },
+   {
+    "item": "viz_gdi_tetragon",
+    "type": "block",
+    "position": {
+     "x": 363,
+     "y": 1090,
+     "w": 350,
+     "h": 150
+    }
+   },
+   {
+    "item": "viz_gdi_nexus",
+    "type": "block",
+    "position": {
+     "x": 726,
+     "y": 1090,
+     "w": 350,
+     "h": 150
+    }
+   },
+   {
+    "item": "viz_gdi_liveprotect",
+    "type": "block",
+    "position": {
+     "x": 1090,
+     "y": 1090,
+     "w": 350,
+     "h": 150
+    }
+   },
+   {
+    "item": "viz_raw_audit",
+    "type": "block",
+    "position": {
+     "x": 0,
+     "y": 1260,
+     "w": 470,
+     "h": 380
+    }
+   },
+   {
+    "item": "viz_raw_tetragon",
+    "type": "block",
+    "position": {
+     "x": 485,
+     "y": 1260,
+     "w": 470,
+     "h": 380
+    }
+   },
+   {
+    "item": "viz_brief",
+    "type": "block",
+    "position": {
+     "x": 970,
+     "y": 1260,
+     "w": 470,
+     "h": 380
+    }
+   },
+   {
+    "item": "viz_incident_events",
+    "type": "block",
+    "position": {
+     "x": 0,
+     "y": 1660,
+     "w": 1440,
+     "h": 440
+    }
+   }
+  ]
+ }
+}]]></definition>
 </dashboard>
