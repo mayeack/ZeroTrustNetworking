@@ -136,22 +136,35 @@ def find_one(soar, resource, **filters):
     return rows[0] if rows else None
 
 
-def ensure_roles(soar, dry):
-    ids = {}
-    for name, spec in ROLES.items():
-        existing = find_one(soar, "role", name=name) if not dry else None
-        body = {"name": name, "description": spec["description"], "permissions": spec["permissions"]}
-        if existing:
-            ids[name] = existing["id"]
-            say("role %-11s present (id %s)" % (name, existing["id"]))
-        elif dry:
-            say("role %-11s would be created: %s" % (name, json.dumps(body)))
-        else:
-            r = soar.post("rest/role", json_body=body)
-            ids[name] = r.get("id")
-            say("role %-11s created (id %s)" % (name, ids[name]))
-    return ids
-
+def ensure_roles(soar, dry_run):
+    """Create the approver roles. SOAR wants `permissions` as a list of {name, view, edit, delete, execute} objects; start
+    from the Observer role (view everything) and allow editing/executing on containers so approvers can answer prompts."""
+    existing = {r["name"]: r for r in soar.get("rest/role", params={"page_size": 100})["data"]}
+    observer = next((r for r in existing.values() if r["name"] == "Observer"), None)
+    base = observer["permissions"] if observer else []
+    role_ids = {}
+    for name, desc in (("SOC tier 2", "Zero trust quarantine approvers, first approval (kernel, DPU, switch)."),
+                       ("NetOps", "Zero trust quarantine approvers, second approval for the DPU and switch enforcement points.")):
+        if name in existing:
+            role_ids[name] = existing[name]["id"]
+            print("role %-10s present (id %s)" % (name, existing[name]["id"]))
+            continue
+        perms = []
+        for p in base:
+            entry = {"name": p["name"], "view": "allow", "edit": "deny", "delete": "deny", "execute": "deny"}
+            if p["name"] in ("containers", "case_management"):
+                entry.update({"edit": "allow", "execute": "allow"})
+            if p["name"] == "playbooks":
+                entry.update({"execute": "allow"})
+            perms.append(entry)
+        body = {"name": name, "description": desc, "permissions": perms}
+        if dry_run:
+            print("role %-10s would be created with %d permission entries" % (name, len(perms)))
+            continue
+        r = soar.post("rest/role", json_body=body)
+        role_ids[name] = r.get("id")
+        print("role %-10s created (id %s)" % (name, r.get("id")))
+    return role_ids
 
 def ensure_users(soar, role_ids, dry):
     for user, (role, first, last) in USERS.items():
