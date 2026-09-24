@@ -95,7 +95,8 @@ class Http:
         if params:
             url += ("&" if "?" in url else "?") + urllib.parse.urlencode(params, doseq=True)
         body = None
-        hdrs = {"Accept": "application/json"}
+        # Cloudflare's browser integrity check (error 1010) rejects the default Python-urllib agent.
+        hdrs = {"Accept": "application/json", "User-Agent": "zt-incident-demo-tools/1.0"}
         auth = self._auth_header()
         if auth:
             hdrs["Authorization"] = auth

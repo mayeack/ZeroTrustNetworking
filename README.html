@@ -257,6 +257,10 @@ make smoke              # acceptance checks 2 to 8 with a pass/fail table; FRESH
 <td><code>make emulator-status</code> (local <code>/version</code> and the public URL); <code>launchctl list \| grep zt-incident-demo</code>; logs in <code>local/logs/</code> and <code>~/.cloudflared/zt-k8s-tunnel.log</code>. <code>cloudflared tunnel info zt-k8s</code>. A 401 from the emulator means the token in <code>storage/passwords</code> (<code>make secrets</code> after the upload) or in the SOAR asset differs from <code>local/env</code></td>
 </tr>
 <tr>
+<td><code>HTTP 403</code>, body <code>error code: 1010</code> from <code>zt-k8s.yeackbot.com</code></td>
+<td>Cloudflare's browser integrity check rejects requests whose <code>User-Agent</code> is the Python default (<code>Python-urllib/3.x</code>). The app's Kubernetes client, the approvals endpoint, <code>ztdemo reset</code>, the SOAR playbook and <code>tools/ztrest.py</code> all send a named agent, so this only appears from ad hoc scripts; set any <code>User-Agent</code> header. Requests from the stack and from SOAR are unaffected</td>
+</tr>
+<tr>
 <td>Detections not firing</td>
 <td>Run each <code>ZT - * - Rule</code> search by hand in <code>SplunkEnterpriseSecuritySuite</code>; check <code>\| inputlookup zt_demo_state_lookup</code> for <code>last_reset_epoch</code> (the macros hide everything before it); <code>index=risk source="ZT - *"</code>; the finding-based detection needs both risk events in the Risk data model (<code>\| tstats count from datamodel=Risk.All_Risk where source="ZT - *"</code>). At fast cadence all ZT searches run every minute (<code>make fast</code>)</td>
 </tr>
