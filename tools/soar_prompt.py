@@ -21,14 +21,46 @@ def pending(soar):
     return data.get("data", [])
 
 
+def user_id(soar, username):
+    st, body = soar.request("GET", "rest/ph_user", params={"_filter_username": '"%s"' % username}, raw=True)
+    rows = json.loads(body.decode()).get("data", []) if st == 200 else []
+    return rows[0]["id"] if rows else None
+
+
+def approvals_for(soar, username, since=0, names=("ask_approval", "ask_approval_netops")):
+    """The user's copies of the playbook prompts created after `since` (epoch), newest first, any status."""
+    import datetime as dt
+    uid = user_id(soar, username)
+    st, body = soar.request("GET", "rest/approval", params={"page_size": 30, "sort": "id", "order": "desc"}, raw=True)
+    rows = json.loads(body.decode()).get("data", []) if st == 200 else []
+    out = []
+    for a in rows:
+        if a.get("owner") != uid or a.get("name") not in names:
+            continue
+        try:
+            started = dt.datetime.strptime(a.get("start_time", "")[:19], "%Y-%m-%dT%H:%M:%S").replace(tzinfo=dt.timezone.utc).timestamp()
+        except ValueError:
+            started = 0
+        if started >= since - 60:
+            out.append(a)
+    return out
+
+
+def mine(soar, username, name=None):
+    """A role prompt creates one approval record per user in the role; only the owner can answer their copy."""
+    uid = user_id(soar, username)
+    return [a for a in pending(soar) if a.get("owner") == uid and (name is None or a.get("name") == name)]
+
+
 def answer(soar, approval_id, choice, comment):
     """SOAR accepts the response as a list ordered like the prompt's response types; the payload shape differs by
     release, so the known shapes are tried until one is accepted."""
+    resolution = "approve" if choice.lower() == "approve" else "deny"
     candidates = [
-        {"status": "approved" if choice.lower() == "approve" else "rejected", "responses": [choice, comment]},
-        {"responses": [choice, comment]},
-        {"status": "approved", "responses": [{"prompt": "Approve or reject the quarantine", "response": choice}, {"prompt": "Comment", "response": comment}]},
-        {"response": [choice, comment], "status": "approved"},
+        {"status": resolution, "type": "manual", "action": "prompt", "responses": [choice, comment], "message": comment},  # accepted by SOAR Cloud 8.7
+        {"resolution": resolution, "responses": [choice, comment], "message": comment},
+        {"resolution": resolution, "response": [choice, comment], "message": comment},
+        {"resolution": resolution, "responses": [{"response": choice}, {"response": comment}], "message": comment},
     ]
     tried = []
     for body in candidates:
@@ -55,6 +87,10 @@ def main(argv):
         return 0
     if argv[0] == "answer":
         print(json.dumps(answer(soar, argv[1], argv[2], argv[3] if len(argv) > 3 else ""), indent=1))
+        return 0
+    if argv[0] == "mine":
+        for a in mine(soar, user):
+            print(a["id"], a.get("name"), a.get("status"), "playbook_run", a.get("playbook_run"), "due", a.get("due_time"))
         return 0
     print(__doc__)
     return 1

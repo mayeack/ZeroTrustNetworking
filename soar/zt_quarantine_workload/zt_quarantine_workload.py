@@ -200,7 +200,9 @@ def start_from_finding(action=None, success=None, container=None, results=None, 
     _publish("start_from_finding", finding_id=finding_id, event_id=event_id, entity=entity, rule=rule, finding_title=title, playbook=PLAYBOOK_NAME)
     phantom.debug("finding %s (event %s) for %s: %s" % (finding_id, event_id, entity, title))
 
-    start_from_finding_investigations(container=container)
+    # The brief is read first: when the agent ran, its capture already opened the investigation and the brief carries
+    # the guid. The ES connector lookups run only when the brief has no investigation.
+    read_brief(container=container)
 
     return
 
@@ -235,7 +237,7 @@ def start_from_finding_investigations_check(action=None, success=None, container
         inv = open_rows[0]
         _update(investigation_guid=str(inv.get("investigation_guid") or inv.get("id") or ""), investigation_id=str(inv.get("investigation_id") or inv.get("investigation_guid") or inv.get("id") or ""))
         phantom.debug("using investigation %s (%s)" % (_state()["investigation_id"], _state()["investigation_guid"]))
-        read_brief(container=container)
+        pick_point(container=container)
         return
 
     start_from_finding_new_investigation(container=container)
@@ -279,7 +281,7 @@ def start_from_finding_record_investigation(action=None, success=None, container
         phantom.comment(container=container, comment="%s: could not start an investigation for finding %s; continuing without ES notes." % (PLAYBOOK_NAME, _state()["finding_id"]))
         _update(investigation_guid="", investigation_id="")
 
-    read_brief(container=container)
+    pick_point(container=container)
 
     return
 
@@ -322,7 +324,10 @@ def read_brief_check(action=None, success=None, container=None, results=None, ha
         if brief.get("investigation_guid") and not state.get("investigation_guid"):
             _update(investigation_guid=brief["investigation_guid"], investigation_id=brief.get("investigation_id") or brief["investigation_guid"])
         phantom.debug("brief: %s at the %s (%s)" % (brief["disposition"], brief["enforcement_point"], brief.get("approver_labels")))
-        pick_point(container=container)
+        if _state().get("investigation_guid"):
+            pick_point(container=container)
+        else:
+            start_from_finding_investigations(container=container)
         return
 
     attempts = _get("brief_attempts", 0) + 1

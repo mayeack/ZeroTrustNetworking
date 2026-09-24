@@ -2,7 +2,7 @@
 PY ?= python3
 APP := zt_incident_demo
 DA := DA-ESS-zt_incident_demo
-VERSION := 1.0.2
+VERSION := 1.0.3
 LOCAL_SPLUNK ?= /opt/splunk104
 SPL := $(LOCAL_SPLUNK)/bin/splunk
 FRESH ?= 0
@@ -84,6 +84,10 @@ tunnel-install: ## Create the zt-k8s Cloudflare tunnel and DNS route (shows the 
 	$(PY) tools/tunnel.py install
 smoke: ## Acceptance checks with a pass/fail table (FRESH=1 right after a fresh install)
 	$(PY) tools/smoke.py --fresh=$(FRESH)
+smoke-soar: ## Mode A acceptance: fire, then approve the playbook prompt in SOAR as j.chen and verify executed_by=soar (criterion 9)
+	$(PY) tools/smoke.py --soar
+smoke-attach: ## Verify the incident already running (no new fire); add SOAR=1 for Mode A
+	$(PY) tools/smoke.py --attach $(if $(SOAR),--soar,)
 wording: ## Acceptance criterion 11: banned words in visible text of both apps, the agent and the playbook
 	$(PY) tools/wording.py
 verify-views: ## Run every Dashboard Studio data source on the stack with the newest incident selected

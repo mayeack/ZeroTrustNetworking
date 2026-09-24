@@ -145,6 +145,9 @@ make agent              # Agent Launchpad steps: LLM connection, MCP connection 
 make es-automation-rule # ES automation rule &quot;Zero Trust Protected Paths&quot; that starts the playbook (Mode A); RULE=off|on toggles it
 make soar-setup         # SOAR roles, users, assets, custom function and playbook (idempotent; --dry-run shows the plan)
 make smoke              # acceptance checks 2 to 8 with a pass/fail table; FRESH=1 right after a fresh install
+make smoke-soar         # Mode A acceptance: approves the playbook prompt in SOAR as j.chen; checks executed_by=soar (criterion 9)
+make smoke-attach       # verify the incident already running; SOAR=1 for Mode A
+make live-run           # live generator in the browser (http://127.0.0.1:8890); live-start / live-stop / live-status / live-install
 make wording            # acceptance criterion 11: banned words in the visible text of both apps, the agent and the playbook
 make verify-views       # every Dashboard Studio data source runs on the stack with the newest incident selected
 </code></pre>

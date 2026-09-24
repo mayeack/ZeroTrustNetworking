@@ -157,14 +157,18 @@ def main(argv):
         import soar_prompt
         soar = soar_prompt.client()
         def prompt():
-            p = [a for a in soar_prompt.pending(soar) if a.get("name") in ("ask_approval", "ask_approval_netops")]
+            # the approver's own copy of the role prompt (one record per user in the role), pending or already answered
+            p = soar_prompt.approvals_for(soar, approver, since=t0)
             return p or None
         pr, dtp = wait_for(prompt, 420, 15)
-        check("SOAR prompt (playbook ask_approval) within 7 min of the brief", bool(pr), "%.0fs %s" % (dtp, [(a["id"], a.get("name")) for a in (pr or [])]))
+        check("SOAR prompt (playbook ask_approval) within 7 min of the brief", bool(pr), "%.0fs %s" % (dtp, [(a["id"], a.get("name"), a.get("status")) for a in (pr or [])]))
         rq = []
         if pr:
-            ans = soar_prompt.answer(soar_prompt.client(approver), pr[0]["id"], "Approve", "Contractor merge request; not approved for checkpoint access")
-            check("prompt answered as %s in SOAR" % approver, ans.get("ok"), json.dumps(ans)[:160])
+            if pr[0].get("status") == "pending":
+                ans = soar_prompt.answer(soar_prompt.client(approver), pr[0]["id"], "Approve", "Contractor merge request; not approved for checkpoint access")
+                check("prompt answered as %s in SOAR" % approver, ans.get("ok"), json.dumps(ans)[:160])
+            else:
+                check("prompt answered as %s in SOAR" % approver, pr[0].get("status") in ("approved", "closed", "complete", "completed"), "already %s" % pr[0].get("status"))
             t_apply = time.time()
             k8s = s.search('search index=zero_trust sourcetype=kube:apiserver:audit k8s_user="%s" earliest=%d | stats values(k8s_verb) as verbs values(status_code) as codes count' % (canon.ENFORCER_USER, int(t0)), earliest=int(t0), latest="now")
             def k8s_ok():
