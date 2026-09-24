@@ -28,7 +28,8 @@ def main(argv):
         return 0
     if "--off" in argv or "--on" in argv:
         state = "off" if "--off" in argv else "on"
-        out = s.post(EP, json_body={"automation_rule_name": RULE, "action": state})
+        import urllib.parse
+        out = s.request("POST", "servicesNS/nobody/missioncontrol/v1/soar/automation_rule/%s/%s" % (urllib.parse.quote(RULE, safe=""), state))
         print("automation rule %s -> %s: %s" % (RULE, state, json.dumps(out)[:200]))
         return 0
     # 1. the detection side: one KV record per detection in the rule (ES 8.7 stores the mapping here)
