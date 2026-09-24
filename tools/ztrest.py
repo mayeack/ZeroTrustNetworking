@@ -161,6 +161,7 @@ class Splunk(Http):
         params = dict(params or {})
         if "output_mode" not in params and not kw.get("raw") and "json_body" not in kw:
             params["output_mode"] = "json"
+        params = {k: v for k, v in params.items() if v is not None}  # a None value means "do not send"
         return super().request(method, path, params=params, **kw)
 
     def ns(self, path, app=None, owner="nobody"):

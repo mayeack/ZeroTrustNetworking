@@ -13,10 +13,14 @@ DISPOSITION_TP = "True Positive - Suspicious Activity"
 
 def newest_zt_finding(splunkd, rule, earliest=0):
     """Newest finding group of the ZT finding-based detection since `earliest` (epoch), from index=notable."""
-    spl = ('search `notable` | search source="%s" | eval finding_time=_time, rule_title=coalesce(orig_rule_title, rule_title) | sort - _time | head 1 | table event_id finding_time rule_title normalized_risk_object risk_object risk_score source_count '
+    spl = ('search `notable` | search source="%s" | eval finding_epoch=_time, rule_title=coalesce(orig_rule_title, rule_title) | sort - _time | head 1 | table event_id _time finding_epoch rule_title normalized_risk_object risk_object risk_score source_count '
            'orig_source threat_object annotations.mitre_attack.mitre_technique_id status_label disposition_label investigation_ids owner' % rule)
     rows = splunkd.search(spl, earliest=str(int(earliest)) if earliest else "-24h", latest="now", timeout=120)
-    return rows[0] if rows else None
+    if not rows:
+        return None
+    row = rows[0]
+    row["finding_time"] = row.get("_time")  # the string form is what POST /investigations accepts in finding_times
+    return row
 
 
 def list_investigations(splunkd, count=50):
@@ -29,11 +33,19 @@ def list_investigations(splunkd, count=50):
     return d if isinstance(d, list) else []
 
 
-def find_investigation_for_finding(splunkd, finding_event_id):
+def find_investigation_for_finding(splunkd, finding_event_id, name=None, not_before=0):
+    """Match on any id list ES exposes; fall back to the finding title created after the finding."""
     for inv in list_investigations(splunkd, 100):
-        ids = inv.get("finding_ids") or inv.get("incident_ids") or []
+        ids = []
+        for key in ("finding_ids", "incident_ids", "notable_ids", "event_ids", "source_event_ids"):
+            v = inv.get(key)
+            ids.extend(v if isinstance(v, list) else [v] if v else [])
         if finding_event_id in ids:
             return inv
+    if name:
+        for inv in list_investigations(splunkd, 100):
+            if inv.get("name") == name and float(inv.get("create_time") or 0) >= float(not_before or 0) - 1:
+                return inv
     return None
 
 
@@ -56,10 +68,10 @@ def create_investigation(splunkd, name, finding_event_id, finding_time, descript
 
 def ensure_investigation(splunkd, finding, description=""):
     """Return (investigation dict, created bool) for a ZT finding row from newest_zt_finding."""
-    inv = find_investigation_for_finding(splunkd, finding["event_id"])
+    inv = find_investigation_for_finding(splunkd, finding["event_id"], finding.get("rule_title"), finding.get("finding_epoch"))
     if inv:
         return inv, False
-    inv = create_investigation(splunkd, finding.get("rule_title") or "Zero trust finding", finding["event_id"], finding.get("finding_time") or time.time(), description)
+    inv = create_investigation(splunkd, finding.get("rule_title") or "Zero trust finding", finding["event_id"], finding.get("finding_time") or time.strftime("%Y-%m-%d %H:%M:%S", time.gmtime()), description)
     return inv, True
 
 

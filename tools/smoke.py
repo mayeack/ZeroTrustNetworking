@@ -97,7 +97,7 @@ def main(argv):
     rk, dtr = wait_for(risk, 240, 10)
     check("two risk events (50+40) within 3 min", bool(rk) and int(float(rk[0]["total"])) == 90 and int(rk[0]["count"]) == 2, "%.0fs %s" % (dtr, rk[0] if rk else None))
     def finding():
-        r = s.search('search `notable` | search source="%s" | eval rule_title=coalesce(orig_rule_title, rule_title) | sort - _time | head 1 | table event_id rule_title risk_score threat_object annotations.mitre_attack.mitre_technique_id source_count' % canon.RULE_FBD, earliest=int(t0), latest="now")
+        r = s.search('search `notable` | search source="%s" | eval rule_title=coalesce(orig_rule_title, rule_title) | sort - _time | head 1 | table event_id _time rule_title risk_score threat_object annotations.mitre_attack.mitre_technique_id source_count' % canon.RULE_FBD, earliest=int(t0), latest="now")
         return r or None
     fg, dtf = wait_for(finding, 240, 10)
     fg0 = fg[0] if fg else {}
@@ -201,7 +201,7 @@ def inject_brief(s, finding):
     from ztgen import es_api
     from ztgen.restclient import Splunkd
     sd = Splunkd(ztrest.env("SPLUNK_URL"), basic=(ztrest.env("SPLUNK_USER"), ztrest.env("SPLUNK_PASS")), verify=False)
-    row = {"event_id": finding["event_id"], "rule_title": finding.get("rule_title"), "finding_time": time.time()}
+    row = {"event_id": finding["event_id"], "rule_title": finding.get("rule_title"), "finding_time": finding.get("_time"), "finding_epoch": time.time() - 600}
     inv, created = es_api.ensure_investigation(sd, row, description="Opened for the local test run.")
     guid, display = es_api.investigation_ids(inv)
     brief = {"finding_id": finding["event_id"], "entity": canon.RUNNER_WORKLOAD, "risk": 90, "job_id": str(canon.CI_JOB_ID), "dest_workload": canon.STORE_WORKLOAD, "data_class": "crown-jewel",

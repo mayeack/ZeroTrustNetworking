@@ -71,6 +71,7 @@ class Splunkd:
         params = dict(params or {})
         if not raw and json_body is None and "output_mode" not in params:
             params["output_mode"] = "json"
+        params = {k: v for k, v in params.items() if v is not None}  # a None value means "do not send"
         if params:
             url += ("&" if "?" in url else "?") + urllib.parse.urlencode(params, doseq=True)
         headers = self._headers()

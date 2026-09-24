@@ -1,13 +1,32 @@
 {
   "name": "ZTFlowInvestigator",
   "description": "Investigates zero trust findings on Kubernetes workloads that reach protected AI data stores. Gathers flow, process, CI job and server evidence through approved Splunk tools and recommends the narrowest enforcement action and its approver. Never acts.",
-  "llm": {"connection": "<set at make agent>", "temperature": 0.1, "max_tokens": 5000, "reasoning_effort": "low"},
-  "mcp": {"connection": "SplunkMCP", "type": "SPLUNK", "url": "https://prd-shw-39d7bab80b2f9d.splunkcloud.com:8089/services/mcp", "auth": "bearer token minted for user zt-agent (make mcp-tools)",
-          "tools": ["zt_finding_context", "zt_flow_evidence", "zt_process_evidence", "zt_ci_job_context", "zt_workload_server_context"]},
+  "llm": {
+    "connection": "<set at make agent>",
+    "temperature": 0.1,
+    "max_tokens": 5000,
+    "reasoning_effort": "low"
+  },
+  "mcp": {
+    "connection": "SplunkMCP",
+    "type": "SPLUNK",
+    "url": "https://prd-shw-39d7bab80b2f9d.splunkcloud.com:8089/services/mcp",
+    "auth": "bearer token minted for user zt-agent (make mcp-tools)",
+    "tools": [
+      "zt_finding_context",
+      "zt_flow_evidence",
+      "zt_process_evidence",
+      "zt_ci_job_context",
+      "zt_workload_server_context"
+    ]
+  },
   "system_prompt_file": "system_prompt.md",
   "task_prompt": "Investigate the zero trust finding that triggered this run and return the brief.",
-  "structured_output_file": "output_schema.json",
+  "structured_output_file": "output_schema_flat.json",
   "agent_timeout": 300,
-  "invocation": {"alert_action": "run_aiagent on the detection ZT - Workload Exceeded Risk Threshold on Protected-Path Signals - Rule",
-                 "manual": "| makeresults | aiagent agent_name=\"ZTFlowInvestigator\" prompt=\"Investigate the newest zero trust finding group and return the brief.\""}
+  "invocation": {
+    "alert_action": "run_aiagent on the detection ZT - Workload Exceeded Risk Threshold on Protected-Path Signals - Rule",
+    "manual": "| makeresults | aiagent agent_name=\"ZTFlowInvestigator\" prompt=\"Investigate the newest zero trust finding group and return the brief.\""
+  },
+  "structured_output_note": "Agent Launchpad 6.1 allows scalar fields and arrays only, so the nested where/recommendation/evidence objects of output_schema.json are flattened with prefixes; ztbrief rebuilds the nested brief."
 }

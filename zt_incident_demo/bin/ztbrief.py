@@ -58,6 +58,25 @@ def extract_brief(text):
     return None
 
 
+def normalize(brief):
+    """Accept the flat structured-output shape of Agent Launchpad and rebuild the nested brief."""
+    if "recommendation" in brief or "where" in brief:
+        return brief
+    out = dict(brief)
+    out["where"] = {k: brief.get("where_" + k, "") for k in ("pod", "node", "switch", "interface")}
+    out["recommendation"] = {k: brief.get("recommendation_" + k, "") for k in ("enforcement_point", "action", "policy_name", "scope", "blast_radius")}
+    out["recommendation"]["approver_labels"] = brief.get("approver_labels") or []
+    ev = []
+    for e in brief.get("evidence") or []:
+        if isinstance(e, dict):
+            ev.append(e)
+        else:
+            tool, _, fact = str(e).partition(":")
+            ev.append({"tool": tool.strip(), "fact": fact.strip() or str(e)})
+    out["evidence"] = ev
+    return out
+
+
 def candidate_texts(record):
     for key in ("response", "agent_response", "result", "output", "final_response", "message", "content"):
         if record.get(key):
@@ -95,6 +114,7 @@ class ZtBriefCommand(StreamingCommand):
                 yield out
                 continue
             try:
+                brief = normalize(brief)
                 if finding is None:
                     finding = es_api.newest_zt_finding(sd, canon.RULE_FBD, since)
                 out["ztbrief"] = self.store(sd, brief, finding, rec)
@@ -107,8 +127,14 @@ class ZtBriefCommand(StreamingCommand):
         if not finding_id:
             return "no ZT finding group since the last reset; brief not stored"
         existing = sd.kv_get(R.BRIEFS, finding_id) or {}
-        inv, created = es_api.ensure_investigation(sd, finding, description="Opened from the zero trust finding group by ZTFlowInvestigator.") if finding else (None, False)
-        guid, display = es_api.investigation_ids(inv) if inv else ("", "")
+        created = False
+        if existing.get("investigation_guid"):
+            guid, display = existing["investigation_guid"], existing.get("investigation_id") or existing["investigation_guid"]
+        elif finding:
+            inv, created = es_api.ensure_investigation(sd, finding, description="Opened from the zero trust finding group by ZTFlowInvestigator.")
+            guid, display = es_api.investigation_ids(inv)
+        else:
+            guid, display = "", ""
         reco = brief.get("recommendation") or {}
         where = brief.get("where") or {}
         record = {"_key": finding_id, "finding_id": finding_id, "finding_display_id": display, "investigation_id": display, "investigation_guid": guid,
