@@ -65,7 +65,7 @@ The outputs are what section 12.1 specifies: label patch `{"metadata": {"labels"
 ### 5.1 Import or paste
 
 - Import: `python3 tools/soar_setup.py` builds `local/soar_package/zt_quarantine_workload.tgz` (`zt_quarantine_workload.py` + `zt_quarantine_workload.json`) and posts it to `/rest/import_playbook` (repository `local`, force update). The JSON envelope is the minimal one derived from a real 8.x export (start and end nodes only); if the imported playbook opens as a visual playbook with two blocks, open it and choose the full-code view, or use the next bullet.
-- Paste: Home > Playbooks > + Playbook, repository `local`, name `zt_quarantine_workload`, operates on label `es_soar_integration`, then Playbook Settings > **Convert to full code** (or the code view toggle), replace everything with `zt_quarantine_workload.py`, save. Set the category to `Zero Trust`, active on.
+- Paste: Home > Playbooks > + Playbook, repository `local`, name `zt_quarantine_workload`, operates on label `es_soar_integration`, then Playbook Settings > **Convert to full code** (or the code view toggle), replace everything with `zt_quarantine_workload.py`, save. Set the category to `Zero Trust` and leave the playbook **inactive**: Enterprise Security starts it through the automation rule, and label activation would run it a second time.
 
 Either way, check the constants at the top of the file: asset names (`zt_splunk`, `zt_k8s_api`, `zt_hec`, `zt_hypershield`, `zt_nexus_nxapi`, `builtin_mc_connector`, `phantom`), the role names (`SOC tier 2`, `NetOps`), the polling cadence (30 s x 12 for the brief, 15 s x 12 for verification) and the prompt time (30 minutes).
 
@@ -122,7 +122,7 @@ Behaviour that both modes share (section 12.1): kernel needs one approval from S
 
 ## 6. Start the playbook from Enterprise Security
 
-ES 8.7 starts SOAR playbooks through **automation rules** (Configure > Content > Automation rules), not through SOAR label activation. `python3 tools/es_automation_rule.py` creates or updates the rule:
+ES 8.7 starts SOAR playbooks through **automation rules** (Configure > Content > Automation rules), not through SOAR label activation. `python3 tools/es_automation_rule.py` creates or updates the rule in two parts: the detection mapping is a record in the KV collection `detection_automation_rules` (app SA-ThreatIntelligence), and the playbook mapping is `POST /servicesNS/nobody/missioncontrol/v1/automation_rule` with `action=add` and playbooks as `{"scm": "local", "playbook": "zt_quarantine_workload"}`. `make es-automation-rule RULE=off` (or `RULE=on`) toggles it through `POST .../v1/soar/automation_rule/<name>/off|on`; keep it off while running Mode B, otherwise both flows act on the finding.
 
 - Name `Zero Trust Protected Paths`, status on.
 - Trigger: finding created by the detection `ZT - Workload Exceeded Risk Threshold on Protected-Path Signals - Rule` (app `DA-ESS-zt_incident_demo`).
@@ -137,7 +137,7 @@ The playbook also runs by hand: open the finding (or its investigation) in ES, A
 3. `curl -sk -H "Authorization: Bearer <token>" https://zt-k8s.yeackbot.com/version` answers from the emulator; `GET /api/v1/namespaces/build-farm/pods/ci-runner-7d9f8-xk2lq` returns the pod.
 4. HEC: `zt_hec` test connectivity (the HTTP app calls the base URL; a 404 on `/` is fine, a 401 is not).
 5. Roles `SOC tier 2` and `NetOps`, users `j.chen`, `m.ruiz`, `a.patel`; log in once as `j.chen` to confirm the role sees finding containers (label `es_soar_integration`).
-6. Custom function `zt_build_cnp` present and active; playbook `zt_quarantine_workload` present, active, category Zero Trust.
+6. Custom function `zt_build_cnp` present; playbook `zt_quarantine_workload` present, passed validation, category Zero Trust, inactive on the label.
 7. `| ztdemo action=config response_mode=soar` (or `make mode-soar`) on the stack so `ZT Response - Request Enforcement` stays out of the way.
 8. ES automation rule `Zero Trust Protected Paths` on (section 6).
 9. Trial run on the last finding: SOAR container > Run playbook > `zt_quarantine_workload` > answer the prompt as `j.chen` > watch `index=zero_trust sourcetype=zt:enforcement:audit playbook=zt_quarantine_workload` for `requested`, `approved`, `applied`, `verified` and the investigation notes and status.

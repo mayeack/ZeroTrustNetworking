@@ -1,16 +1,38 @@
 <!DOCTYPE html>
-<html lang="en"><head><meta charset="utf-8"><title>zt_quarantine_workload: build sheet</title><style>body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif;max-width:1100px;margin:32px auto;padding:0 20px;color:#1f2328;line-height:1.5;font-size:15px}
-h1{font-size:26px;border-bottom:1px solid #d0d7de;padding-bottom:6px}h2{font-size:21px;margin-top:32px;border-bottom:1px solid #d0d7de;padding-bottom:4px}h3{font-size:17px;margin-top:24px}
-code{font-family:SFMono-Regular,Menlo,Consolas,monospace;font-size:12.5px;background:#f6f8fa;padding:1px 4px;border-radius:4px}
-pre{background:#f6f8fa;padding:12px;border-radius:6px;overflow:auto;font-family:SFMono-Regular,Menlo,Consolas,monospace;font-size:12.5px;line-height:1.45}
-table{border-collapse:collapse;width:100%;margin:12px 0;font-size:13.5px}th,td{border:1px solid #d0d7de;padding:6px 8px;vertical-align:top;text-align:left}th{background:#f6f8fa}
-tr:nth-child(even) td{background:#fbfcfd}li{margin:3px 0}</style></head><body>
-<h1>zt_quarantine_workload: build sheet</h1>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>BUILD SHEET</title><style>body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;max-width:960px;margin:2rem auto;padding:0 1rem;line-height:1.5;color:#1f2937;background:#fff}
+code,pre{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:.92em}pre{background:#f3f4f6;padding:.75rem;overflow-x:auto;border-radius:6px}code{background:#f3f4f6;padding:.1em .3em;border-radius:4px}pre code{background:none;padding:0}
+table{border-collapse:collapse;margin:1rem 0;width:100%}th,td{border:1px solid #d1d5db;padding:.4rem .6rem;text-align:left;vertical-align:top}th{background:#f9fafb}h1,h2,h3{line-height:1.25}a{color:#0b5cad}
+@media (prefers-color-scheme: dark){body{background:#0f172a;color:#e5e7eb}pre,code{background:#1e293b}th{background:#1e293b}th,td{border-color:#334155}a{color:#7dd3fc}}</style></head><body><h1 id="zt_quarantine_workload-build-sheet">zt_quarantine_workload: build sheet</h1>
 <p>How to put the quarantine playbook on Splunk SOAR 8.7 (cloud): the assets, the roles and users, the custom function, the playbook itself (imported or rebuilt block by block in the visual playbook editor), the Enterprise Security automation rule that starts it, and a pairing checklist.</p>
 <p>Files in this folder:</p>
-<table><thead><tr><th>File</th><th>What it is</th></tr></thead><tbody><tr><td><code>zt_quarantine_workload.py</code></td><td>The full-code playbook (SOAR 8.x Python API, Python 3.13). Paste it into a new playbook in full-code mode, or import the package built by <code>tools/soar_setup.py</code>.</td></tr><tr><td><code>custom_functions/zt_build_cnp.py</code>, <code>.json</code></td><td>The custom function that builds the policy name, the request bodies and the YAML. Same logic as <code>ztgen/cnp.py</code> in the Splunk app (Mode B).</td></tr><tr><td><code>assets.json</code></td><td>The asset definitions with placeholders for the secrets.</td></tr><tr><td><code>BUILD_SHEET.md</code>, <code>BUILD_SHEET.html</code></td><td>This sheet.</td></tr></tbody></table>
+<table>
+<thead>
+<tr>
+<th>File</th>
+<th>What it is</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>zt_quarantine_workload.py</code></td>
+<td>The full-code playbook (SOAR 8.x Python API, Python 3.13). Paste it into a new playbook in full-code mode, or import the package built by <code>tools/soar_setup.py</code>.</td>
+</tr>
+<tr>
+<td><code>custom_functions/zt_build_cnp.py</code>, <code>.json</code></td>
+<td>The custom function that builds the policy name, the request bodies and the YAML. Same logic as <code>ztgen/cnp.py</code> in the Splunk app (Mode B).</td>
+</tr>
+<tr>
+<td><code>assets.json</code></td>
+<td>The asset definitions with placeholders for the secrets.</td>
+</tr>
+<tr>
+<td><code>BUILD_SHEET.md</code>, <code>BUILD_SHEET.html</code></td>
+<td>This sheet.</td>
+</tr>
+</tbody>
+</table>
 <p>Setup script: <code>python3 tools/soar_setup.py</code> (idempotent; <code>--dry-run</code> prints the plan, <code>--package-only</code> only builds <code>local/soar_package/*.tgz</code>). It creates the roles and users, the assets from <code>assets.json</code> with the values of <code>local/env</code>, and imports the custom function and the playbook. Ask before running it against SOAR.</p>
-<h2>1. Before you start</h2>
+<h2 id="1-before-you-start">1. Before you start</h2>
 <ul>
 <li>Apps installed on the SOAR (verified on the target): <strong>Splunk</strong> 4.0.2, <strong>HTTP</strong> 4.0.1, <strong>Enterprise Security</strong> connector 6.7.0 (asset <code>builtin_mc_connector</code> created by the ES pairing), <strong>Phantom</strong> 3.8.4 (utility app, action <code>no op</code>).</li>
 <li>ES 8.7 and SOAR are paired; finding containers arrive with the label <code>es_soar_integration</code>. <code>source_data_identifier</code> is the ES finding id, <code>external_id</code> the ES <code>event_id</code>, and the container <code>data</code> holds the finding JSON (<code>name</code>, <code>id</code>, <code>event_id</code>, <code>search_name</code>/<code>source</code>, <code>normalized_risk_object</code>, <code>risk_object</code>, <code>risk_score</code>).</li>
@@ -18,15 +40,80 @@ tr:nth-child(even) td{background:#fbfcfd}li{margin:3px 0}</style></head><body>
 <li>The Kubernetes API emulator answers at <code>https://zt-k8s.yeackbot.com</code> with the enforcer bearer token <code>ZT_K8S_ENFORCER_TOKEN</code>, and HEC accepts <code>SPLUNK_HEC_TOKEN</code>.</li>
 <li>The agent writes its brief into the KV store lookup <code>zt_agent_briefs_lookup</code> (fields <code>finding_id</code>, <code>finding_display_id</code>, <code>investigation_id</code>, <code>investigation_guid</code>, <code>workload</code>, <code>pod</code>, <code>node</code>, <code>job_id</code>, <code>dest_workload</code>, <code>data_class</code>, <code>disposition</code>, <code>confidence</code>, <code>enforcement_point</code>, <code>action</code>, <code>policy_name</code>, <code>blast_radius</code>, <code>approver_labels</code>, <code>brief_text</code>, <code>what_happened</code>, <code>run_epoch</code>). <code>finding_id</code> there is the ES <code>event_id</code>.</li>
 </ul>
-<h2>2. Assets</h2>
+<h2 id="2-assets">2. Assets</h2>
 <p>Home &gt; Apps &gt; the app &gt; Configure new asset. Names must match exactly; the playbook addresses assets by name.</p>
-<table><thead><tr><th>Asset</th><th>App</th><th>Settings</th></tr></thead><tbody><tr><td><code>zt_splunk</code></td><td>Splunk 4.0.2</td><td>Device <code>prd-shw-39d7bab80b2f9d.splunkcloud.com</code>, port <code>8089</code>, username <code>zt-soar</code>, password <code>ZT_PASS_ZT_SOAR</code>, verify server certificate on, timezone UTC. Test connectivity must pass.</td></tr><tr><td><code>zt_k8s_api</code></td><td>HTTP 4.0.1</td><td>Base URL <code>https://zt-k8s.yeackbot.com</code>, auth token name <code>Authorization</code>, auth token <code>Bearer &lt;ZT_K8S_ENFORCER_TOKEN&gt;</code>, verify server certificate <strong>off</strong> (self-signed), timeout 30.</td></tr><tr><td><code>zt_hec</code></td><td>HTTP 4.0.1</td><td>Base URL <code>https://http-inputs-prd-shw-39d7bab80b2f9d.splunkcloud.com:443</code>, auth token name <code>Authorization</code>, auth token <code>Splunk &lt;SPLUNK_HEC_TOKEN&gt;</code>, verify server certificate on, timeout 30.</td></tr><tr><td><code>zt_hypershield</code></td><td>HTTP 4.0.1</td><td>Same as <code>zt_k8s_api</code> (the emulator serves <code>POST /hypershield/v1/rules</code>).</td></tr><tr><td><code>zt_nexus_nxapi</code></td><td>HTTP 4.0.1</td><td>Same as <code>zt_k8s_api</code> (the emulator serves <code>POST /ins</code>, header <code>X-Nexus-Device</code>).</td></tr><tr><td><code>builtin_mc_connector</code></td><td>Enterprise Security 6.7.0</td><td>Exists after pairing; not created here.</td></tr><tr><td><code>phantom</code></td><td>Phantom 3.8.4</td><td>Needed for <code>no op</code>. Server: the SOAR base URL host; auth token: an automation user token (Administration &gt; User Management &gt; Users &gt; automation user &gt; Allowed IPs/token). If the asset has another name, change <code>ASSET_PHANTOM</code> at the top of the playbook.</td></tr></tbody></table>
+<table>
+<thead>
+<tr>
+<th>Asset</th>
+<th>App</th>
+<th>Settings</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>zt_splunk</code></td>
+<td>Splunk 4.0.2</td>
+<td>Device <code>prd-shw-39d7bab80b2f9d.splunkcloud.com</code>, port <code>8089</code>, username <code>zt-soar</code>, password <code>ZT_PASS_ZT_SOAR</code>, verify server certificate on, timezone UTC. Test connectivity must pass.</td>
+</tr>
+<tr>
+<td><code>zt_k8s_api</code></td>
+<td>HTTP 4.0.1</td>
+<td>Base URL <code>https://zt-k8s.yeackbot.com</code>, auth token name <code>Authorization</code>, auth token <code>Bearer &lt;ZT_K8S_ENFORCER_TOKEN&gt;</code>, verify server certificate <strong>off</strong> (self-signed), timeout 30.</td>
+</tr>
+<tr>
+<td><code>zt_hec</code></td>
+<td>HTTP 4.0.1</td>
+<td>Base URL <code>https://http-inputs-prd-shw-39d7bab80b2f9d.splunkcloud.com:443</code>, auth token name <code>Authorization</code>, auth token <code>Splunk &lt;SPLUNK_HEC_TOKEN&gt;</code>, verify server certificate on, timeout 30.</td>
+</tr>
+<tr>
+<td><code>zt_hypershield</code></td>
+<td>HTTP 4.0.1</td>
+<td>Same as <code>zt_k8s_api</code> (the emulator serves <code>POST /hypershield/v1/rules</code>).</td>
+</tr>
+<tr>
+<td><code>zt_nexus_nxapi</code></td>
+<td>HTTP 4.0.1</td>
+<td>Same as <code>zt_k8s_api</code> (the emulator serves <code>POST /ins</code>, header <code>X-Nexus-Device</code>).</td>
+</tr>
+<tr>
+<td><code>builtin_mc_connector</code></td>
+<td>Enterprise Security 6.7.0</td>
+<td>Exists after pairing; not created here.</td>
+</tr>
+<tr>
+<td><code>phantom</code></td>
+<td>Phantom 3.8.4</td>
+<td>Needed for <code>no op</code>. Server: the SOAR base URL host; auth token: an automation user token (Administration &gt; User Management &gt; Users &gt; automation user &gt; Allowed IPs/token). If the asset has another name, change <code>ASSET_PHANTOM</code> at the top of the playbook.</td>
+</tr>
+</tbody>
+</table>
 <p>Token values never go into this sheet or the repository; they live in <code>local/env</code> only.</p>
-<h2>3. Roles and users</h2>
+<h2 id="3-roles-and-users">3. Roles and users</h2>
 <p>Administration &gt; User Management.</p>
-<table><thead><tr><th>Role</th><th>Permissions</th><th>Users</th></tr></thead><tbody><tr><td><code>SOC tier 2</code></td><td>View and edit containers (to open the finding and answer the prompt), view playbooks, apps and assets.</td><td><code>j.chen</code>, <code>m.ruiz</code></td></tr><tr><td><code>NetOps</code></td><td>Same, second approver for the DPU and switch enforcement points.</td><td><code>a.patel</code></td></tr></tbody></table>
+<table>
+<thead>
+<tr>
+<th>Role</th>
+<th>Permissions</th>
+<th>Users</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>SOC tier 2</code></td>
+<td>View and edit containers (to open the finding and answer the prompt), view playbooks, apps and assets.</td>
+<td><code>j.chen</code>, <code>m.ruiz</code></td>
+</tr>
+<tr>
+<td><code>NetOps</code></td>
+<td>Same, second approver for the DPU and switch enforcement points.</td>
+<td><code>a.patel</code></td>
+</tr>
+</tbody>
+</table>
 <p>Prompts are addressed to the <strong>role</strong>, so anyone in <code>SOC tier 2</code> can answer the first prompt and anyone in <code>NetOps</code> the second; SOAR records who answered. Passwords generated by <code>soar_setup.py</code> are stored in <code>local/env</code> as <code>SOAR_PASS_J_CHEN</code>, <code>SOAR_PASS_M_RUIZ</code>, <code>SOAR_PASS_A_PATEL</code>. In the walk-through, approve as <code>j.chen</code> in a private browser window so the audit trail shows a second person.</p>
-<h2>4. Custom function <code>zt_build_cnp</code></h2>
+<h2 id="4-custom-function-zt_build_cnp">4. Custom function <code>zt_build_cnp</code></h2>
 <p>Home &gt; Custom Functions &gt; + Custom Function (repository <code>local</code>).</p>
 <ul>
 <li>Name <code>zt_build_cnp</code>; description as in <code>custom_functions/zt_build_cnp.json</code>.</li>
@@ -36,51 +123,273 @@ tr:nth-child(even) td{background:#fbfcfd}li{margin:3px 0}</style></head><body>
 <li>Or import <code>local/soar_package/zt_build_cnp.tgz</code> (Custom Functions &gt; Import).</li>
 </ul>
 <p>The outputs are what section 12.1 specifies: label patch <code>{"metadata": {"labels": {"zt-quarantine": "&lt;job id&gt;"}}}</code>, the CiliumNetworkPolicy <code>zt-quarantine-&lt;workload&gt;-&lt;job id&gt;</code> with <code>egressDeny</code>/<code>ingressDeny</code> to all entities and the labels <code>app.kubernetes.io/managed-by: zt-quarantine-workload</code> and <code>zt/finding: &lt;finding id&gt;</code>, and the YAML shown to the approver.</p>
-<h2>5. The playbook</h2>
-<h3>5.1 Import or paste</h3>
+<h2 id="5-the-playbook">5. The playbook</h2>
+<h3 id="51-import-or-paste">5.1 Import or paste</h3>
 <ul>
 <li>Import: <code>python3 tools/soar_setup.py</code> builds <code>local/soar_package/zt_quarantine_workload.tgz</code> (<code>zt_quarantine_workload.py</code> + <code>zt_quarantine_workload.json</code>) and posts it to <code>/rest/import_playbook</code> (repository <code>local</code>, force update). The JSON envelope is the minimal one derived from a real 8.x export (start and end nodes only); if the imported playbook opens as a visual playbook with two blocks, open it and choose the full-code view, or use the next bullet.</li>
-<li>Paste: Home &gt; Playbooks &gt; + Playbook, repository <code>local</code>, name <code>zt_quarantine_workload</code>, operates on label <code>es_soar_integration</code>, then Playbook Settings &gt; <strong>Convert to full code</strong> (or the code view toggle), replace everything with <code>zt_quarantine_workload.py</code>, save. Set the category to <code>Zero Trust</code>, active on.</li>
+<li>Paste: Home &gt; Playbooks &gt; + Playbook, repository <code>local</code>, name <code>zt_quarantine_workload</code>, operates on label <code>es_soar_integration</code>, then Playbook Settings &gt; <strong>Convert to full code</strong> (or the code view toggle), replace everything with <code>zt_quarantine_workload.py</code>, save. Set the category to <code>Zero Trust</code> and leave the playbook <strong>inactive</strong>: Enterprise Security starts it through the automation rule, and label activation would run it a second time.</li>
 </ul>
 <p>Either way, check the constants at the top of the file: asset names (<code>zt_splunk</code>, <code>zt_k8s_api</code>, <code>zt_hec</code>, <code>zt_hypershield</code>, <code>zt_nexus_nxapi</code>, <code>builtin_mc_connector</code>, <code>phantom</code>), the role names (<code>SOC tier 2</code>, <code>NetOps</code>), the polling cadence (30 s x 12 for the brief, 15 s x 12 for verification) and the prompt time (30 minutes).</p>
-<h3>5.2 Rebuild block by block in the visual playbook editor</h3>
+<h3 id="52-rebuild-block-by-block-in-the-visual-playbook-editor">5.2 Rebuild block by block in the visual playbook editor</h3>
 <p>Same names as section 12.2 of the generating prompt. Helper blocks carry their parent's name as a prefix. Code blocks publish their outputs as output variables (datapath <code>&lt;block&gt;:custom_function:&lt;name&gt;</code>); the full-code file does this with <code>_publish()</code>.</p>
-<table><thead><tr><th>#</th><th>Block (name in the editor)</th><th>Type</th><th>Configuration</th><th>Next</th></tr></thead><tbody><tr><td>1</td><td><code>start_from_finding</code></td><td>Code</td><td>Reads <code>container["data"]</code> (finding JSON) plus <code>source_data_identifier</code> and <code>external_id</code>. Stops unless <code>search_name</code>/<code>source</code> is <code>ZT - Workload Exceeded Risk Threshold on Protected-Path Signals - Rule</code> or the name starts with <code>Unprotected path:</code>. Outputs <code>finding_id</code>, <code>event_id</code>, <code>entity</code>, <code>rule</code>, <code>finding_title</code>, <code>playbook</code>.</td><td>1a</td></tr><tr><td>1a</td><td><code>start_from_finding_investigations</code></td><td>Action, Enterprise Security, <code>get related investigations for finding</code>, asset <code>builtin_mc_connector</code></td><td><code>id</code> = <code>start_from_finding:custom_function:finding_id</code>, <code>limit</code> 10.</td><td>1b</td></tr><tr><td>1b</td><td><code>start_from_finding_investigations_check</code></td><td>Decision / code</td><td>If a result row exists (any status but Closed): keep <code>investigation_guid</code> and <code>investigation_id</code> (display id such as ES-00001) and go to 2. Else 1c.</td><td>2 or 1c</td></tr><tr><td>1c</td><td><code>start_from_finding_new_investigation</code></td><td>Action, Enterprise Security, <code>start investigations</code>, asset <code>builtin_mc_connector</code></td><td><code>name</code> = the finding title, <code>finding_ids</code> = the finding id, <code>finding_times</code> = the finding time from the container data, <code>status</code> New, <code>urgency</code> high, description "Opened by zt_quarantine_workload for &lt;entity&gt;."</td><td>1d</td></tr><tr><td>1d</td><td><code>start_from_finding_record_investigation</code></td><td>Code</td><td>Keeps <code>investigation_guid</code> and <code>investigation_id</code> from the result.</td><td>2</td></tr><tr><td>2</td><td><code>read_brief</code></td><td>Action, Splunk, <code>run query</code>, asset <code>zt_splunk</code></td><td>Format block <code>read_brief_query</code>: template <code>zt_agent_briefs_lookup where finding_id="{0}" OR finding_id="{1}" | head 1</code>, parameters <code>start_from_finding:custom_function:event_id</code>, <code>start_from_finding:custom_function:finding_id</code>. Action <code>command</code> = <code>| inputlookup</code>, <code>query</code> = the formatted string, <code>display</code> = the brief fields.</td><td>2a</td></tr><tr><td>2a</td><td><code>read_brief_check</code></td><td>Decision</td><td><code>read_brief:action_result.summary.total_events</code> &gt; 0 → 3. Else, if fewer than 12 attempts → 2b; else 2c. (The full-code file counts attempts in run data.)</td><td>3, 2b or 2c</td></tr><tr><td>2b</td><td><code>read_brief_wait</code></td><td>Action, Phantom, <code>no op</code>, asset <code>phantom</code></td><td><code>sleep_seconds</code> 30.</td><td>2</td></tr><tr><td>2c</td><td><code>read_brief_missing</code></td><td>Action, Enterprise Security, <code>add finding or investigation note</code></td><td>Title "Quarantine not requested"; content: no brief after 6 minutes.</td><td>End</td></tr><tr><td>3</td><td><code>pick_point</code></td><td>Decision</td><td>If <code>read_brief:action_result.data.*.disposition</code> == <code>true_positive</code> and <code>read_brief:action_result.data.*.enforcement_point</code> == <code>kernel</code> → 4; elif ... == <code>dpu</code> → 4; elif ... == <code>switch</code> → 4; else 3a.</td><td>4 or 3a</td></tr><tr><td>3a</td><td><code>pick_point_no_action</code></td><td>Action, Enterprise Security, <code>add finding or investigation note</code></td><td>Title "No enforcement"; content formatted from the brief (disposition, confidence, enforcement point, brief text).</td><td>End</td></tr><tr><td>4</td><td><code>build_policy</code></td><td>Custom function <code>local/zt_build_cnp</code></td><td><code>namespace</code> = the namespace part of <code>read_brief:action_result.data.*.workload</code>, <code>pod</code> = <code>...pod</code>, <code>workload</code> = <code>...workload</code>, <code>job_id</code> = <code>...job_id</code>, <code>finding_id</code> = <code>...finding_id</code>.</td><td>4a</td></tr><tr><td>4a</td><td><code>build_policy_request_id</code></td><td>Action, Splunk, <code>run query</code>, asset <code>zt_splunk</code></td><td>Format: <code>index=zero_trust sourcetype=zt:enforcement:audit state=requested request_id="ZTR-{0}-*" earliest=-24h latest=now | rex field=request_id "-(?&lt;seq&gt;\d{4})$" | where tonumber(seq) &gt; 16 | stats dc(request_id) as incident_requests</code> with <code>{0}</code> = today's <code>YYYYMMDD</code> (UTC). <code>command</code> = <code>search</code>.</td><td>4b</td></tr><tr><td>4b</td><td><code>build_policy_request_id_done</code></td><td>Code</td><td><code>request_id</code> = <code>ZTR-&lt;YYYYMMDD&gt;-&lt;NNNN&gt;</code> with NNNN = 16 + <code>incident_requests</code> + 1 (the 16 routine actions of the day come first). Then block 8 with state <code>requested</code>.</td><td>8 (requested) → 5</td></tr><tr><td>5</td><td><code>ask_approval</code></td><td>Prompt</td><td>Approver: role <code>SOC tier 2</code>; 30 minutes. Message = the approval message of section 12.1 (format block <code>approval_message</code>, template below). Responses: 1) list <code>Approve</code> / <code>Reject</code>, 2) message "Comment".</td><td>5a</td></tr><tr><td>5a</td><td><code>ask_approval_decision</code></td><td>Decision</td><td><code>ask_approval:action_result.summary.responses.0</code> == <code>Approve</code> and enforcement point in (dpu, switch) → 5b; == <code>Approve</code> → 8 (approved) → 6; <code>Reject</code> → 8 (rejected) → End; no answer in time → 8 (failed) → End.</td><td></td></tr><tr><td>5b</td><td><code>ask_approval_netops</code></td><td>Prompt</td><td>Same message and responses, role <code>NetOps</code>, 30 minutes.</td><td>5c</td></tr><tr><td>5c</td><td><code>ask_approval_netops_decision</code></td><td>Decision</td><td><code>ask_approval_netops:action_result.summary.responses.0</code> == <code>Approve</code> → 8 (approved) → 6; else 8 (rejected) → End.</td><td></td></tr><tr><td>6</td><td><code>apply</code></td><td>Action, HTTP, <code>patch data</code>, asset <code>zt_k8s_api</code></td><td><code>location</code> = <code>/api/v1/namespaces/{namespace}/pods/{pod}</code> (format from <code>build_policy:custom_function_result.data.namespace</code> and <code>.pod</code>), <code>body</code> = <code>build_policy:custom_function_result.data.label_patch_json</code>, <code>headers</code> = <code>{"Content-Type": "application/merge-patch+json", "User-Agent": "zt-quarantine-workload/1.0"}</code>, verify certificate off. Expect 200; keep the <code>Audit-Id</code> response header (<code>apply:action_result.data.*.response_headers</code>).</td><td>6a</td></tr><tr><td>6a</td><td><code>apply_policy</code></td><td>Action, HTTP, <code>post data</code>, asset <code>zt_k8s_api</code></td><td><code>location</code> = <code>/apis/cilium.io/v2/namespaces/{namespace}/ciliumnetworkpolicies</code>, <code>body</code> = <code>build_policy:custom_function_result.data.cnp_json</code>, <code>headers</code> = <code>{"Content-Type": "application/json", "User-Agent": "zt-quarantine-workload/1.0"}</code>, verify certificate off. Expect 201 (409 AlreadyExists is accepted after a partial apply); keep the <code>Audit-Id</code>.</td><td>6b / 6c / 6d</td></tr><tr><td>6b</td><td><code>apply_dpu</code></td><td>Action, HTTP, <code>post data</code>, asset <code>zt_hypershield</code></td><td>Only for enforcement point <code>dpu</code>: <code>location</code> <code>/hypershield/v1/rules</code>, JSON body with the policy name, the pod selector <code>zt-quarantine=&lt;job id&gt;</code>, <code>action: deny</code>. Expect 201 <code>{id}</code>.</td><td>6d</td></tr><tr><td>6c</td><td><code>apply_switch</code></td><td>Action, HTTP, <code>post data</code>, asset <code>zt_nexus_nxapi</code></td><td>Only for <code>switch</code>: <code>location</code> <code>/ins</code>, NX-API JSON-RPC body (<code>configure terminal</code>, <code>ip access-list zt-quarantine-&lt;job id&gt;</code>, <code>10 deny ip any any log</code>, <code>interface &lt;interface&gt;</code>, <code>ip access-group ... in</code>), header <code>X-Nexus-Device</code> = the leaf (<code>dc2-leaf-205</code>).</td><td>6d</td></tr><tr><td>6d</td><td><code>apply_done</code></td><td>Code</td><td><code>applied_epoch</code> = now. Block 8 with state <code>applied</code>.</td><td>8 (applied) → 7</td></tr><tr><td>7</td><td><code>verify</code></td><td>Action, Splunk, <code>run query</code>, asset <code>zt_splunk</code></td><td>Format: <code>index=zero_trust sourcetype=cilium:hubble:flow src_pod="{0}" verdict=DROPPED policy_denied="{1}" earliest={2} latest=now | head 1 | table _time src_identity policy_denied drop_reason</code> with <code>{0}</code> = <code>build_policy:custom_function_result.data.pod</code>, <code>{1}</code> = <code>...policy_name</code>, <code>{2}</code> = <code>applied_epoch</code> minus 5. <code>command</code> = <code>search</code>.</td><td>7a</td></tr><tr><td>7a</td><td><code>verify_check</code></td><td>Decision</td><td><code>verify:action_result.summary.total_events</code> &gt; 0 → 8 (verified) → End. Else, fewer than 12 attempts and under 3 minutes since apply → 7b; else 8 (failed, "no DROPPED flow within 180 s of apply") → End.</td><td></td></tr><tr><td>7b</td><td><code>verify_wait</code></td><td>Action, Phantom, <code>no op</code>, asset <code>phantom</code></td><td><code>sleep_seconds</code> 15.</td><td>7</td></tr><tr><td>8</td><td><code>record_and_resolve</code></td><td>Action, HTTP, <code>post data</code>, asset <code>zt_hec</code></td><td>One call per state. <code>location</code> <code>/services/collector/event</code>, <code>headers</code> <code>{"Content-Type": "application/json"}</code>, <code>body</code> = the HEC envelope <code>{"time": &lt;epoch&gt;, "host": "soar", "source": "zt_quarantine_workload", "sourcetype": "zt:enforcement:audit", "index": "zero_trust", "event": {...}}</code> with the event of section 6.3 (key order <code>time, request_id, finding_id, investigation_id, state, enforcement_point, action, target, workload, policy_name, approved_by, approver_role, approved_at, executed_by, playbook, run_id, k8s_audit_ids, comment, status</code>; <code>executed_by</code> <code>soar</code>, <code>playbook</code> <code>zt_quarantine_workload</code>, <code>run_id</code> the playbook run id from <code>phantom.get_playbook_info()</code>, <code>k8s_audit_ids</code> the two Audit-Id headers, <code>approved_by</code>/<code>approver_role</code>/<code>approved_at</code> from the prompt answers, <code>a.patel + m.ruiz</code> style for two approvers).</td><td>8a</td></tr><tr><td>8a</td><td><code>record_and_resolve_note</code></td><td>Action, Enterprise Security, <code>add finding or investigation note</code>, asset <code>builtin_mc_connector</code></td><td><code>id</code> = the investigation guid. requested: "Quarantine requested" / "Quarantine requested; waiting for SOC tier 2 approval." (plus request id and the YAML); rejected: "Quarantine rejected"; applied: "Quarantine applied" (approved by whom, when, pod label, policy, Kubernetes audit ids); verified: "Quarantine verified" (first DROPPED flow, identity, approval); failed: "Quarantine not verified" or "Quarantine failed". No note for approved.</td><td>8b</td></tr><tr><td>8b</td><td><code>record_and_resolve_status</code></td><td>Action, Enterprise Security, <code>update finding or investigation</code>, asset <code>builtin_mc_connector</code></td><td>requested: <code>status</code> <code>In Progress</code>. verified: <code>status</code> <code>Resolved</code>, <code>disposition</code> <code>True Positive - Suspicious Activity</code>. Other states: skip.</td><td>8c</td></tr><tr><td>8c</td><td><code>record_and_resolve_next</code></td><td>Code</td><td>Continues with the block that follows the state: requested → 5, approved → 6, applied → 7; rejected, verified, failed → End.</td><td></td></tr></tbody></table>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>Block (name in the editor)</th>
+<th>Type</th>
+<th>Configuration</th>
+<th>Next</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td><code>start_from_finding</code></td>
+<td>Code</td>
+<td>Reads <code>container["data"]</code> (finding JSON) plus <code>source_data_identifier</code> and <code>external_id</code>. Stops unless <code>search_name</code>/<code>source</code> is <code>ZT - Workload Exceeded Risk Threshold on Protected-Path Signals - Rule</code> or the name starts with <code>Unprotected path:</code>. Outputs <code>finding_id</code>, <code>event_id</code>, <code>entity</code>, <code>rule</code>, <code>finding_title</code>, <code>playbook</code>.</td>
+<td>1a</td>
+</tr>
+<tr>
+<td>1a</td>
+<td><code>start_from_finding_investigations</code></td>
+<td>Action, Enterprise Security, <code>get related investigations for finding</code>, asset <code>builtin_mc_connector</code></td>
+<td><code>id</code> = <code>start_from_finding:custom_function:finding_id</code>, <code>limit</code> 10.</td>
+<td>1b</td>
+</tr>
+<tr>
+<td>1b</td>
+<td><code>start_from_finding_investigations_check</code></td>
+<td>Decision / code</td>
+<td>If a result row exists (any status but Closed): keep <code>investigation_guid</code> and <code>investigation_id</code> (display id such as ES-00001) and go to 2. Else 1c.</td>
+<td>2 or 1c</td>
+</tr>
+<tr>
+<td>1c</td>
+<td><code>start_from_finding_new_investigation</code></td>
+<td>Action, Enterprise Security, <code>start investigations</code>, asset <code>builtin_mc_connector</code></td>
+<td><code>name</code> = the finding title, <code>finding_ids</code> = the finding id, <code>finding_times</code> = the finding time from the container data, <code>status</code> New, <code>urgency</code> high, description "Opened by zt_quarantine_workload for <entity>."</td>
+<td>1d</td>
+</tr>
+<tr>
+<td>1d</td>
+<td><code>start_from_finding_record_investigation</code></td>
+<td>Code</td>
+<td>Keeps <code>investigation_guid</code> and <code>investigation_id</code> from the result.</td>
+<td>2</td>
+</tr>
+<tr>
+<td>2</td>
+<td><code>read_brief</code></td>
+<td>Action, Splunk, <code>run query</code>, asset <code>zt_splunk</code></td>
+<td>Format block <code>read_brief_query</code>: template <code>zt_agent_briefs_lookup where finding_id="{0}" OR finding_id="{1}" \| head 1</code>, parameters <code>start_from_finding:custom_function:event_id</code>, <code>start_from_finding:custom_function:finding_id</code>. Action <code>command</code> = <code>\| inputlookup</code>, <code>query</code> = the formatted string, <code>display</code> = the brief fields.</td>
+<td>2a</td>
+</tr>
+<tr>
+<td>2a</td>
+<td><code>read_brief_check</code></td>
+<td>Decision</td>
+<td><code>read_brief:action_result.summary.total_events</code> &gt; 0 → 3. Else, if fewer than 12 attempts → 2b; else 2c. (The full-code file counts attempts in run data.)</td>
+<td>3, 2b or 2c</td>
+</tr>
+<tr>
+<td>2b</td>
+<td><code>read_brief_wait</code></td>
+<td>Action, Phantom, <code>no op</code>, asset <code>phantom</code></td>
+<td><code>sleep_seconds</code> 30.</td>
+<td>2</td>
+</tr>
+<tr>
+<td>2c</td>
+<td><code>read_brief_missing</code></td>
+<td>Action, Enterprise Security, <code>add finding or investigation note</code></td>
+<td>Title "Quarantine not requested"; content: no brief after 6 minutes.</td>
+<td>End</td>
+</tr>
+<tr>
+<td>3</td>
+<td><code>pick_point</code></td>
+<td>Decision</td>
+<td>If <code>read_brief:action_result.data.*.disposition</code> == <code>true_positive</code> and <code>read_brief:action_result.data.*.enforcement_point</code> == <code>kernel</code> → 4; elif ... == <code>dpu</code> → 4; elif ... == <code>switch</code> → 4; else 3a.</td>
+<td>4 or 3a</td>
+</tr>
+<tr>
+<td>3a</td>
+<td><code>pick_point_no_action</code></td>
+<td>Action, Enterprise Security, <code>add finding or investigation note</code></td>
+<td>Title "No enforcement"; content formatted from the brief (disposition, confidence, enforcement point, brief text).</td>
+<td>End</td>
+</tr>
+<tr>
+<td>4</td>
+<td><code>build_policy</code></td>
+<td>Custom function <code>local/zt_build_cnp</code></td>
+<td><code>namespace</code> = the namespace part of <code>read_brief:action_result.data.*.workload</code>, <code>pod</code> = <code>...pod</code>, <code>workload</code> = <code>...workload</code>, <code>job_id</code> = <code>...job_id</code>, <code>finding_id</code> = <code>...finding_id</code>.</td>
+<td>4a</td>
+</tr>
+<tr>
+<td>4a</td>
+<td><code>build_policy_request_id</code></td>
+<td>Action, Splunk, <code>run query</code>, asset <code>zt_splunk</code></td>
+<td>Format: <code>index=zero_trust sourcetype=zt:enforcement:audit state=requested request_id="ZTR-{0}-*" earliest=-24h latest=now \| rex field=request_id "-(?&lt;seq&gt;\d{4})$" \| where tonumber(seq) &gt; 16 \| stats dc(request_id) as incident_requests</code> with <code>{0}</code> = today's <code>YYYYMMDD</code> (UTC). <code>command</code> = <code>search</code>.</td>
+<td>4b</td>
+</tr>
+<tr>
+<td>4b</td>
+<td><code>build_policy_request_id_done</code></td>
+<td>Code</td>
+<td><code>request_id</code> = <code>ZTR-&lt;YYYYMMDD&gt;-&lt;NNNN&gt;</code> with NNNN = 16 + <code>incident_requests</code> + 1 (the 16 routine actions of the day come first). Then block 8 with state <code>requested</code>.</td>
+<td>8 (requested) → 5</td>
+</tr>
+<tr>
+<td>5</td>
+<td><code>ask_approval</code></td>
+<td>Prompt</td>
+<td>Approver: role <code>SOC tier 2</code>; 30 minutes. Message = the approval message of section 12.1 (format block <code>approval_message</code>, template below). Responses: 1) list <code>Approve</code> / <code>Reject</code>, 2) message "Comment".</td>
+<td>5a</td>
+</tr>
+<tr>
+<td>5a</td>
+<td><code>ask_approval_decision</code></td>
+<td>Decision</td>
+<td><code>ask_approval:action_result.summary.responses.0</code> == <code>Approve</code> and enforcement point in (dpu, switch) → 5b; == <code>Approve</code> → 8 (approved) → 6; <code>Reject</code> → 8 (rejected) → End; no answer in time → 8 (failed) → End.</td>
+<td></td>
+</tr>
+<tr>
+<td>5b</td>
+<td><code>ask_approval_netops</code></td>
+<td>Prompt</td>
+<td>Same message and responses, role <code>NetOps</code>, 30 minutes.</td>
+<td>5c</td>
+</tr>
+<tr>
+<td>5c</td>
+<td><code>ask_approval_netops_decision</code></td>
+<td>Decision</td>
+<td><code>ask_approval_netops:action_result.summary.responses.0</code> == <code>Approve</code> → 8 (approved) → 6; else 8 (rejected) → End.</td>
+<td></td>
+</tr>
+<tr>
+<td>6</td>
+<td><code>apply</code></td>
+<td>Action, HTTP, <code>patch data</code>, asset <code>zt_k8s_api</code></td>
+<td><code>location</code> = <code>/api/v1/namespaces/{namespace}/pods/{pod}</code> (format from <code>build_policy:custom_function_result.data.namespace</code> and <code>.pod</code>), <code>body</code> = <code>build_policy:custom_function_result.data.label_patch_json</code>, <code>headers</code> = <code>{"Content-Type": "application/merge-patch+json", "User-Agent": "zt-quarantine-workload/1.0"}</code>, verify certificate off. Expect 200; keep the <code>Audit-Id</code> response header (<code>apply:action_result.data.*.response_headers</code>).</td>
+<td>6a</td>
+</tr>
+<tr>
+<td>6a</td>
+<td><code>apply_policy</code></td>
+<td>Action, HTTP, <code>post data</code>, asset <code>zt_k8s_api</code></td>
+<td><code>location</code> = <code>/apis/cilium.io/v2/namespaces/{namespace}/ciliumnetworkpolicies</code>, <code>body</code> = <code>build_policy:custom_function_result.data.cnp_json</code>, <code>headers</code> = <code>{"Content-Type": "application/json", "User-Agent": "zt-quarantine-workload/1.0"}</code>, verify certificate off. Expect 201 (409 AlreadyExists is accepted after a partial apply); keep the <code>Audit-Id</code>.</td>
+<td>6b / 6c / 6d</td>
+</tr>
+<tr>
+<td>6b</td>
+<td><code>apply_dpu</code></td>
+<td>Action, HTTP, <code>post data</code>, asset <code>zt_hypershield</code></td>
+<td>Only for enforcement point <code>dpu</code>: <code>location</code> <code>/hypershield/v1/rules</code>, JSON body with the policy name, the pod selector <code>zt-quarantine=&lt;job id&gt;</code>, <code>action: deny</code>. Expect 201 <code>{id}</code>.</td>
+<td>6d</td>
+</tr>
+<tr>
+<td>6c</td>
+<td><code>apply_switch</code></td>
+<td>Action, HTTP, <code>post data</code>, asset <code>zt_nexus_nxapi</code></td>
+<td>Only for <code>switch</code>: <code>location</code> <code>/ins</code>, NX-API JSON-RPC body (<code>configure terminal</code>, <code>ip access-list zt-quarantine-&lt;job id&gt;</code>, <code>10 deny ip any any log</code>, <code>interface &lt;interface&gt;</code>, <code>ip access-group ... in</code>), header <code>X-Nexus-Device</code> = the leaf (<code>dc2-leaf-205</code>).</td>
+<td>6d</td>
+</tr>
+<tr>
+<td>6d</td>
+<td><code>apply_done</code></td>
+<td>Code</td>
+<td><code>applied_epoch</code> = now. Block 8 with state <code>applied</code>.</td>
+<td>8 (applied) → 7</td>
+</tr>
+<tr>
+<td>7</td>
+<td><code>verify</code></td>
+<td>Action, Splunk, <code>run query</code>, asset <code>zt_splunk</code></td>
+<td>Format: <code>index=zero_trust sourcetype=cilium:hubble:flow src_pod="{0}" verdict=DROPPED policy_denied="{1}" earliest={2} latest=now \| head 1 \| table _time src_identity policy_denied drop_reason</code> with <code>{0}</code> = <code>build_policy:custom_function_result.data.pod</code>, <code>{1}</code> = <code>...policy_name</code>, <code>{2}</code> = <code>applied_epoch</code> minus 5. <code>command</code> = <code>search</code>.</td>
+<td>7a</td>
+</tr>
+<tr>
+<td>7a</td>
+<td><code>verify_check</code></td>
+<td>Decision</td>
+<td><code>verify:action_result.summary.total_events</code> &gt; 0 → 8 (verified) → End. Else, fewer than 12 attempts and under 3 minutes since apply → 7b; else 8 (failed, "no DROPPED flow within 180 s of apply") → End.</td>
+<td></td>
+</tr>
+<tr>
+<td>7b</td>
+<td><code>verify_wait</code></td>
+<td>Action, Phantom, <code>no op</code>, asset <code>phantom</code></td>
+<td><code>sleep_seconds</code> 15.</td>
+<td>7</td>
+</tr>
+<tr>
+<td>8</td>
+<td><code>record_and_resolve</code></td>
+<td>Action, HTTP, <code>post data</code>, asset <code>zt_hec</code></td>
+<td>One call per state. <code>location</code> <code>/services/collector/event</code>, <code>headers</code> <code>{"Content-Type": "application/json"}</code>, <code>body</code> = the HEC envelope <code>{"time": &lt;epoch&gt;, "host": "soar", "source": "zt_quarantine_workload", "sourcetype": "zt:enforcement:audit", "index": "zero_trust", "event": {...}}</code> with the event of section 6.3 (key order <code>time, request_id, finding_id, investigation_id, state, enforcement_point, action, target, workload, policy_name, approved_by, approver_role, approved_at, executed_by, playbook, run_id, k8s_audit_ids, comment, status</code>; <code>executed_by</code> <code>soar</code>, <code>playbook</code> <code>zt_quarantine_workload</code>, <code>run_id</code> the playbook run id from <code>phantom.get_playbook_info()</code>, <code>k8s_audit_ids</code> the two Audit-Id headers, <code>approved_by</code>/<code>approver_role</code>/<code>approved_at</code> from the prompt answers, <code>a.patel + m.ruiz</code> style for two approvers).</td>
+<td>8a</td>
+</tr>
+<tr>
+<td>8a</td>
+<td><code>record_and_resolve_note</code></td>
+<td>Action, Enterprise Security, <code>add finding or investigation note</code>, asset <code>builtin_mc_connector</code></td>
+<td><code>id</code> = the investigation guid. requested: "Quarantine requested" / "Quarantine requested; waiting for SOC tier 2 approval." (plus request id and the YAML); rejected: "Quarantine rejected"; applied: "Quarantine applied" (approved by whom, when, pod label, policy, Kubernetes audit ids); verified: "Quarantine verified" (first DROPPED flow, identity, approval); failed: "Quarantine not verified" or "Quarantine failed". No note for approved.</td>
+<td>8b</td>
+</tr>
+<tr>
+<td>8b</td>
+<td><code>record_and_resolve_status</code></td>
+<td>Action, Enterprise Security, <code>update finding or investigation</code>, asset <code>builtin_mc_connector</code></td>
+<td>requested: <code>status</code> <code>In Progress</code>. verified: <code>status</code> <code>Resolved</code>, <code>disposition</code> <code>True Positive - Suspicious Activity</code>. Other states: skip.</td>
+<td>8c</td>
+</tr>
+<tr>
+<td>8c</td>
+<td><code>record_and_resolve_next</code></td>
+<td>Code</td>
+<td>Continues with the block that follows the state: requested → 5, approved → 6, applied → 7; rejected, verified, failed → End.</td>
+<td></td>
+</tr>
+</tbody>
+</table>
 <p>Approval message template (format block <code>approval_message</code>, parameters in this order: <code>read_brief:action_result.data.*.finding_id</code>, <code>.workload</code>, <code>.dest_workload</code>, <code>.data_class</code>, <code>.disposition</code>, <code>.confidence</code>, <code>.what_happened</code>, <code>.action</code>, <code>.enforcement_point</code>, <code>.blast_radius</code>, <code>build_policy:custom_function_result.data.policy_yaml</code>, <code>.pod</code>, <code>.label_value</code>, <code>.policy_name</code>):</p>
-<pre>Quarantine request for {0}: {1} reached {2} ({3}).
+<pre><code>Quarantine request for {0}: {1} reached {2} ({3}).
 Agent brief: {4}, {5} confidence. {6}
 Recommended: {7} at the {8}. Blast radius: {9}.
 Policy to apply:
-{10}Approve to label pod {11} with zt-quarantine={12} and create {13}. Reject to close without action.</pre>
+{10}Approve to label pod {11} with zt-quarantine={12} and create {13}. Reject to close without action.
+</code></pre>
 <p>(<code>{10}</code> ends with a newline, so the last line follows the YAML directly; the text is identical to <code>cnp.approval_message</code> in the Splunk app.)</p>
 <p>Behaviour that both modes share (section 12.1): kernel needs one approval from SOC tier 2, DPU and switch need SOC tier 2 then NetOps; the verification search is polled every 15 s for 3 minutes and the first flow found means <code>verified</code>; resolution adds the ES note, sets Resolved and the disposition True Positive - Suspicious Activity; one <code>zt:enforcement:audit</code> event per state is written as the state happens.</p>
-<h2>6. Start the playbook from Enterprise Security</h2>
-<p>ES 8.7 starts SOAR playbooks through <strong>automation rules</strong> (Configure &gt; Content &gt; Automation rules), not through SOAR label activation. <code>python3 tools/es_automation_rule.py</code> creates or updates the rule:</p>
+<h2 id="6-start-the-playbook-from-enterprise-security">6. Start the playbook from Enterprise Security</h2>
+<p>ES 8.7 starts SOAR playbooks through <strong>automation rules</strong> (Configure &gt; Content &gt; Automation rules), not through SOAR label activation. <code>python3 tools/es_automation_rule.py</code> creates or updates the rule in two parts: the detection mapping is a record in the KV collection <code>detection_automation_rules</code> (app SA-ThreatIntelligence), and the playbook mapping is <code>POST /servicesNS/nobody/missioncontrol/v1/automation_rule</code> with <code>action=add</code> and playbooks as <code>{"scm": "local", "playbook": "zt_quarantine_workload"}</code>. <code>make es-automation-rule RULE=off</code> (or <code>RULE=on</code>) toggles it through <code>POST .../v1/soar/automation_rule/&lt;name&gt;/off|on</code>; keep it off while running Mode B, otherwise both flows act on the finding.</p>
 <ul>
 <li>Name <code>Zero Trust Protected Paths</code>, status on.</li>
 <li>Trigger: finding created by the detection <code>ZT - Workload Exceeded Risk Threshold on Protected-Path Signals - Rule</code> (app <code>DA-ESS-zt_incident_demo</code>).</li>
 <li>Action: run playbook <code>zt_quarantine_workload</code> (repository <code>local</code>).</li>
 </ul>
 <p>The playbook also runs by hand: open the finding (or its investigation) in ES, Automation tab, Run playbook, pick <code>zt_quarantine_workload</code>; or in SOAR open the container and choose Run playbook. Block 1 checks the rule name and title, so running it on any other finding ends with a comment and no action.</p>
-<h2>7. Pairing checklist</h2>
+<h2 id="7-pairing-checklist">7. Pairing checklist</h2>
 <ol>
 <li>ES &gt; Configure &gt; SOAR integration (ES 8.5+ documentation): pair the stack with the SOAR; confirm <code>builtin_mc_connector</code> appears in SOAR under Apps &gt; Enterprise Security and its test connectivity passes.</li>
 <li>SOAR &gt; Apps: Splunk 4.0.2, HTTP 4.0.1, Phantom 3.8.4 installed; assets of section 2 created, test connectivity green for <code>zt_splunk</code> and <code>phantom</code>.</li>
 <li><code>curl -sk -H "Authorization: Bearer &lt;token&gt;" https://zt-k8s.yeackbot.com/version</code> answers from the emulator; <code>GET /api/v1/namespaces/build-farm/pods/ci-runner-7d9f8-xk2lq</code> returns the pod.</li>
 <li>HEC: <code>zt_hec</code> test connectivity (the HTTP app calls the base URL; a 404 on <code>/</code> is fine, a 401 is not).</li>
 <li>Roles <code>SOC tier 2</code> and <code>NetOps</code>, users <code>j.chen</code>, <code>m.ruiz</code>, <code>a.patel</code>; log in once as <code>j.chen</code> to confirm the role sees finding containers (label <code>es_soar_integration</code>).</li>
-<li>Custom function <code>zt_build_cnp</code> present and active; playbook <code>zt_quarantine_workload</code> present, active, category Zero Trust.</li>
+<li>Custom function <code>zt_build_cnp</code> present; playbook <code>zt_quarantine_workload</code> present, passed validation, category Zero Trust, inactive on the label.</li>
 <li><code>| ztdemo action=config response_mode=soar</code> (or <code>make mode-soar</code>) on the stack so <code>ZT Response - Request Enforcement</code> stays out of the way.</li>
 <li>ES automation rule <code>Zero Trust Protected Paths</code> on (section 6).</li>
 <li>Trial run on the last finding: SOAR container &gt; Run playbook &gt; <code>zt_quarantine_workload</code> &gt; answer the prompt as <code>j.chen</code> &gt; watch <code>index=zero_trust sourcetype=zt:enforcement:audit playbook=zt_quarantine_workload</code> for <code>requested</code>, <code>approved</code>, <code>applied</code>, <code>verified</code> and the investigation notes and status.</li>
 <li>Reset between runs with <code>make reset</code> on the stack (removes the policy, the label and the requests) so the next apply returns 201 rather than 409.</li>
 </ol>
-<h2>8. To verify on the live SOAR (marked <code># VERIFY:</code> in the code)</h2>
+<h2 id="8-to-verify-on-the-live-soar-marked-verify-in-the-code">8. To verify on the live SOAR (marked <code># VERIFY:</code> in the code)</h2>
 <ul>
 <li>Name of the Phantom utility app asset (<code>ASSET_PHANTOM</code>, default <code>phantom</code>).</li>
 <li><code>get related investigations for finding</code> and <code>start investigations</code>: the <code>notable_time</code>/<code>finding_times</code> format and the output field names (<code>investigation_guid</code>, <code>investigation_id</code>).</li>
 <li>Which prompt result field carries the responding user for an in-product prompt (<code>action_result.summary.user</code> is documented for external prompts); the playbook falls back to the action message and then to the role name.</li>
 <li><code>update finding or investigation</code>: the disposition value as a label (<code>True Positive - Suspicious Activity</code>).</li>
 <li><code>tools/soar_setup.py</code>: the role permissions payload of <code>POST /rest/role</code>, <code>app_id</code> on <code>POST /rest/asset</code>, <code>scm</code>/<code>force</code> on <code>/rest/import_custom_function</code>, and whether the minimal JSON envelope imports as a full-code playbook (otherwise paste the Python into a new full-code playbook).</li>
-</ul>
-</body></html>
+</ul></body></html>

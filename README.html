@@ -1,39 +1,8 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Zero Trust Incident demo</title>
-<style>
-:root { --bg: #ffffff; --fg: #1f2933; --muted: #52606d; --line: #d9e2ec; --code-bg: #f1f5f9; --accent: #0f1a2b; --link: #0b5fff; }
-@media (prefers-color-scheme: dark) {
-  :root { --bg: #0f1a2b; --fg: #e4e9f0; --muted: #a9b4c2; --line: #2b3a4f; --code-bg: #182538; --accent: #e4e9f0; --link: #7ab8ff; }
-}
-html { -webkit-text-size-adjust: 100%; }
-body { margin: 0; padding: 24px 16px 48px; background: var(--bg); color: var(--fg);
-       font: 15px/1.55 -apple-system, "Segoe UI", Helvetica, Arial, sans-serif; }
-main { max-width: 1080px; margin: 0 auto; }
-h1, h2, h3, h4 { color: var(--accent); line-height: 1.25; margin: 1.6em 0 0.5em; }
-h1 { font-size: 1.9em; margin-top: 0; border-bottom: 2px solid var(--line); padding-bottom: 0.3em; }
-h2 { font-size: 1.45em; border-bottom: 1px solid var(--line); padding-bottom: 0.2em; }
-h3 { font-size: 1.15em; }
-h4 { font-size: 1em; }
-p, ul, ol, table, pre { margin: 0 0 1em; }
-a { color: var(--link); }
-code { font: 0.9em/1.4 "SFMono-Regular", Menlo, Consolas, monospace; background: var(--code-bg); padding: 0.1em 0.3em; border-radius: 3px; }
-pre { background: var(--code-bg); padding: 12px 14px; border-radius: 6px; overflow-x: auto; border: 1px solid var(--line); }
-pre code { background: none; padding: 0; font-size: 0.88em; }
-table { border-collapse: collapse; width: 100%; font-size: 0.93em; display: block; overflow-x: auto; }
-th, td { border: 1px solid var(--line); padding: 6px 9px; vertical-align: top; text-align: left; }
-th { background: var(--code-bg); }
-li { margin: 0.2em 0; }
-blockquote { border-left: 3px solid var(--line); margin: 0 0 1em; padding: 0 0 0 14px; color: var(--muted); }
-hr { border: 0; border-top: 1px solid var(--line); margin: 2em 0; }
-</style>
-</head>
-<body>
-<main>
-<h1>Zero Trust Incident demo</h1>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>README</title><style>body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;max-width:960px;margin:2rem auto;padding:0 1rem;line-height:1.5;color:#1f2937;background:#fff}
+code,pre{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:.92em}pre{background:#f3f4f6;padding:.75rem;overflow-x:auto;border-radius:6px}code{background:#f3f4f6;padding:.1em .3em;border-radius:4px}pre code{background:none;padding:0}
+table{border-collapse:collapse;margin:1rem 0;width:100%}th,td{border:1px solid #d1d5db;padding:.4rem .6rem;text-align:left;vertical-align:top}th{background:#f9fafb}h1,h2,h3{line-height:1.25}a{color:#0b5cad}
+@media (prefers-color-scheme: dark){body{background:#0f172a;color:#e5e7eb}pre,code{background:#1e293b}th{background:#1e293b}th,td{border-color:#334155}a{color:#7dd3fc}}</style></head><body><h1 id="zero-trust-incident-demo">Zero Trust Incident demo</h1>
 <p>A Splunk demo for the deck "One incident, end to end" (zero trust networking). One CI runner pod reaches a protected AI data store. Cisco Isovalent (Cilium Hubble and Tetragon) observes it, Splunk Enterprise Security decides, an Agent Launchpad agent writes the brief, Splunk SOAR or a local approval quarantines the pod at the kernel, and the Zero Trust Fabric Posture dashboard proves the change. Version 1.0.0.</p>
 <table>
 <thead>
@@ -65,11 +34,11 @@ hr { border: 0; border-top: 1px solid var(--line); margin: 2em 0; }
 </tr>
 <tr>
 <td><code>docs/</code></td>
-<td><a href="docs/field_reference.html">Field reference</a>, <a href="docs/demo_script.html">demo script</a></td>
+<td><a href="docs/field_reference.md">Field reference</a>, <a href="docs/demo_script.md">demo script</a></td>
 </tr>
 </tbody>
 </table>
-<h2>The five steps: what is generated and what is real</h2>
+<h2 id="the-five-steps-what-is-generated-and-what-is-real">The five steps: what is generated and what is real</h2>
 <table>
 <thead>
 <tr>
@@ -106,8 +75,8 @@ hr { border: 0; border-top: 1px solid var(--line); margin: 2em 0; }
 </tr>
 </tbody>
 </table>
-<p>The background estate is generated too: one cluster <code>ai-platform-dc2</code>, 1,283 workload identities, 92 nodes on fabric <code>dc2</code>, four protected stores with allowlists in audit mode, eight known gaps, about 115,000 events a day at exact daily counts (see the <a href="docs/field_reference.html">field reference</a>). The background never triggers the ZT detections.</p>
-<h2>Architecture as built</h2>
+<p>The background estate is generated too: one cluster <code>ai-platform-dc2</code>, 1,283 workload identities, 92 nodes on fabric <code>dc2</code>, four protected stores with allowlists in audit mode, eight known gaps, about 115,000 events a day at exact daily counts (see the <a href="docs/field_reference.md">field reference</a>). The background never triggers the ZT detections.</p>
+<h2 id="architecture-as-built">Architecture as built</h2>
 <table>
 <thead>
 <tr>
@@ -151,9 +120,9 @@ hr { border: 0; border-top: 1px solid var(--line); margin: 2em 0; }
 </tbody>
 </table>
 <p>Data flow: generator → HEC → <code>zero_trust</code> → ES detections → finding group → Run AI Agent → MCP tools → brief (<code>zt_agent_briefs</code>, ES note) → SOAR playbook or <code>ZT Response - Request Enforcement</code> → approval → emulator (<code>zt_policy_state</code>, <code>kube:apiserver:audit</code>) → generator emits DROPPED → <code>ZT Response - Verify Enforcement</code> or the playbook's verify loop → <code>zt:enforcement:audit</code> → <code>ZT Posture - Rollup</code> → <code>zt_summary</code> → dashboards.</p>
-<h2>Credentials and settings</h2>
+<h2 id="credentials-and-settings">Credentials and settings</h2>
 <p>Everything comes from the environment or the git-ignored <code>local/env</code> (<code>KEY=VALUE</code>, mode 0600): <code>SPLUNK_URL</code>, <code>SPLUNK_USER</code>, <code>SPLUNK_PASS</code>, <code>SPLUNK_HEC_URL</code>, <code>SPLUNK_HEC_TOKEN</code>, <code>SOAR_URL</code>, <code>SOAR_USER</code>, <code>SOAR_PASS</code>, <code>ZT_EMULATOR_PUBLIC_URL</code>, <code>ZT_EMULATOR_PORT</code>, <code>ZT_K8S_ENFORCER_TOKEN</code>, <code>ZT_K8S_PLATFORM_TOKEN</code>, <code>ZT_AGENT_MCP_TOKEN</code>, generated <code>ZT_PASS_&lt;USER&gt;</code> values, and the LLM provider key for the agent connection (entered in the Agent Launchpad UI, never on disk). Nothing secret is in git, in <code>default/</code>, or in event data. The app's own settings are in <code>default/zt_demo.conf</code> (<code>[hec]</code>, <code>[emulator]</code>, <code>[stream]</code>, <code>[modes]</code>; spec in <code>README/zt_demo.conf.spec</code>); <code>make configure</code> writes the stack-specific values into the installed app's <code>local/zt_demo.conf</code> by REST.</p>
-<h2>Install order</h2>
+<h2 id="install-order">Install order</h2>
 <p>Run the targets in this sequence. Every target is idempotent; the ones that create users, tunnels or SOAR objects ask first.</p>
 <pre><code>make check              # stack, ES, AI Toolkit, MCP Server, KV store, HEC, SOAR, Mac tooling, emulator port
 make indexes            # zero_trust and zt_summary
@@ -173,12 +142,12 @@ make backfill           # | ztdemo action=backfill hours=24, then a count table 
 make es-assets          # asset source zt_workload_assets, then a check that assets show on risk events
 make mcp-tools          # the five zt_ tools, the zt-agent token, the role policy, one test call per tool
 make agent              # Agent Launchpad steps: LLM connection, MCP connection SplunkMCP, agent ZTFlowInvestigator
-make es-automation-rule # ES automation rule &quot;Zero Trust Protected Paths&quot; that starts the playbook (Mode A)
+make es-automation-rule # ES automation rule &quot;Zero Trust Protected Paths&quot; that starts the playbook (Mode A); RULE=off|on toggles it
 make soar-setup         # SOAR roles, users, assets, custom function and playbook (asks first) (verify)
 make smoke              # acceptance checks 2 to 8 with a pass/fail table; FRESH=1 right after a fresh install
 </code></pre>
 <p><code>make help</code> lists every target. <code>make local-install</code> copies both apps into the local Splunk Enterprise at <code>LOCAL_SPLUNK</code> (default <code>/opt/splunk104</code>) as a test bed for the Python code before an upload.</p>
-<h2>Modes and how to switch</h2>
+<h2 id="modes-and-how-to-switch">Modes and how to switch</h2>
 <table>
 <thead>
 <tr>
@@ -191,27 +160,27 @@ make smoke              # acceptance checks 2 to 8 with a pass/fail table; FRESH
 <tr>
 <td>Response Mode A: SOAR</td>
 <td>The ES automation rule starts <code>zt_quarantine_workload</code>; the playbook reads the brief from <code>zt_agent_briefs</code>, builds the policy, prompts the <code>SOC tier 2</code> role, applies through the emulator, verifies, writes the audit trail (<code>executed_by=soar</code>) and resolves the investigation</td>
-<td><code>| ztdemo action=config response_mode=soar</code> or <code>make mode-soar</code></td>
+<td><code>\| ztdemo action=config response_mode=soar</code> or <code>make mode-soar</code></td>
 </tr>
 <tr>
 <td>Response Mode B: local approvals (default)</td>
-<td><code>ZT Response - Request Enforcement</code> (every minute) opens a request in <code>zt_enforcement_requests</code> and adds the ES note; the Enforcement Approvals dashboard runs <code>| ztsoar action=approve|reject request_id=… comment="…"</code>, which calls <code>POST /services/zt_incident_demo/approvals</code>. The endpoint takes the approver from the authenticated caller, checks the caller's roles against <code>zt_approvers</code>, applies with the system token (User-Agent <code>zt-approvals/1.0</code>), and <code>ZT Response - Verify Enforcement</code> verifies and resolves (<code>executed_by=splunk</code>)</td>
-<td><code>| ztdemo action=config response_mode=local</code> or <code>make mode-local</code></td>
+<td><code>ZT Response - Request Enforcement</code> (every minute) opens a request in <code>zt_enforcement_requests</code> and adds the ES note; the Enforcement Approvals dashboard runs <code>\| ztsoar action=approve\|reject request_id=… comment="…"</code>, which calls <code>POST /services/zt_incident_demo/approvals</code>. The endpoint takes the approver from the authenticated caller, checks the caller's roles against <code>zt_approvers</code>, applies with the system token (User-Agent <code>zt-approvals/1.0</code>), and <code>ZT Response - Verify Enforcement</code> verifies and resolves (<code>executed_by=splunk</code>)</td>
+<td><code>\| ztdemo action=config response_mode=local</code> or <code>make mode-local</code></td>
 </tr>
 <tr>
 <td>Agent mode MCP (default)</td>
 <td>The finding-based detection's Run AI Agent action starts <code>ZTFlowInvestigator</code>, which calls the five <code>zt_</code> MCP tools</td>
-<td><code>| ztdemo action=config agent_mode=mcp</code> or <code>make agent-mcp</code> (turns the action on, disables <code>ZT Agent - Inline Triage</code>)</td>
+<td><code>\| ztdemo action=config agent_mode=mcp</code> or <code>make agent-mcp</code> (turns the action on, disables <code>ZT Agent - Inline Triage</code>)</td>
 </tr>
 <tr>
 <td>Agent mode inline</td>
-<td><code>ZT Agent - Inline Triage</code> (every minute) runs the five evidence searches with <code>ztevidence</code>, packs them into one JSON field under 12 KB and runs <code>| aiagent</code> with the evidence in the prompt; remove the MCP tools from the agent in the UI</td>
-<td><code>| ztdemo action=config agent_mode=inline</code> or <code>make agent-inline</code></td>
+<td><code>ZT Agent - Inline Triage</code> (every minute) runs the five evidence searches with <code>ztevidence</code>, packs them into one JSON field under 12 KB and runs <code>\| aiagent</code> with the evidence in the prompt; remove the MCP tools from the agent in the UI</td>
+<td><code>\| ztdemo action=config agent_mode=inline</code> or <code>make agent-inline</code></td>
 </tr>
 </tbody>
 </table>
 <p>In both agent modes the brief is captured by <code>ZT Agent - Capture Brief</code> (every minute): it parses <code>index=_audit sourcetype=ai_agent:response</code>, upserts <code>zt_agent_briefs</code>, starts an ES investigation from the finding group if none exists and adds one AI-generated note titled "ZTFlowInvestigator brief".</p>
-<h2>Fire, reset, cadence, status</h2>
+<h2 id="fire-reset-cadence-status">Fire, reset, cadence, status</h2>
 <table>
 <thead>
 <tr>
@@ -221,23 +190,23 @@ make smoke              # acceptance checks 2 to 8 with a pass/fail table; FRESH
 </thead>
 <tbody>
 <tr>
-<td><code>| ztdemo action=fire</code> (or <code>make fire</code>)</td>
+<td><code>\| ztdemo action=fire</code> (or <code>make fire</code>)</td>
 <td>Sends the T0 batch backdated as in the story (CI <code>running</code> at T0 − 27 s, <code>git</code> and <code>/bin/sh</code> execs, <code>curl</code> exec and connect, egress FORWARDED, ingress AUDIT) and saves the plan; the stream then emits attempt <em>k</em> at T0 + 30·<em>k</em> s. Refuses if an incident is in progress or a quarantine policy exists</td>
 </tr>
 <tr>
-<td><code>| ztdemo action=reset</code> (or <code>make reset</code>)</td>
+<td><code>\| ztdemo action=reset</code> (or <code>make reset</code>)</td>
 <td>Releases the quarantine through the emulator (delete the policy, remove the label; Kubernetes audit user <code>k.osei</code>), writes a <code>released</code> audit event (<code>k.osei (platform)</code>, "merge request reverted"), cancels open requests, sets the plan to idle and stamps <code>last_reset_epoch</code>. Every ZT detection, evidence and response search ignores anything before the last reset (<code>zt_since_reset</code>), so you can fire again at once with the same IDs</td>
 </tr>
 <tr>
-<td><code>| ztdemo action=speed value=fast|normal</code> (<code>make fast</code>, <code>make normal</code>)</td>
+<td><code>\| ztdemo action=speed value=fast\|normal</code> (<code>make fast</code>, <code>make normal</code>)</td>
 <td>Rewrites the cron of every <code>ZT*</code> scheduled search in both apps. Fast (default): every minute. Normal: every 5 minutes, with the finding-based detection, the response searches and the brief capture offset by one minute</td>
 </tr>
 <tr>
-<td><code>| ztdemo action=status</code> (<code>make status</code>)</td>
+<td><code>\| ztdemo action=status</code> (<code>make status</code>)</td>
 <td>Checkpoint age, backfill state, plan status and attempt, quarantine state, last reset, cadence, agent and response modes, events sent in the last hour by sourcetype</td>
 </tr>
 <tr>
-<td><code>| ztdemo action=backfill [hours=24] [force=true]</code></td>
+<td><code>\| ztdemo action=backfill [hours=24] [force=true]</code></td>
 <td>Triggers or reports the one-time backfill; <code>force=true</code> only after <code>make reset-hard</code></td>
 </tr>
 <tr>
@@ -245,14 +214,14 @@ make smoke              # acceptance checks 2 to 8 with a pass/fail table; FRESH
 <td>Empties <code>zero_trust</code> and <code>zt_summary</code> (delete and re-create the indexes; Splunk Cloud has no <code>clean eventdata</code>), clears the state and backfills again. Asks first</td>
 </tr>
 <tr>
-<td><code>make emulator-start|stop|status</code></td>
+<td><code>make emulator-start\|stop\|status</code></td>
 <td>The emulator on the Mac; status checks <code>/version</code> locally and through the public hostname</td>
 </tr>
 </tbody>
 </table>
-<h2>The Cloudflare route for the emulator and how it is protected</h2>
+<h2 id="the-cloudflare-route-for-the-emulator-and-how-it-is-protected">The Cloudflare route for the emulator and how it is protected</h2>
 <p>The tunnel <code>zt-k8s</code> (<code>~/.cloudflared/zt-k8s.yml</code>) has one ingress rule, <code>zt-k8s.yeackbot.com → https://127.0.0.1:6443</code> with <code>originRequest.noTLSVerify: true</code> (the emulator's certificate is self-signed), and a <code>http_status:404</code> catch-all. Only the emulator is routed; nothing on the Mac's Splunk, SOAR or file system is reachable through it. TLS terminates at the Cloudflare edge with a Cloudflare certificate, so SOAR and the app verify TLS (<code>[emulator] verify_tls = 1</code>). Every request must carry one of two bearer tokens generated by <code>make secrets</code>: <code>k8s_enforcer</code>, mapped to <code>system:serviceaccount:soar:zt-enforcer</code> (source IP <code>10.40.2.18</code> in the audit), used by the playbook and the approvals endpoint, and <code>k8s_platform</code>, mapped to <code>k.osei</code>, used by <code>reset</code>. Anything else gets 401 and no state change. The emulator implements only what a quarantine playbook needs: <code>GET /version</code> (and <code>/healthz</code>, <code>/readyz</code>, <code>/livez</code>), <code>PATCH</code> of a pod's labels, <code>POST</code> and <code>DELETE</code> of CiliumNetworkPolicies, and the stub paths <code>/hypershield/v1/rules</code> and the Nexus NX-API path for the DPU and switch branches. The MCP Server is not routed through the tunnel: Agent Launchpad reaches the stack's own <code>:8089/services/mcp</code> directly.</p>
-<h2>Known limits</h2>
+<h2 id="known-limits">Known limits</h2>
 <ul>
 <li>Agent Launchpad needs the Splunk Cloud tenant's AI Toolkit with an LLM connection (OpenAI, Anthropic, Azure OpenAI, Bedrock or Splunk-hosted). Without one, steps 3 to 5 stop at the finding.</li>
 <li>The brief's wording varies from run to run; the facts (job 88213, <code>!4417</code>, <code>contractor-dev-17</code>, the pod, node, switch port, training job 7712, kernel quarantine, SOC tier 2) may not. The disposition should be <code>true_positive</code>; if the model returns <code>needs_review</code>, rerun the agent manually: <code>| makeresults | aiagent agent_name="ZTFlowInvestigator" prompt="Investigate the newest zero trust finding group and return the brief."</code></li>
@@ -266,7 +235,7 @@ make smoke              # acceptance checks 2 to 8 with a pass/fail table; FRESH
 <li>Verification needs the next attempt (up to 30 s), the stream interval (15 s) and indexing: expect <code>verified</code> 20 to 90 seconds after <code>applied</code>; <code>failed</code> after 3 minutes without a DROPPED flow.</li>
 <li>Splunk Cloud scheduled searches every minute may skew under load (<code>allow_skew = 0</code>, <code>realtime_schedule = 0</code> on the ZT searches).</li>
 </ul>
-<h2>Troubleshooting</h2>
+<h2 id="troubleshooting">Troubleshooting</h2>
 <table>
 <thead>
 <tr>
@@ -277,27 +246,27 @@ make smoke              # acceptance checks 2 to 8 with a pass/fail table; FRESH
 <tbody>
 <tr>
 <td>Nothing in <code>index=zero_trust</code> after <code>backfill</code></td>
-<td><code>make check</code> (HEC endpoint 200, token present). The stream log: <code>index=_internal source=*zt_incident_demo.log</code> (the file is <code>$SPLUNK_HOME/var/log/splunk/zt_incident_demo.log</code> on the search head). <code>| ztdemo action=status</code> shows <code>backfill_done</code>, the checkpoint age and <code>last_error</code>. A tick that fails leaves the checkpoint where it was and retries 15 s later</td>
+<td><code>make check</code> (HEC endpoint 200, token present). The stream log: <code>index=_internal source=*zt_incident_demo.log</code> (the file is <code>$SPLUNK_HOME/var/log/splunk/zt_incident_demo.log</code> on the search head). <code>\| ztdemo action=status</code> shows <code>backfill_done</code>, the checkpoint age and <code>last_error</code>. A tick that fails leaves the checkpoint where it was and retries 15 s later</td>
 </tr>
 <tr>
 <td>KV store errors, <code>zt_demo_state</code> unreadable</td>
-<td><code>make check</code> reports the KV store status; the collections are defined in <code>collections.conf</code> and must be readable by <code>splunk-system-user</code>. After a package upload, <code>| inputlookup zt_demo_state_lookup</code> must return one row (<code>_key=global</code>)</td>
+<td><code>make check</code> reports the KV store status; the collections are defined in <code>collections.conf</code> and must be readable by <code>splunk-system-user</code>. After a package upload, <code>\| inputlookup zt_demo_state_lookup</code> must return one row (<code>_key=global</code>)</td>
 </tr>
 <tr>
 <td>Emulator or tunnel down</td>
-<td><code>make emulator-status</code> (local <code>/version</code> and the public URL); <code>launchctl list | grep zt-incident-demo</code>; logs in <code>local/logs/</code> and <code>~/.cloudflared/zt-k8s-tunnel.log</code>. <code>cloudflared tunnel info zt-k8s</code>. A 401 from the emulator means the token in <code>storage/passwords</code> (<code>make secrets</code> after the upload) or in the SOAR asset differs from <code>local/env</code></td>
+<td><code>make emulator-status</code> (local <code>/version</code> and the public URL); <code>launchctl list \| grep zt-incident-demo</code>; logs in <code>local/logs/</code> and <code>~/.cloudflared/zt-k8s-tunnel.log</code>. <code>cloudflared tunnel info zt-k8s</code>. A 401 from the emulator means the token in <code>storage/passwords</code> (<code>make secrets</code> after the upload) or in the SOAR asset differs from <code>local/env</code></td>
 </tr>
 <tr>
 <td>Detections not firing</td>
-<td>Run each <code>ZT - * - Rule</code> search by hand in <code>SplunkEnterpriseSecuritySuite</code>; check <code>| inputlookup zt_demo_state_lookup</code> for <code>last_reset_epoch</code> (the macros hide everything before it); <code>index=risk source="ZT - *"</code>; the finding-based detection needs both risk events in the Risk data model (<code>| tstats count from datamodel=Risk.All_Risk where source="ZT - *"</code>). At fast cadence all ZT searches run every minute (<code>make fast</code>)</td>
+<td>Run each <code>ZT - * - Rule</code> search by hand in <code>SplunkEnterpriseSecuritySuite</code>; check <code>\| inputlookup zt_demo_state_lookup</code> for <code>last_reset_epoch</code> (the macros hide everything before it); <code>index=risk source="ZT - *"</code>; the finding-based detection needs both risk events in the Risk data model (<code>\| tstats count from datamodel=Risk.All_Risk where source="ZT - *"</code>). At fast cadence all ZT searches run every minute (<code>make fast</code>)</td>
 </tr>
 <tr>
 <td>No agent run or no brief</td>
-<td>Agent errors: <code>index=_internal sourcetype=mltk* OR source=*aiagent*</code> and <code>index=_audit sourcetype=ai_agent:response</code>; the Run AI Agent action must be on (<code>make agent-mcp</code>); the <code>zt-agent</code> MCP token must exist (<code>make mcp-tools</code>); the LLM connection must be set. The capture search reports what it stored: run <code>| savedsearch "ZT Agent - Capture Brief"</code> and read the <code>result</code> column</td>
+<td>Agent errors: <code>index=_internal sourcetype=mltk* OR source=*aiagent*</code> and <code>index=_audit sourcetype=ai_agent:response</code>; the Run AI Agent action must be on (<code>make agent-mcp</code>); the <code>zt-agent</code> MCP token must exist (<code>make mcp-tools</code>); the LLM connection must be set. The capture search reports what it stored: run <code>\| savedsearch "ZT Agent - Capture Brief"</code> and read the <code>result</code> column</td>
 </tr>
 <tr>
 <td>No request or SOAR prompt</td>
-<td>Mode B: <code>| ztsoar action=status</code> and <code>| inputlookup zt_enforcement_requests_lookup</code>; the brief must have <code>disposition=true_positive</code>. Mode A: the ES automation rule (<code>make es-automation-rule</code>), the SOAR container for the finding, the playbook run log; <code>response_mode</code> must be <code>soar</code> or <code>ZT Response - Request Enforcement</code> will also open a local request</td>
+<td>Mode B: <code>\| ztsoar action=status</code> and <code>\| inputlookup zt_enforcement_requests_lookup</code>; the brief must have <code>disposition=true_positive</code>. Mode A: the ES automation rule (<code>make es-automation-rule</code>), the SOAR container for the finding, the playbook run log; <code>response_mode</code> must be <code>soar</code> or <code>ZT Response - Request Enforcement</code> will also open a local request; in Mode B keep the automation rule off (<code>make es-automation-rule RULE=off</code>) or the playbook acts too</td>
 </tr>
 <tr>
 <td>Approval refused</td>
@@ -305,7 +274,7 @@ make smoke              # acceptance checks 2 to 8 with a pass/fail table; FRESH
 </tr>
 <tr>
 <td>Applied but never verified</td>
-<td><code>index=zero_trust sourcetype=cilium:hubble:flow verdict=DROPPED policy_denied=zt-quarantine-ci-runner-88213</code>; the generator decides DROPPED only when the attempt's timestamp is after both the label patch and the policy creation in <code>zt_policy_state</code> (<code>| inputlookup zt_policy_state_lookup</code>)</td>
+<td><code>index=zero_trust sourcetype=cilium:hubble:flow verdict=DROPPED policy_denied=zt-quarantine-ci-runner-88213</code>; the generator decides DROPPED only when the attempt's timestamp is after both the label patch and the policy creation in <code>zt_policy_state</code> (<code>\| inputlookup zt_policy_state_lookup</code>)</td>
 </tr>
 <tr>
 <td>Posture panels empty</td>
@@ -313,14 +282,11 @@ make smoke              # acceptance checks 2 to 8 with a pass/fail table; FRESH
 </tr>
 </tbody>
 </table>
-<h2>Wording rule and account neutrality</h2>
+<h2 id="wording-rule-and-account-neutrality">Wording rule and account neutrality</h2>
 <p>Visible text of both apps (event data, field values, dashboards, saved search names and descriptions, the agent prompts and the playbook) never contains the words <em>sample</em>, <em>mock</em>, <em>mockup</em>, <em>fake</em>, <em>synthetic</em> or <em>illustrative</em>. The word <em>demo</em> is allowed in object names (<code>zt_incident_demo</code>, <code>zt_demo_state</code>, <code>ztdemo</code>), in <code>app.conf</code> descriptions, in this README and in <code>docs/</code>. Acceptance criterion 11 greps for the banned words over both apps (event data included, vendored <code>bin/lib/</code> excluded), the agent files and the playbook. No customer or company names appear anywhere; the only product names are Cisco's (Isovalent, Cilium, Hubble, Tetragon, Nexus Dashboard, Hypershield, Security Cloud App) and Splunk's (Enterprise Security, SOAR, AI Toolkit, Agent Launchpad, MCP Server). Hostnames, users, teams, projects and switches are the neutral canonical values of the story (<code>corp.internal</code>, <code>platform-build</code>, <code>ml-infra/train-utils</code>, <code>dc2-leaf-205</code>).</p>
-<h2>More</h2>
+<h2 id="more">More</h2>
 <ul>
-<li><a href="docs/field_reference.html">docs/field_reference.md</a>: every sourcetype, raw key, normalized field, CIM mapping, eventtype, tag, lookup and KV collection.</li>
-<li><a href="docs/demo_script.html">docs/demo_script.md</a>: the six-part live script with timings at fast cadence.</li>
-<li><a href="CHANGELOG.html">CHANGELOG.md</a>.</li>
-</ul>
-</main>
-</body>
-</html>
+<li><a href="docs/field_reference.md">docs/field_reference.md</a>: every sourcetype, raw key, normalized field, CIM mapping, eventtype, tag, lookup and KV collection.</li>
+<li><a href="docs/demo_script.md">docs/demo_script.md</a>: the six-part live script with timings at fast cadence.</li>
+<li><a href="CHANGELOG.md">CHANGELOG.md</a>.</li>
+</ul></body></html>
