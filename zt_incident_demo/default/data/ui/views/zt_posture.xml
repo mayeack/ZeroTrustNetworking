@@ -341,7 +341,7 @@
    "type": "ds.search",
    "name": "ds_enforcement_audit",
    "options": {
-    "query": "index=zero_trust sourcetype=zt:enforcement:audit (state=verified OR state=applied OR state=failed OR state=rejected OR state=released) | stats latest(state) as status latest(approved_by_label) as approved_by latest(action) as action latest(enforcement_point) as at latest(finding_id) as finding_id latest(investigation_id) as investigation_id latest(_time) as _time by request_id | eval finding=if(match(finding_id,\"@@notable@@\") AND len(investigation_id)>0, investigation_id, finding_id) | sort - _time | table _time finding action at approved_by status request_id",
+    "query": "index=zero_trust sourcetype=zt:enforcement:audit (state=verified OR state=applied OR state=failed OR state=rejected OR state=released) | where len(request_id)>0 | stats latest(state) as status latest(approved_by_label) as approved_by latest(action) as action latest(enforcement_point) as at latest(finding_id) as finding_id latest(investigation_id) as investigation_id latest(_time) as _time by request_id | eval finding=if(match(finding_id,\"@@notable@@\") AND len(investigation_id)>0, investigation_id, finding_id) | sort - _time | table _time finding action at approved_by status request_id",
     "queryParameters": {
      "earliest": "$time.earliest$",
      "latest": "$time.latest$"

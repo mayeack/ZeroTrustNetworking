@@ -63,7 +63,7 @@ table{border-collapse:collapse;margin:1rem 0;width:100%}th,td{border:1px solid #
 <ol>
 <li><code>make status</code> (or <code>| ztdemo action=status</code> in the Zero Trust Incident app): <code>backfill_done</code> true, checkpoint age under a minute, <code>plan_status</code> idle, no quarantine, <code>speed</code> fast, <code>response_mode</code> and <code>agent_mode</code> as you want them. If a practice run is on file, <code>| ztdemo action=reset</code> was run and the before-state of the posture shows that run for 24 hours (say "up from 87.7%" becomes the previous run's number).</li>
 <li><code>make emulator-status</code>: the emulator answers <code>/version</code> locally and at <code>https://zt-k8s.yeackbot.com</code>.</li>
-<li><code>make fast</code> if unsure of the cadence; <code>make mode-soar</code> or <code>make mode-local</code>; <code>make agent-mcp</code>.</li>
+<li><code>make fast</code> if unsure of the cadence; <code>make mode-soar</code> or <code>make mode-local</code> (or the Local and SOAR buttons on the live generator's Settings page), which also switch the Enterprise Security automation rule on for SOAR and off for Local; <code>make agent-mcp</code>.</li>
 <li>Open the Zero Trust Fabric Posture dashboard (Zero Trust Incident › Zero Trust Fabric Posture) and note the before-state: identities 1,283, coverage 87.7% (57 of 65), unprotected paths 8, audit-mode flows 2,306, enforcement actions 16 (kernel 10 · DPU 2 · switch 4) on a fresh install.</li>
 <li>Sign in as <code>j.chen</code> in a private browser window (Mode A: SOAR; Mode B: Splunk Web, Enforcement Approvals).</li>
 <li>Open the agent's page in the AI Toolkit (Agent Launchpad › <code>ZTFlowInvestigator</code>) and the ES Analyst Queue.</li>
@@ -117,7 +117,7 @@ table{border-collapse:collapse;margin:1rem 0;width:100%}th,td{border:1px solid #
 </ol>
 <h2 id="6-after-the-call">6. After the call</h2>
 <ol>
-<li>Run <code>| ztdemo action=reset</code> (or <code>make reset</code>). It releases the quarantine through the emulator (audit user <code>k.osei</code>), writes a <code>released</code> audit event ("merge request reverted"), cancels open requests and sets the plan to idle. The next fire uses the same canonical IDs; the detections and searches ignore everything before the reset.</li>
+<li>Click Reset twice on the live generator page (or run <code>| ztdemo action=reset</code>, or <code>make reset</code>). It releases the quarantine through the emulator (audit user <code>k.osei</code>), writes a <code>released</code> audit event ("merge request reverted"), cancels open requests and sets the plan to idle. The next fire uses the same canonical IDs; the detections and searches ignore everything before the reset.</li>
 <li><code>| ztdemo action=status</code> to confirm <code>plan_status</code> idle and no quarantine.</li>
 <li>The posture's before-state will show this run for 24 hours; for the absolute numbers of a fresh install, <code>make reset-hard</code> (asks first, empties <code>zero_trust</code> and <code>zt_summary</code> and backfills).</li>
 <li><code>make normal</code> if the stack should not run every minute until the next call.</li>

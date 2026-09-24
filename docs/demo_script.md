@@ -25,7 +25,7 @@ About ten minutes from fire to the final posture. If you need to talk longer, th
 
 1. `make status` (or `| ztdemo action=status` in the Zero Trust Incident app): `backfill_done` true, checkpoint age under a minute, `plan_status` idle, no quarantine, `speed` fast, `response_mode` and `agent_mode` as you want them. If a practice run is on file, `| ztdemo action=reset` was run and the before-state of the posture shows that run for 24 hours (say "up from 87.7%" becomes the previous run's number).
 2. `make emulator-status`: the emulator answers `/version` locally and at `https://zt-k8s.yeackbot.com`.
-3. `make fast` if unsure of the cadence; `make mode-soar` or `make mode-local`; `make agent-mcp`.
+3. `make fast` if unsure of the cadence; `make mode-soar` or `make mode-local` (or the Local and SOAR buttons on the live generator's Settings page), which also switch the Enterprise Security automation rule on for SOAR and off for Local; `make agent-mcp`.
 4. Open the Zero Trust Fabric Posture dashboard (Zero Trust Incident › Zero Trust Fabric Posture) and note the before-state: identities 1,283, coverage 87.7% (57 of 65), unprotected paths 8, audit-mode flows 2,306, enforcement actions 16 (kernel 10 · DPU 2 · switch 4) on a fresh install.
 5. Sign in as `j.chen` in a private browser window (Mode A: SOAR; Mode B: Splunk Web, Enforcement Approvals).
 6. Open the agent's page in the AI Toolkit (Agent Launchpad › `ZTFlowInvestigator`) and the ES Analyst Queue.
@@ -86,7 +86,7 @@ Either mode: `index=zero_trust sourcetype=kube:apiserver:audit` now shows the `p
 
 ## 6. After the call
 
-1. Run `| ztdemo action=reset` (or `make reset`). It releases the quarantine through the emulator (audit user `k.osei`), writes a `released` audit event ("merge request reverted"), cancels open requests and sets the plan to idle. The next fire uses the same canonical IDs; the detections and searches ignore everything before the reset.
+1. Click Reset twice on the live generator page (or run `| ztdemo action=reset`, or `make reset`). It releases the quarantine through the emulator (audit user `k.osei`), writes a `released` audit event ("merge request reverted"), cancels open requests and sets the plan to idle. The next fire uses the same canonical IDs; the detections and searches ignore everything before the reset.
 2. `| ztdemo action=status` to confirm `plan_status` idle and no quarantine.
 3. The posture's before-state will show this run for 24 hours; for the absolute numbers of a fresh install, `make reset-hard` (asks first, empties `zero_trust` and `zt_summary` and backfills).
 4. `make normal` if the stack should not run every minute until the next call.
