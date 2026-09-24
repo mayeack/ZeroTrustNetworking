@@ -40,7 +40,7 @@ ROLES = {
                                "apps": {"view": True, "edit": False, "delete": False}, "assets": {"view": True, "edit": False, "delete": False}}},
 }
 USERS = {"j.chen": ("SOC tier 2", "J.", "Chen"), "m.ruiz": ("SOC tier 2", "M.", "Ruiz"), "a.patel": ("NetOps", "A.", "Patel")}
-PLACEHOLDER = re.compile(r"^<([A-Z_]+) from local/env>$")
+PLACEHOLDER = re.compile(r"^<([A-Z0-9_]+) from local/env>$")
 
 
 def env_key(user):
@@ -186,7 +186,7 @@ def resolve_value(value):
     if "<" in value and ">" in value:
         # "Bearer <KEY from local/env>", "Splunk <KEY from local/env>", "<SPLUNK_URL host, ...>"
         inner = value[value.index("<") + 1:value.index(">")]
-        m2 = re.match(r"([A-Z_]+) from local/env", inner)
+        m2 = re.match(r"([A-Z0-9_]+) from local/env", inner)
         if m2:
             v = ztrest.env(m2.group(1))
             return (value[:value.index("<")] + v + value[value.index(">") + 1:], True) if v else (value, False)
