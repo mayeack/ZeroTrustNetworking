@@ -11,7 +11,7 @@
     <description>Protected-path coverage, unprotected paths and every enforcement decision, from Isovalent flow and process data and the SOAR audit trail</description>
     <definition><![CDATA[{
  "title": "Zero Trust Fabric Posture",
- "description": "Protected-path coverage, unprotected paths and every enforcement decision, from Isovalent flow and process data and the SOAR audit trail",
+ "description": "Protected-path coverage, unprotected paths and every enforcement decision, from Isovalent flow and process data and the enforcement audit trail",
  "inputs": {
   "input_time": {
    "type": "input.timerange",
@@ -233,7 +233,7 @@
   },
   "viz_enforcement_audit": {
    "type": "splunk.table",
-   "title": "Enforcement Audit Trail (SOAR)",
+   "title": "Enforcement Audit Trail",
    "dataSources": {
     "primary": "ds_enforcement_audit"
    },

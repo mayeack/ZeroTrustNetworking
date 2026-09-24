@@ -21,9 +21,20 @@
     "primary": "ds_incidents"
    },
    "options": {
-    "items": "> frame(label, value) | prepend(formattedStatics) | objects()",
+    "items": ">frame(label, value) | prepend(formattedStatics) | objects()",
     "token": "incident",
     "selectFirstSearchResult": true
+   },
+   "context": {
+    "formattedConfig": {
+     "number": {
+      "prefix": ""
+     }
+    },
+    "formattedStatics": ">statics | formatByType(formattedConfig)",
+    "statics": [],
+    "label": ">primary | seriesByName(\"label\") | renameSeries(\"label\") | formatByType(formattedConfig)",
+    "value": ">primary | seriesByName(\"value\") | renameSeries(\"value\") | formatByType(formattedConfig)"
    }
   }
  },
@@ -47,7 +58,8 @@
    },
    "dataSources": {
     "primary": "ds_step1"
-   }
+   },
+   "hideWhenNoData": true
   },
   "viz_step2": {
    "type": "splunk.markdown",
@@ -56,7 +68,8 @@
    },
    "dataSources": {
     "primary": "ds_step2"
-   }
+   },
+   "hideWhenNoData": true
   },
   "viz_step3": {
    "type": "splunk.markdown",
@@ -65,7 +78,8 @@
    },
    "dataSources": {
     "primary": "ds_step3"
-   }
+   },
+   "hideWhenNoData": true
   },
   "viz_step4": {
    "type": "splunk.markdown",
@@ -74,7 +88,8 @@
    },
    "dataSources": {
     "primary": "ds_step4"
-   }
+   },
+   "hideWhenNoData": true
   },
   "viz_step5": {
    "type": "splunk.markdown",
@@ -83,7 +98,8 @@
    },
    "dataSources": {
     "primary": "ds_step5"
-   }
+   },
+   "hideWhenNoData": true
   },
   "viz_grid_title": {
    "type": "splunk.markdown",
@@ -179,7 +195,8 @@
    },
    "dataSources": {
     "primary": "ds_grid"
-   }
+   },
+   "hideWhenNoData": true
   },
   "viz_cell2": {
    "type": "splunk.markdown",
@@ -190,7 +207,8 @@
    },
    "dataSources": {
     "primary": "ds_grid"
-   }
+   },
+   "hideWhenNoData": true
   },
   "viz_cell3": {
    "type": "splunk.markdown",
@@ -201,7 +219,8 @@
    },
    "dataSources": {
     "primary": "ds_grid"
-   }
+   },
+   "hideWhenNoData": true
   },
   "viz_cell4": {
    "type": "splunk.markdown",
@@ -212,7 +231,8 @@
    },
    "dataSources": {
     "primary": "ds_grid"
-   }
+   },
+   "hideWhenNoData": true
   },
   "viz_cell5": {
    "type": "splunk.markdown",
@@ -223,7 +243,8 @@
    },
    "dataSources": {
     "primary": "ds_grid"
-   }
+   },
+   "hideWhenNoData": true
   },
   "viz_cell6": {
    "type": "splunk.markdown",
@@ -234,7 +255,8 @@
    },
    "dataSources": {
     "primary": "ds_grid"
-   }
+   },
+   "hideWhenNoData": true
   },
   "viz_cell7": {
    "type": "splunk.markdown",
@@ -245,7 +267,8 @@
    },
    "dataSources": {
     "primary": "ds_grid"
-   }
+   },
+   "hideWhenNoData": true
   },
   "viz_cell8": {
    "type": "splunk.markdown",
@@ -256,7 +279,8 @@
    },
    "dataSources": {
     "primary": "ds_grid"
-   }
+   },
+   "hideWhenNoData": true
   },
   "viz_cell9": {
    "type": "splunk.markdown",
@@ -267,7 +291,8 @@
    },
    "dataSources": {
     "primary": "ds_grid"
-   }
+   },
+   "hideWhenNoData": true
   },
   "viz_cell10": {
    "type": "splunk.markdown",
@@ -278,7 +303,8 @@
    },
    "dataSources": {
     "primary": "ds_grid"
-   }
+   },
+   "hideWhenNoData": true
   },
   "viz_cell11": {
    "type": "splunk.markdown",
@@ -289,7 +315,8 @@
    },
    "dataSources": {
     "primary": "ds_grid"
-   }
+   },
+   "hideWhenNoData": true
   },
   "viz_cell12": {
    "type": "splunk.markdown",
@@ -300,7 +327,8 @@
    },
    "dataSources": {
     "primary": "ds_grid"
-   }
+   },
+   "hideWhenNoData": true
   },
   "viz_gdi_hubble": {
    "type": "splunk.singlevalue",
@@ -438,8 +466,8 @@
   },
   "viz_incident_events": {
    "type": "splunk.table",
-   "title": "Every event of the selected incident",
-   "description": "Click a row to open the raw event in search",
+   "title": "Every event of the selected incident, newest first",
+   "description": "The outcome on top (failed job, dropped retries, verification); click a row to open the raw event in search",
    "dataSources": {
     "primary": "ds_incident"
    },
@@ -537,7 +565,7 @@
    "type": "ds.search",
    "name": "ds_step3",
    "options": {
-    "query": "search $incident$ `notable` | search source=\"ZT - Workload Exceeded Risk Threshold on Protected-Path Signals - Rule\" | stats count as finding_count min(_time) as finding_time latest(risk_score) as finding_risk latest(source_count) as finding_sources | eval k=1 | append [search index=risk $incident$ source=\"ZT - *\" risk_object=\"build-farm/ci-runner\" | stats count as risk_count sum(risk_score) as risk_total min(_time) as first_risk max(_time) as last_risk | eval k=1] | append [| inputlookup zt_agent_briefs_lookup | `zt_incident_window(\"$incident$\")` | where run_epoch>=zt_s AND run_epoch<=zt_e AND workload=\"build-farm/ci-runner\" | sort - run_epoch | head 1 | eval k=1 | fields k run_epoch investigation_id disposition confidence action enforcement_point policy_name approver_labels] | stats max(finding_count) as finding_count min(finding_time) as finding_time max(finding_risk) as finding_risk max(finding_sources) as finding_sources max(risk_count) as risk_count max(risk_total) as risk_total min(first_risk) as first_risk max(last_risk) as last_risk max(run_epoch) as brief_time first(investigation_id) as investigation_id first(disposition) as disposition first(confidence) as confidence first(action) as action first(enforcement_point) as enforcement_point first(policy_name) as policy_name first(approver_labels) as approver_labels by k | appendcols [search index=zero_trust $incident$ sourcetype=ci:job:event build_id=88213 build_status=running | stats count as have] | eval title=\"3 Decide\", mark=if(finding_count>0 AND isnotnull(brief_time),\"✓\",\"…\"), line1=if(risk_count>0, \"Risk events \".strftime(first_risk,\"%H:%M:%S\").\" → \".strftime(last_risk,\"%H:%M:%S\").\" · \".risk_count.\" signals · \".risk_total.\" risk on build-farm/ci-runner\", if(have>0, \"Waiting for the risk events (the two detections run every minute)\", \"No incident yet\")), line2=if(finding_count>0, \"Finding group \".if(isnotnull(investigation_id), investigation_id.\" \", \"\").strftime(finding_time,\"%H:%M:%S\").\" · risk \".finding_risk.\" from \".finding_sources.\" detections, over the threshold of 80\", if(risk_count>0, \"Waiting for the finding group (risk threshold 80)\", \"\")), line3=if(isnotnull(brief_time), \"Agent brief \".strftime(brief_time,\"%H:%M:%S\").\" · \".replace(disposition,\"_\",\" \").\" (\".confidence.\") · recommends \".policy_name.\" at the \".enforcement_point.\", approver \".approver_labels, if(finding_count>0, \"Waiting for the ZTFlowInvestigator brief\", \"\")) | eval line1=coalesce(line1,\"\"), line2=coalesce(line2,\"\"), line3=coalesce(line3,\"\") | table title mark line1 line2 line3",
+    "query": "search index=notable $incident$ source=\"ZT - Workload Exceeded Risk Threshold on Protected-Path Signals - Rule\" | stats count as finding_count min(_time) as finding_time latest(risk_score) as finding_risk latest(source_count) as finding_sources | eval k=1 | append [search index=risk $incident$ source=\"ZT - *\" risk_object=\"build-farm/ci-runner\" | stats count as risk_count sum(risk_score) as risk_total min(_time) as first_risk max(_time) as last_risk | eval k=1] | append [| inputlookup zt_agent_briefs_lookup | `zt_incident_window(\"$incident$\")` | where run_epoch>=zt_s AND run_epoch<=zt_e AND workload=\"build-farm/ci-runner\" | sort - run_epoch | head 1 | eval k=1 | fields k run_epoch investigation_id disposition confidence action enforcement_point policy_name approver_labels] | stats max(finding_count) as finding_count min(finding_time) as finding_time max(finding_risk) as finding_risk max(finding_sources) as finding_sources max(risk_count) as risk_count max(risk_total) as risk_total min(first_risk) as first_risk max(last_risk) as last_risk max(run_epoch) as brief_time first(investigation_id) as investigation_id first(disposition) as disposition first(confidence) as confidence first(action) as action first(enforcement_point) as enforcement_point first(policy_name) as policy_name first(approver_labels) as approver_labels by k | appendcols [search index=zero_trust $incident$ sourcetype=ci:job:event build_id=88213 build_status=running | stats count as have] | eval title=\"3 Decide\", mark=if(finding_count>0 AND isnotnull(brief_time),\"✓\",\"…\"), line1=if(risk_count>0, \"Risk events \".strftime(first_risk,\"%H:%M:%S\").\" → \".strftime(last_risk,\"%H:%M:%S\").\" · \".risk_count.\" signals · \".risk_total.\" risk on build-farm/ci-runner\", if(have>0, \"Waiting for the risk events (the two detections run every minute)\", \"No incident yet\")), line2=if(finding_count>0, \"Finding group \".if(isnotnull(investigation_id), investigation_id.\" \", \"\").strftime(finding_time,\"%H:%M:%S\").\" · risk \".finding_risk.\" from \".finding_sources.\" detections, over the threshold of 80\", if(risk_count>0, \"Waiting for the finding group (risk threshold 80)\", \"\")), line3=if(isnotnull(brief_time), \"Agent brief \".strftime(brief_time,\"%H:%M:%S\").\" · \".replace(disposition,\"_\",\" \").\" (\".confidence.\") · recommends \".policy_name.\" at the \".enforcement_point.\", approver \".approver_labels, if(finding_count>0, \"Waiting for the ZTFlowInvestigator brief\", \"\")) | eval line1=coalesce(line1,\"\"), line2=coalesce(line2,\"\"), line3=coalesce(line3,\"\") | table title mark line1 line2 line3",
     "queryParameters": {
      "earliest": "-24h",
      "latest": "now"
@@ -573,7 +601,7 @@
    "type": "ds.search",
    "name": "ds_grid",
    "options": {
-    "query": "| makeresults count=12 | streamstats count as cell | fields cell | append [search index=zero_trust $incident$ sourcetype=cisco:isovalent:processConnect src_pod=\"ci-runner-7d9f8-xk2lq\" dest_protected=true | stats min(_time) as t | eval cell=1] | append [search index=zero_trust $incident$ sourcetype=cilium:hubble:flow src_pod=\"ci-runner-7d9f8-xk2lq\" verdict=AUDIT | stats min(_time) as t | eval cell=2] | append [search index=zero_trust $incident$ (sourcetype=cilium:hubble:flow OR sourcetype=cisco:isovalent:*) src_pod=\"ci-runner-7d9f8-xk2lq\" | eval it=_indextime | stats min(it) as t | eval cell=3] | append [search index=risk $incident$ source=\"ZT - *\" risk_object=\"build-farm/ci-runner\" | stats min(_time) as t | eval cell=4] | append [search $incident$ `notable` | search source=\"ZT - Workload Exceeded Risk Threshold on Protected-Path Signals - Rule\" | stats min(_time) as t | eval cell=5] | append [| inputlookup zt_agent_briefs_lookup | `zt_incident_window(\"$incident$\")` | where run_epoch>=zt_s AND run_epoch<=zt_e AND workload=\"build-farm/ci-runner\" | stats min(run_epoch) as t | eval cell=6] | append [search index=zero_trust $incident$ sourcetype=zt:enforcement:audit workload=\"build-farm/ci-runner\" state=applied | stats min(_time) as t | eval cell=7] | append [search index=zero_trust $incident$ sourcetype=kube:apiserver:audit k8s_user=\"system:serviceaccount:soar:zt-enforcer\" k8s_verb=create k8s_namespace=\"build-farm\" k8s_resource=ciliumnetworkpolicies | stats min(_time) as t | eval cell=8] | append [search index=zero_trust $incident$ sourcetype=kube:apiserver:audit k8s_user=\"system:serviceaccount:soar:zt-enforcer\" k8s_verb=patch k8s_resource=pods k8s_name=\"ci-runner-7d9f8-xk2lq\" | stats min(_time) as t | eval cell=9] | append [search index=zero_trust $incident$ sourcetype=cilium:hubble:flow src_pod=\"ci-runner-7d9f8-xk2lq\" verdict=DROPPED | stats min(_time) as t | eval cell=10] | append [search index=zt_summary source=\"ZT Posture - Rollup\" [| makeresults | `zt_incident_window(\"$incident$\")` | eval earliest=zt_s-3600, latest=zt_e | fields earliest latest | return earliest latest] | eval applied=[search index=zero_trust $incident$ sourcetype=zt:enforcement:audit workload=\"build-farm/ci-runner\" state=applied | stats min(_time) as t | append [| makeresults | eval t=9999999999 | fields t] | stats min(t) as t | return $t] | where _time>=applied | stats min(_time) as t | eval cell=11] | append [search index=zero_trust $incident$ sourcetype=zt:enforcement:audit workload=\"build-farm/ci-runner\" state=verified | stats min(_time) as t | eval cell=12] | stats min(t) as t by cell | eventstats max(eval(if(cell=1 AND isnotnull(t),1,0))) as have | eval mark=if(isnotnull(t),\"✓\",\"…\"), time=if(isnotnull(t), strftime(t,\"%H:%M:%S\"), if(have=1, case(cell=4,\"waiting for the risk events\", cell=5,\"waiting for the finding group\", cell=6,\"waiting for the agent brief\", cell=7,\"waiting for the approval\", cell=8 OR cell=9,\"waiting for the policy\", cell=10,\"waiting for the next retry\", cell=11,\"waiting for the next posture rollup\", cell=12,\"waiting for verification\", true(),\"pending\"), \"no incident yet\")), k=1 | eval pair=mvappend(\"cell\".cell.\"_mark=\".mark, \"cell\".cell.\"_time=\".time) | mvexpand pair | rex field=pair \"^(?<name>[^=]+)=(?<value>.*)$\" | xyseries k name value | fields - k | appendcols [search index=zt_summary source=\"ZT Posture - Rollup\" [| makeresults | `zt_incident_window(\"$incident$\")` | eval earliest=zt_s-3600, latest=zt_e | fields earliest latest | return earliest latest] | `zt_incident_window(\"$incident$\")` | eval fire=zt_s+60 | eval before=if(_time<fire,1,0) | stats count latest(coverage_pct) as cov_after latest(unprotected) as unp_after min(eval(if(before=0,coverage_pct,null()))) as cov_before max(eval(if(before=0,unprotected,null()))) as unp_before | eval posture_line=case(isnotnull(cov_before) AND isnotnull(cov_after), \"Coverage \".cov_before.\"% during → \".cov_after.\"% · unprotected \".unp_before.\" → \".unp_after, isnotnull(cov_after), \"Coverage \".cov_after.\"% · paths \".unp_after, true(), \"Posture rollup pending\") | fields posture_line] | appendcols [| inputlookup zt_agent_briefs_lookup | `zt_incident_window(\"$incident$\")` | where run_epoch>=zt_s AND run_epoch<=zt_e AND workload=\"build-farm/ci-runner\" | sort - run_epoch | stats count first(investigation_id) as inv | eval finding_line=if(isnotnull(inv), inv.\" · two signals, 50 + 40 = risk 90, over the threshold of 80\", \"Two signals, 50 + 40 = risk 90, over the threshold of 80\") | fields finding_line]",
+    "query": "| makeresults count=12 | streamstats count as cell | fields cell | append [search index=zero_trust $incident$ src_pod=\"ci-runner-7d9f8-xk2lq\" (sourcetype=cilium:hubble:flow OR sourcetype=cisco:isovalent:processConnect) | eval a=if(sourcetype=\"cisco:isovalent:processConnect\" AND dest_protected=\"true\",_time,null()), b=if(sourcetype=\"cilium:hubble:flow\" AND verdict=\"AUDIT\",_time,null()), c=_indextime, e=if(sourcetype=\"cilium:hubble:flow\" AND verdict=\"DROPPED\",_time,null()) | stats min(a) as t1 min(b) as t2 min(c) as t3 min(e) as t10 | eval pair=mvappend(\"1=\".t1,\"2=\".t2,\"3=\".t3,\"10=\".t10) | mvexpand pair | rex field=pair \"^(?<cell>\\d+)=(?<t>.+)$\" | eval cell=tonumber(cell), t=tonumber(t) | fields cell t] | append [search index=risk $incident$ source=\"ZT - *\" risk_object=\"build-farm/ci-runner\" | stats min(_time) as t | eval cell=4] | append [search index=notable $incident$ source=\"ZT - Workload Exceeded Risk Threshold on Protected-Path Signals - Rule\" | stats min(_time) as t | eval cell=5] | append [| inputlookup zt_agent_briefs_lookup | `zt_incident_window(\"$incident$\")` | where run_epoch>=zt_s AND run_epoch<=zt_e AND workload=\"build-farm/ci-runner\" | stats min(run_epoch) as t | eval cell=6] | append [search index=zero_trust $incident$ ((sourcetype=zt:enforcement:audit workload=\"build-farm/ci-runner\" state IN (\"applied\",\"verified\")) OR (sourcetype=kube:apiserver:audit k8s_user=\"system:serviceaccount:soar:zt-enforcer\" k8s_namespace=\"build-farm\")) | eval a=if(state=\"applied\",_time,null()), b=if(k8s_verb=\"create\" AND k8s_resource=\"ciliumnetworkpolicies\",_time,null()), c=if(k8s_verb=\"patch\" AND k8s_resource=\"pods\" AND k8s_name=\"ci-runner-7d9f8-xk2lq\",_time,null()), e=if(state=\"verified\",_time,null()) | stats min(a) as t7 min(b) as t8 min(c) as t9 min(e) as t12 | eval pair=mvappend(\"7=\".t7,\"8=\".t8,\"9=\".t9,\"12=\".t12) | mvexpand pair | rex field=pair \"^(?<cell>\\d+)=(?<t>.+)$\" | eval cell=tonumber(cell), t=tonumber(t) | fields cell t] | append [search index=zt_summary source=\"ZT Posture - Rollup\" [| makeresults | `zt_incident_window(\"$incident$\")` | eval earliest=zt_s-3600, latest=zt_e | fields earliest latest | return earliest latest] | eval applied=[search index=zero_trust $incident$ sourcetype=zt:enforcement:audit workload=\"build-farm/ci-runner\" state=applied | stats min(_time) as t | append [| makeresults | eval t=9999999999 | fields t] | stats min(t) as t | return $t] | where _time>=applied | stats min(_time) as t | eval cell=11] | stats min(t) as t by cell | eventstats max(eval(if(cell=1 AND isnotnull(t),1,0))) as have | eval mark=if(isnotnull(t),\"✓\",\"…\"), time=if(isnotnull(t), strftime(t,\"%H:%M:%S\"), if(have=1, case(cell=4,\"waiting for the risk events\", cell=5,\"waiting for the finding group\", cell=6,\"waiting for the agent brief\", cell=7,\"waiting for the approval\", cell=8 OR cell=9,\"waiting for the policy\", cell=10,\"waiting for the next retry\", cell=11,\"waiting for the next posture rollup\", cell=12,\"waiting for verification\", true(),\"pending\"), \"no incident yet\")), k=1 | eval pair=mvappend(\"cell\".cell.\"_mark=\".mark, \"cell\".cell.\"_time=\".time) | mvexpand pair | rex field=pair \"^(?<name>[^=]+)=(?<value>.*)$\" | xyseries k name value | fields - k | appendcols [search index=zt_summary source=\"ZT Posture - Rollup\" [| makeresults | `zt_incident_window(\"$incident$\")` | eval earliest=zt_s-3600, latest=zt_e | fields earliest latest | return earliest latest] | `zt_incident_window(\"$incident$\")` | eval fire=zt_s+60 | eval before=if(_time<fire,1,0) | stats count latest(coverage_pct) as cov_after latest(unprotected) as unp_after min(eval(if(before=0,coverage_pct,null()))) as cov_before max(eval(if(before=0,unprotected,null()))) as unp_before | eval posture_line=case(isnotnull(cov_before) AND isnotnull(cov_after), \"Coverage \".cov_before.\"% during → \".cov_after.\"% · unprotected \".unp_before.\" → \".unp_after, isnotnull(cov_after), \"Coverage \".cov_after.\"% · paths \".unp_after, true(), \"Posture rollup pending\") | fields posture_line] | appendcols [| inputlookup zt_agent_briefs_lookup | `zt_incident_window(\"$incident$\")` | where run_epoch>=zt_s AND run_epoch<=zt_e AND workload=\"build-farm/ci-runner\" | sort - run_epoch | stats count first(investigation_id) as inv | eval finding_line=if(isnotnull(inv), inv.\" · two signals, 50 + 40 = risk 90, over the threshold of 80\", \"Two signals, 50 + 40 = risk 90, over the threshold of 80\") | fields finding_line]",
     "queryParameters": {
      "earliest": "-24h",
      "latest": "now"
@@ -669,7 +697,7 @@
    "type": "ds.search",
    "name": "ds_incident",
    "options": {
-    "query": "index=zero_trust $incident$ (src_pod=\"ci-runner-7d9f8-xk2lq\" OR (pod=\"ci-runner-7d9f8-xk2lq\" sourcetype=cisco:isovalent:*) OR (sourcetype=ci:job:event build_id=88213) OR (sourcetype=zt:enforcement:audit workload=\"build-farm/ci-runner\") OR (sourcetype=kube:apiserver:audit k8s_user=\"system:serviceaccount:soar:zt-enforcer\" k8s_namespace=\"build-farm\")) | eval step=case(sourcetype=\"ci:job:event\",\"1 Connect\", sourcetype=\"cisco:isovalent:processConnect\" OR sourcetype=\"cisco:isovalent:processExec\",\"2 Observe\", sourcetype=\"cilium:hubble:flow\" AND verdict!=\"DROPPED\",\"2 Observe\", sourcetype=\"zt:enforcement:audit\" AND state IN (\"requested\",\"approved\",\"rejected\",\"refused\",\"applied\"),\"4 Enforce\", sourcetype=\"kube:apiserver:audit\",\"4 Enforce\", sourcetype=\"cilium:hubble:flow\" AND verdict=\"DROPPED\",\"5 Verify\", sourcetype=\"zt:enforcement:audit\",\"5 Verify\", true(),\"3 Decide\"), summary=case(sourcetype=\"ci:job:event\",\"CI job \".build_id.\" \".build_status, sourcetype=\"cisco:isovalent:processConnect\", process.\" -> \".dest_workload.\":\".dest_port, sourcetype=\"cisco:isovalent:processExec\", \"exec \".process.\" \".process_args, sourcetype=\"cilium:hubble:flow\", verdict.\" \".traffic_direction.\" \".src_identity.\" -> \".dest_identity.\" at \".node, sourcetype=\"zt:enforcement:audit\", state.\" \".action.\" (\".approved_by_label.\")\", sourcetype=\"kube:apiserver:audit\", k8s_verb.\" \".k8s_resource.\"/\".k8s_name.\" \".status_code, true(), sourcetype) | table _time step sourcetype summary | sort _time",
+    "query": "index=zero_trust $incident$ (src_pod=\"ci-runner-7d9f8-xk2lq\" OR (pod=\"ci-runner-7d9f8-xk2lq\" sourcetype=cisco:isovalent:*) OR (sourcetype=ci:job:event build_id=88213) OR (sourcetype=zt:enforcement:audit workload=\"build-farm/ci-runner\") OR (sourcetype=kube:apiserver:audit k8s_user=\"system:serviceaccount:soar:zt-enforcer\" k8s_namespace=\"build-farm\")) | eval step=case(sourcetype=\"ci:job:event\",\"1 Connect\", sourcetype=\"cisco:isovalent:processConnect\" OR sourcetype=\"cisco:isovalent:processExec\",\"2 Observe\", sourcetype=\"cilium:hubble:flow\" AND verdict!=\"DROPPED\",\"2 Observe\", sourcetype=\"zt:enforcement:audit\" AND state IN (\"requested\",\"approved\",\"rejected\",\"refused\",\"applied\"),\"4 Enforce\", sourcetype=\"kube:apiserver:audit\",\"4 Enforce\", sourcetype=\"cilium:hubble:flow\" AND verdict=\"DROPPED\",\"5 Verify\", sourcetype=\"zt:enforcement:audit\",\"5 Verify\", true(),\"3 Decide\"), summary=case(sourcetype=\"ci:job:event\",\"CI job \".build_id.\" \".build_status, sourcetype=\"cisco:isovalent:processConnect\", process.\" -> \".dest_workload.\":\".dest_port, sourcetype=\"cisco:isovalent:processExec\", \"exec \".process.\" \".process_args, sourcetype=\"cilium:hubble:flow\", verdict.\" \".traffic_direction.\" \".src_identity.\" -> \".dest_identity.\" at \".node.if(verdict=\"DROPPED\",\" by \".mvindex(policy_denied,0),\"\"), sourcetype=\"zt:enforcement:audit\", state.\" \".action.\" (\".approved_by_label.\")\", sourcetype=\"kube:apiserver:audit\", k8s_verb.\" \".k8s_resource.\"/\".k8s_name.\" \".status_code, true(), sourcetype) | table _time step sourcetype summary | sort - _time",
     "queryParameters": {
      "earliest": "-24h",
      "latest": "now"

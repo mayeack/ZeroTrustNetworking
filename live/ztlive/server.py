@@ -136,8 +136,19 @@ def make_handler(engine):
     return Handler
 
 
+class QuietServer(ThreadingHTTPServer):
+    """A browser closing an idle keep-alive or event-stream connection is routine, not an error worth a traceback."""
+    daemon_threads = True
+
+    def handle_error(self, request, client_address):
+        import sys
+        if isinstance(sys.exc_info()[1], (ConnectionResetError, BrokenPipeError, TimeoutError)):
+            return
+        super().handle_error(request, client_address)
+
+
 def serve(engine, host="127.0.0.1", port=8890):
-    httpd = ThreadingHTTPServer((host, port), make_handler(engine))
+    httpd = QuietServer((host, port), make_handler(engine))
     httpd.daemon_threads = True
     log.info("listening on http://%s:%d", host, port)
     try:

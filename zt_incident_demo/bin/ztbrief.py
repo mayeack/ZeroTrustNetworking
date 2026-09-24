@@ -101,7 +101,7 @@ class ZtBriefCommand(StreamingCommand):
         sd = Splunkd(si.splunkd_uri, session_key=si.session_key)
         st = ST.load(sd)
         since = float(st.get("last_reset_epoch") or 0)
-        finding = None
+        findings = {}  # newest ZT finding group since the reset, per workload
         for rec in records:
             brief = None
             for text in candidate_texts(rec):
@@ -109,15 +109,25 @@ class ZtBriefCommand(StreamingCommand):
                 if brief:
                     break
             out = dict(rec)
+            try:
+                rec_time = float(rec.get("_time") or 0)
+            except (TypeError, ValueError):
+                rec_time = 0.0
+            if rec_time and rec_time < since:
+                # a capture whose time window was computed before a reset: this agent run belongs to the previous run
+                out["ztbrief"] = "agent run before the last reset; skipped"
+                yield out
+                continue
             if not brief:
                 out["ztbrief"] = "no brief JSON in this event"
                 yield out
                 continue
             try:
                 brief = normalize(brief)
-                if finding is None:
-                    finding = es_api.newest_zt_finding(sd, canon.RULE_FBD, since)
-                out["ztbrief"] = self.store(sd, brief, finding, rec)
+                workload = brief.get("entity") or canon.RUNNER_WORKLOAD
+                if workload not in findings:
+                    findings[workload] = es_api.newest_zt_finding(sd, canon.RULE_FBD, since, workload=workload)
+                out["ztbrief"] = self.store(sd, brief, findings[workload], rec)
             except RestError as e:
                 out["ztbrief"] = "error: %s" % str(e)[:300]
             yield out

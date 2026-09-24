@@ -609,6 +609,605 @@ table{border-collapse:collapse;margin:1rem 0;width:100%}th,td{border:1px solid #
 </tr>
 </tbody>
 </table>
+<h2 id="run-2-after-the-fixes">Run 2 (after the fixes)</h2>
+<p>2026-09-24 16:44:40 to 17:26:48 UTC. 65 steps: 56 passed, 8 failed, 0 blocked, 1 notes.</p>
+<h3 id="before-the-call_1">Before the call</h3>
+<table>
+<thead>
+<tr>
+<th>Step</th>
+<th>Time (UTC)</th>
+<th>Action</th>
+<th>Result</th>
+<th>Observed</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1.0</td>
+<td>16:44:40</td>
+<td>Live generator (launchd) and stack versions</td>
+<td><strong>PASS</strong></td>
+<td>owner live:MYEACK-M-P9QJ:72185 holds the lease; search head input logs 'streaming is owned by live:...'; apps {'DA-ESS-zt_incident_demo': '1.0.4', 'zt_incident_demo': '1.0.4'}</td>
+</tr>
+<tr>
+<td>1.1</td>
+<td>16:44:43</td>
+<td>Search: | ztdemo action=status</td>
+<td><strong>PASS</strong></td>
+<td>{"backfill_done": "1", "checkpoint_age_s": "3", "plan_status": "idle", "quarantine_policies": "none", "speed": "fast", "response_mode": "local", "agent_mode": "mcp"}</td>
+</tr>
+<tr>
+<td>1.2</td>
+<td>16:44:43</td>
+<td>make emulator-status</td>
+<td><strong>PASS</strong></td>
+<td>local /version HTTP 200; public https://zt-k8s.yeackbot.com HTTP 200 v1.31.2</td>
+</tr>
+<tr>
+<td>1.3</td>
+<td>16:44:44</td>
+<td>Live generator page: Reset (two clicks)</td>
+<td><strong>PASS</strong></td>
+<td>reset stamped 16:43:36 UTC, plan idle, nothing to release</td>
+</tr>
+<tr>
+<td>1.4</td>
+<td>16:44:45</td>
+<td>Posture before-state (rollup)</td>
+<td><strong>PASS</strong></td>
+<td>identities 1285, coverage 86.8% (59 of 68), unprotected 9, audit flows 2427, enforcement 23 (kernel 17, DPU 2, switch 4); includes run 1's trigger paths for 24 h</td>
+</tr>
+<tr>
+<td>1.5</td>
+<td>16:46:46</td>
+<td>Splunk Web (built-in browser, signed in by the user): Zero Trust Incident home</td>
+<td><strong>PASS</strong></td>
+<td>cards: Posture 86.8 protected-path coverage, Incident Timeline 5 incidents last 24h, Enforcement Approvals 0 pending; scoreboard 1,285 / 86.8 / 9 / 2 / 23</td>
+</tr>
+<tr>
+<td>1.5b</td>
+<td>16:46:46</td>
+<td>Home scoreboard wording</td>
+<td><strong>INFO</strong></td>
+<td>'Findings, last 24h' = 2 counts distinct finding groups (ES reuses one group per workload across fires); relabel to 'Finding groups, last 24h'</td>
+</tr>
+<tr>
+<td>1.6</td>
+<td>16:47:26</td>
+<td>Splunk Web: Zero Trust Fabric Posture before the fire</td>
+<td><strong>PASS</strong></td>
+<td>KPIs 1,285 / 86.8% 'up from 85.3% · target 95%' / 9 'down from 10' / 2,427 / 23 (kernel 17 · DPU 2 · switch 4); verdict chart shows its empty state after the reset; unprotected paths table lists the 8 ticketed gaps plus run 1's trigger path</td>
+</tr>
+<tr>
+<td>1.6b</td>
+<td>16:47:26</td>
+<td>Posture wording</td>
+<td><strong>FAIL</strong></td>
+<td>the audit trail panel is titled 'Enforcement Audit Trail (SOAR)' and the description says 'SOAR audit trail' although local approvals appear too; routine playbook rows read 'playbook (policy) (policy)'</td>
+</tr>
+</tbody>
+</table>
+<h3 id="step-2-two-signals-in-splunk_1">Step 2: two signals in Splunk</h3>
+<table>
+<thead>
+<tr>
+<th>Step</th>
+<th>Time (UTC)</th>
+<th>Action</th>
+<th>Result</th>
+<th>Observed</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>2.1</td>
+<td>16:47:48</td>
+<td>Live generator page: Fire the incident</td>
+<td><strong>PASS</strong></td>
+<td>page: 'incident started at 2026-09-24T16:47:33.634Z · attempts every 30s'</td>
+</tr>
+<tr>
+<td>2.2</td>
+<td>16:49:13</td>
+<td>Splunk Web Search: index=zero_trust sourcetype=cilium:hubble:flow verdict=AUDIT src_workload="build-farm/ci-runner"</td>
+<td><strong>PASS</strong></td>
+<td>1 event 16:47:33.663: ci-runner-7d9f8-xk2lq -&gt; checkpoint-store-1:9000, identities 48213 -&gt; 30719, allowlist checkpoint-store-ingress-allowlist (audit), src_owner platform-build</td>
+</tr>
+<tr>
+<td>2.3</td>
+<td>16:49:13</td>
+<td>Splunk Web Search: index=zero_trust sourcetype=cisco:isovalent:processConnect process_name=curl</td>
+<td><strong>PASS</strong></td>
+<td>2 events (attempts 0 and 1, 30 s apart): /usr/bin/curl from /bin/sh -c ./scripts/postbuild.sh on bf-node-03, .../ckpt/llm-7712/step-184000/model-00001 then model-00002 -&gt; checkpoint-store-1</td>
+</tr>
+<tr>
+<td>2.4</td>
+<td>16:49:13</td>
+<td>Compare _time of the two sensors</td>
+<td><strong>PASS</strong></td>
+<td>Tetragon connect 16:47:33.634, Hubble AUDIT 16:47:33.663: 29 ms apart</td>
+</tr>
+<tr>
+<td>2.5</td>
+<td>16:49:13</td>
+<td>Splunk Web Search: ci:job:event pod="ci-runner-7d9f8-xk2lq"; | inputlookup zt_node_fabric where node="bf-node-03"</td>
+<td><strong>PASS</strong></td>
+<td>only job 88213 on the pod (package, post-build, MR 4417, contractor-dev-17, running, ml-infra/train-utils): the background fix works; fabric dc2-leaf-205 Eth1/12</td>
+</tr>
+<tr>
+<td>2.6</td>
+<td>16:49:50</td>
+<td>Rerun search 1 (attempt count)</td>
+<td><strong>PASS</strong></td>
+<td>5 AUDIT flows since the fire, one per 30 s attempt</td>
+</tr>
+</tbody>
+</table>
+<h3 id="step-3-one-finding-one-brief_1">Step 3: one finding, one brief</h3>
+<table>
+<thead>
+<tr>
+<th>Step</th>
+<th>Time (UTC)</th>
+<th>Action</th>
+<th>Result</th>
+<th>Observed</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>3.0</td>
+<td>16:49:51</td>
+<td>Risk events for build-farm/ci-runner since the fire</td>
+<td><strong>PASS</strong></td>
+<td>16:48:09 ZT - Unapproved Program Connected to Protected AI Data Store +40.0; 16:48:08 ZT - Audit-Mode Flow Into Protected AI Data Store +50.0 (total 90)</td>
+</tr>
+<tr>
+<td>3.1</td>
+<td>16:53:08</td>
+<td>ES Analyst Queue (Splunk Web): the ZT finding group</td>
+<td><strong>PASS</strong></td>
+<td>queue row title 'Unprotected path: build-farm/ci-runner reached a protected AI data store' (template $zt_workload$ now renders the workload); finding 16:49:06 (T0+1m32s) risk 90 from 2 detections, severity high, domain network, threat objects /usr/bin/curl,ai-train/checkpoint-store, MITRE T1059.004,T1530</td>
+</tr>
+<tr>
+<td>3.2</td>
+<td>16:53:15</td>
+<td>Run the three drilldowns (token $zt_workload$ = build-farm/ci-runner)</td>
+<td><strong>PASS</strong></td>
+<td>Raw Hubble flows for build-farm/ci-runner: 74; Tetragon events for build-farm/ci-runner: 94; CI jobs on build-farm/ci-runner pods: 44</td>
+</tr>
+<tr>
+<td>3.3</td>
+<td>16:53:16</td>
+<td>Agent run history (ZTFlowInvestigator)</td>
+<td><strong>PASS</strong></td>
+<td>5 tool calls: zt_finding_context &gt; zt_flow_evidence &gt; zt_process_evidence &gt; zt_ci_job_context &gt; zt_workload_server_context; run 80.19491624832153 s</td>
+</tr>
+<tr>
+<td>3.4</td>
+<td>16:53:17</td>
+<td>Read the brief</td>
+<td><strong>PASS</strong></td>
+<td>true_positive (high); where ci-runner-7d9f8-xk2lq on bf-node-03, dc2-leaf-205 Eth1/12; recommends zt-quarantine-ci-runner-88213 at the kernel, approvers ['SOC tier 2']; missing facts: none</td>
+</tr>
+<tr>
+<td>3.5</td>
+<td>16:53:18</td>
+<td>ES investigation ES-00008 notes</td>
+<td><strong>PASS</strong></td>
+<td>[('ZTFlowInvestigator brief', True), ('Quarantine requested', False)]</td>
+</tr>
+<tr>
+<td>3.1c</td>
+<td>17:26:47</td>
+<td>Analyst Queue: extra notebook investigation</td>
+<td><strong>FAIL</strong></td>
+<td>ES-00007 (16:21) duplicated ES-00006: a brief capture whose window predated run 1's last reset re-keyed the old agent run as a new run (ztbrief reads the reset stamp but never compared the run's time with it); resolved by hand with a note</td>
+</tr>
+<tr>
+<td>3.1d</td>
+<td>17:26:47</td>
+<td>Analyst Queue: entity name</td>
+<td><strong>FAIL</strong></td>
+<td>the Entity column shows ci-runner.build-farm.svc (the asset's DNS name, which ES prefers) while the title says build-farm/ci-runner</td>
+</tr>
+</tbody>
+</table>
+<h3 id="step-4-approve-the-quarantine-mode-b_1">Step 4: approve the quarantine (Mode B)</h3>
+<table>
+<thead>
+<tr>
+<th>Step</th>
+<th>Time (UTC)</th>
+<th>Action</th>
+<th>Result</th>
+<th>Observed</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>4.1</td>
+<td>16:55:51</td>
+<td>Enforcement Approvals (Splunk Web): pending request ZTR-20260924-0022</td>
+<td><strong>PASS</strong></td>
+<td>pending, ES-00008, build-farm/ci-runner pod ci-runner-7d9f8-xk2lq, kernel, action 'CNP zt-quarantine-ci-runner-88213', approvers SOC tier 2, requested 16:52:01 (brief + 85 s)</td>
+</tr>
+<tr>
+<td>4.2</td>
+<td>16:55:51</td>
+<td>Select the row: the brief and the policy YAML panels</td>
+<td><strong>PASS</strong></td>
+<td>panels show what the agent found and 'Policy to apply · zt-quarantine-ci-runner-88213 (pending)' with endpointSelector zt-quarantine: "88213", egressDeny/ingressDeny all</td>
+</tr>
+<tr>
+<td>4.3</td>
+<td>16:55:53</td>
+<td>Type a comment and click Approve as the signed-in admin (not SOC tier 2)</td>
+<td><strong>PASS</strong></td>
+<td>Last decision panel: 'admin is not an approver for the kernel enforcement point (needs SOC tier 2)'; refusal audited: {'approved_by_label': 'admin (admin)', 'comment': 'admin is not an approver for the kernel enforcement point (needs SOC tier 2)'}</td>
+</tr>
+<tr>
+<td>4.4</td>
+<td>16:55:58</td>
+<td>Approve as j.chen (SOC tier 2) through POST /services/zt_incident_demo/approvals (the Approve button's call)</td>
+<td><strong>PASS</strong></td>
+<td>HTTP 200 in 4.7 s: {"message": "request ZTR-20260924-0022 approved by j.chen (SOC tier 2)", "request_id": "ZTR-20260924-0022", "status": "applied", "approver": "j.chen",</td>
+</tr>
+<tr>
+<td>4.5</td>
+<td>16:56:08</td>
+<td>index=zero_trust sourcetype=kube:apiserver:audit (zt-enforcer)</td>
+<td><strong>PASS</strong></td>
+<td>16:55:54.920 patch pods/ci-runner-7d9f8-xk2lq 200; 16:55:56.921 create ciliumnetworkpolicies/zt-quarantine-ci-runner-88213 201</td>
+</tr>
+<tr>
+<td>4.6</td>
+<td>16:56:23</td>
+<td>Enforcement Approvals › Request history</td>
+<td><strong>FAIL</strong></td>
+<td>applied_epoch and verified_epoch show '1970-01-01 00:00:00' until they are set (cosmetic)</td>
+</tr>
+</tbody>
+</table>
+<h3 id="step-5-verify-and-prove-it_1">Step 5: verify and prove it</h3>
+<table>
+<thead>
+<tr>
+<th>Step</th>
+<th>Time (UTC)</th>
+<th>Action</th>
+<th>Result</th>
+<th>Observed</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>5.0</td>
+<td>16:57:15</td>
+<td>First retry after the approval</td>
+<td><strong>PASS</strong></td>
+<td>16:56:03.641 DROPPED (POLICY_DENY), identity 48291, egress_denied_by zt-quarantine-ci-runner-88213 (apply + 10 s)</td>
+</tr>
+<tr>
+<td>5.1</td>
+<td>16:57:16</td>
+<td>Request status after the first DROPPED</td>
+<td><strong>PASS</strong></td>
+<td>status verified, verified 15 s after apply</td>
+</tr>
+<tr>
+<td>5.2</td>
+<td>17:04:10</td>
+<td>ES investigation ES-00008 after verification</td>
+<td><strong>PASS</strong></td>
+<td>status 4 (Resolved), True Positive - Suspicious Activity; notes: ZTFlowInvestigator brief | Quarantine requested | Quarantine applied | Quarantine verified</td>
+</tr>
+<tr>
+<td>5.3</td>
+<td>17:04:13</td>
+<td>Runner retries and CI job 88213 outcome</td>
+<td><strong>PASS</strong></td>
+<td>6 DROPPED; job failed at 16:58:48 with script_failure</td>
+</tr>
+<tr>
+<td>5.4</td>
+<td>17:04:13</td>
+<td>Splunk Web: Incident Timeline (selector on the newest incident)</td>
+<td><strong>PASS</strong></td>
+<td>selector opens on '2026-09-24 16:47:06 UTC · CI job 88213 · MR !4417'; five cards ticked (Decide: ES-00008, recommends zt-quarantine-ci-runner-88213, approver SOC tier 2; Enforce: approved by j.chen, applied through the approvals endpoint; Verify: 6 retries dropped, verified 16:56:13, coverage 85.3% during -&gt; 86.8% now); 12 grid cells ticked with times; raw JSON of the first AUDIT flow and Tetragon connect; incident table newest first: CI job 88213 failed, six DROPPED rows by zt-quarantine-ci-runner-88213, verified CNP (j.chen (SOC tier 2))</td>
+</tr>
+<tr>
+<td>5.5</td>
+<td>17:05:01</td>
+<td>Splunk Web: Zero Trust Fabric Posture after the quarantine</td>
+<td><strong>PASS</strong></td>
+<td>KPIs 1,285 / 86.8% 'up from 85.3%' / 9 'down from 10' / 2,444 / 24 (kernel 18 · DPU 2 · switch 4): enforcement +1 kernel against the before-state 23 (kernel 17)</td>
+</tr>
+<tr>
+<td>5.6</td>
+<td>17:05:01</td>
+<td>Verdict chart build-farm/ci-runner -&gt; ai-train/checkpoint-store:9000</td>
+<td><strong>PASS</strong></td>
+<td>AUDIT 17 then DROPPED 6 in the last 30 minutes</td>
+</tr>
+<tr>
+<td>5.7</td>
+<td>17:05:01</td>
+<td>Enforcement Audit Trail, first row</td>
+<td><strong>PASS</strong></td>
+<td>2026-09-24 16:56:13 | ES-00008 | CNP zt-quarantine-ci-runner-88213 | kernel | j.chen (SOC tier 2) | verified</td>
+</tr>
+<tr>
+<td>5.4b</td>
+<td>17:26:47</td>
+<td>Incident Timeline: incident selector (fixed during this run)</td>
+<td><strong>FAIL</strong></td>
+<td>the dropdown's dynamic options referenced label/value/statics without declaring them, so it listed nothing and every panel waited for a token; context added and pushed, the page then opened on the newest incident</td>
+</tr>
+<tr>
+<td>5.4c</td>
+<td>17:26:47</td>
+<td>Incident Timeline: load time (fixed during this run)</td>
+<td><strong>FAIL</strong></td>
+<td>the grid search (13 appended searches, 15 s) and the step cards showed raw $ds_...$ tokens for about 30 s; grid rebuilt to 7 searches (7.8 s, same output) and cards hidden until their data arrives</td>
+</tr>
+<tr>
+<td>5.4d</td>
+<td>17:26:48</td>
+<td>Incident Timeline: incident table order (fixed during this run)</td>
+<td><strong>FAIL</strong></td>
+<td>oldest first, 20 per page: the outcome (failed job, drops, verification) was on page 5; now newest first and dropped rows name the denying policy</td>
+</tr>
+</tbody>
+</table>
+<h3 id="after-the-call_1">After the call</h3>
+<table>
+<thead>
+<tr>
+<th>Step</th>
+<th>Time (UTC)</th>
+<th>Action</th>
+<th>Result</th>
+<th>Observed</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>6.1</td>
+<td>17:05:42</td>
+<td>Live generator page: Reset (two clicks); | ztdemo action=status</td>
+<td><strong>PASS</strong></td>
+<td>page within 10 s: 'plan idle, reset stamped · released zt-quarantine-ci-runner-88213 · cancelled 0'; audit released by k.osei (platform) ('merge request reverted'); plan idle, quarantine none</td>
+</tr>
+</tbody>
+</table>
+<h3 id="mode-a-the-same-incident-through-soar_1">Mode A: the same incident through SOAR</h3>
+<table>
+<thead>
+<tr>
+<th>Step</th>
+<th>Time (UTC)</th>
+<th>Action</th>
+<th>Result</th>
+<th>Observed</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>A.1</td>
+<td>17:06:33</td>
+<td>Live generator page › Settings › Response mode: SOAR (one click)</td>
+<td><strong>PASS</strong></td>
+<td>state response_mode soar; ES automation rule 'Zero Trust Protected Paths' on (ES and SOAR sides both report on)</td>
+</tr>
+<tr>
+<td>A.2</td>
+<td>17:07:12</td>
+<td>Live generator page: Fire the incident (Mode A)</td>
+<td><strong>PASS</strong></td>
+<td>page: 'incident started at 2026-09-24T17:06:47.944Z · attempts every 30s'</td>
+</tr>
+<tr>
+<td>A.3</td>
+<td>17:11:38</td>
+<td>ES finding and automation rule (Mode A)</td>
+<td><strong>PASS</strong></td>
+<td>finding 17:08:10; playbook run 524 on the renamed container 556 at 17:08:18; read_brief polled until this run's brief existed (17:10:47, ES-00009) instead of taking an earlier one; no local request created</td>
+</tr>
+<tr>
+<td>A.4</td>
+<td>17:11:38</td>
+<td>SOAR prompt ask_approval (role SOC tier 2): read the message</td>
+<td><strong>PASS</strong></td>
+<td>first line: 'Quarantine request ZTR-20260924-0023 for ES-00009: build-farm/ci-runner reached ai-train/checkpoint-store (crown-jewel).'; recommends 'CNP zt-quarantine-ci-runner-88213 at the kernel'; policy YAML included; no stale brief text</td>
+</tr>
+<tr>
+<td>A.5</td>
+<td>17:11:39</td>
+<td>Answer the prompt as j.chen: Approve with a comment (POST /rest/approval/5)</td>
+<td><strong>PASS</strong></td>
+<td>status approved, responses ['Approve', 'Contractor merge request; not approved for checkpoint access']</td>
+</tr>
+<tr>
+<td>A.6</td>
+<td>17:13:12</td>
+<td>Playbook applies the quarantine after the approval</td>
+<td><strong>PASS</strong></td>
+<td>17:11:45 patch pods/ci-runner-7d9f8-xk2lq 200; 17:11:49 create ciliumnetworkpolicies/zt-quarantine-ci-runner-88213 201</td>
+</tr>
+<tr>
+<td>A.7</td>
+<td>17:13:14</td>
+<td>Enforcement audit trail (Mode A)</td>
+<td><strong>PASS</strong></td>
+<td>requested 17:11:00, approved 17:11:39, applied 17:11:52, verified 17:12:29; executed_by soar, playbook run 524, j.chen (SOC tier 2), investigation ES-00009, action 'CNP zt-quarantine-ci-runner-88213'</td>
+</tr>
+<tr>
+<td>A.8</td>
+<td>17:14:13</td>
+<td>ES investigation of this run after the playbook</td>
+<td><strong>PASS</strong></td>
+<td>ES-00009 status 4, True Positive - Suspicious Activity (the playbook resolved this run's investigation)</td>
+</tr>
+<tr>
+<td>A.9</td>
+<td>17:15:33</td>
+<td>Runner retries and CI job outcome (Mode A), re-checked after the sixth drop</td>
+<td><strong>PASS</strong></td>
+<td>6 DROPPED; job failed at 17:15:02 with script_failure (first check ran before the sixth drop)</td>
+</tr>
+<tr>
+<td>A.10</td>
+<td>17:17:07</td>
+<td>Live generator page: Reset; Settings › Response mode: Local (one click)</td>
+<td><strong>PASS</strong></td>
+<td>reset stamped 17:15:50 (released zt-quarantine-ci-runner-88213); page: now {response_mode: local, agent_mode: mcp, automation_rule: off}</td>
+</tr>
+<tr>
+<td>A.11</td>
+<td>17:17:07</td>
+<td>Live generator service log</td>
+<td><strong>FAIL</strong></td>
+<td>a browser closing an idle keep-alive connection is logged as a full traceback (ConnectionResetError); harmless noise</td>
+</tr>
+</tbody>
+</table>
+<h3 id="live-generator-triggers_1">Live generator triggers</h3>
+<table>
+<thead>
+<tr>
+<th>Step</th>
+<th>Time (UTC)</th>
+<th>Action</th>
+<th>Result</th>
+<th>Observed</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>T.1</td>
+<td>17:19:31</td>
+<td>Triggers › Audit-mode flow: data-eng/spark-driver -&gt; ai-train/checkpoint-store</td>
+<td><strong>PASS</strong></td>
+<td>page 'audit-mode connection sent (2 events)'; risk: 17:18:08 ZT - Audit-Mode Flow Into Protected AI Data Store +50.0</td>
+</tr>
+<tr>
+<td>T.2</td>
+<td>17:19:31</td>
+<td>Triggers › Unapproved program: observability/log-shipper, /usr/bin/curl</td>
+<td><strong>PASS</strong></td>
+<td>page 'unapproved program connect sent (2 events)'; risk: 17:18:09 ZT - Unapproved Program Connected to Protected AI Data Store +40.0</td>
+</tr>
+<tr>
+<td>T.4</td>
+<td>17:19:38</td>
+<td>Triggers › Nexus Live Protect</td>
+<td><strong>PASS</strong></td>
+<td>indexed: [{'_time': '2026-09-24 17:17:40.010 UTC', 'switch': 'dc2-leaf-201', 'advisory_id': 'cisco-sa-nxos-ospf-memleak-4qkw3', 'status': 'protected'}]</td>
+</tr>
+<tr>
+<td>T.5</td>
+<td>17:19:38</td>
+<td>Triggers › Nexus configuration change</td>
+<td><strong>PASS</strong></td>
+<td>indexed: [{'_time': '2026-09-24 17:17:43.696 UTC', 'device': 'dc2-leaf-201', 'user': 'netops-cli', 'change': 'interface Eth1/12 description zt-live'}]</td>
+</tr>
+<tr>
+<td>T.6</td>
+<td>17:19:38</td>
+<td>Triggers › Enforcement action (kernel, platform/jump-host, j.chen)</td>
+<td><strong>PASS</strong></td>
+<td>request ZTR-20260924-0024 (one above the playbook's 0023, no collision): verified 17:17:39, applied 17:16:54, approved 17:16:52, requested 17:15:19</td>
+</tr>
+<tr>
+<td>T.3a</td>
+<td>17:23:25</td>
+<td>Triggers › Path attack: ml-notebooks/jupyter -&gt; ai-train/checkpoint-store</td>
+<td><strong>PASS</strong></td>
+<td>page: 'attack started (4 events) · attempts every 30s'</td>
+</tr>
+<tr>
+<td>T.3b</td>
+<td>17:23:25</td>
+<td>Path attack detected</td>
+<td><strong>PASS</strong></td>
+<td>risk 50 + 40 on ml-notebooks/jupyter at 17:18:08-09; finding 'Unprotected path: ml-notebooks/jupyter reached a protected AI data store' at 17:19:08</td>
+</tr>
+<tr>
+<td>T.3c</td>
+<td>17:23:25</td>
+<td>Agent brief for the attack</td>
+<td><strong>PASS</strong></td>
+<td>agent 17:19:18-17:20:59; brief ES-00010, job_id empty (no CI job), recommends zt-quarantine-jupyter-75e4a-11141 (pod naming)</td>
+</tr>
+<tr>
+<td>T.3d</td>
+<td>17:23:25</td>
+<td>Quarantine request for the attack (scheduled search)</td>
+<td><strong>PASS</strong></td>
+<td>ZTR-20260924-0025 (next free id), pending, policy zt-quarantine-jupyter-75e4a-11141, action 'CNP zt-quarantine-jupyter-75e4a-11141'</td>
+</tr>
+<tr>
+<td>T.3e</td>
+<td>17:23:29</td>
+<td>Approve the attack's request as j.chen</td>
+<td><strong>PASS</strong></td>
+<td>HTTP 200: {"message": "request ZTR-20260924-0025 approved by j.chen (SOC tier 2)", "request_id": "ZTR-20260924-0025", "status": "applied", "approver": "j.chen", "approver</td>
+</tr>
+<tr>
+<td>T.3f</td>
+<td>17:25:44</td>
+<td>Attack retries after the approval (re-checked after the next verification run)</td>
+<td><strong>PASS</strong></td>
+<td>4 DROPPED from 17:23:58 by zt-quarantine-jupyter-75e4a-11141, identity 25317; pod label patch 200 and policy create 201 in ml-notebooks; request verified 94 s after apply (the first check ran before the first drop was searchable; my manual | ztsoar action=verify ran a minute ahead of the schedule)</td>
+</tr>
+<tr>
+<td>T.3g</td>
+<td>17:25:45</td>
+<td>ES investigation of the attack (after verification)</td>
+<td><strong>PASS</strong></td>
+<td>ES-00010 status 4, True Positive - Suspicious Activity</td>
+</tr>
+<tr>
+<td>T.7</td>
+<td>17:26:47</td>
+<td>Live generator page: Reset after the triggers</td>
+<td><strong>PASS</strong></td>
+<td>reset stamped 17:26:03, about 6 s after the click (was over 20 s in run 1): released zt-quarantine-jupyter-75e4a-11141 only; attack stopped</td>
+</tr>
+</tbody>
+</table>
+<h2 id="run2-aborted">run2-aborted</h2>
+<p>2026-09-24 16:35:24 to 16:35:27 UTC. 2 steps: 2 passed, 0 failed, 0 blocked, 0 notes.</p>
+<h3 id="before-the-call_2">Before the call</h3>
+<table>
+<thead>
+<tr>
+<th>Step</th>
+<th>Time (UTC)</th>
+<th>Action</th>
+<th>Result</th>
+<th>Observed</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1.0</td>
+<td>16:35:24</td>
+<td>Live generator (launchd, restarted on the fixed code)</td>
+<td><strong>PASS</strong></td>
+<td>owner live:MYEACK-M-P9QJ:72185 holds the lease, 100 ticks, search head input stands down; stack apps {'DA-ESS-zt_incident_demo': '1.0.4', 'zt_incident_demo': '1.0.3'}</td>
+</tr>
+<tr>
+<td>1.1</td>
+<td>16:35:27</td>
+<td>Search: | ztdemo action=status</td>
+<td><strong>PASS</strong></td>
+<td>{"backfill_done": "1", "checkpoint_age_s": "4", "plan_status": "idle", "quarantine_policies": "none", "speed": "fast", "response_mode": "local", "agent_mode": "mcp"}</td>
+</tr>
+</tbody>
+</table>
 <h2 id="defects-found-and-fixed">Defects found and fixed</h2>
 <table>
 <thead>
@@ -709,6 +1308,54 @@ table{border-collapse:collapse;margin:1rem 0;width:100%}th,td{border:1px solid #
 <td>A tick that overlaps a fire, reset or mode change could undo it (full-record save)</td>
 <td>Every writer of the state record saves only the fields it changed, on top of the current record</td>
 <td>1.0.4, live generator</td>
+</tr>
+<tr>
+<td>run 2: 5.4b</td>
+<td>Incident selector listed no incidents (dynamic options without their label/value context), so the timeline opened empty</td>
+<td>Declared the dropdown's context; it opens on the newest incident</td>
+<td>Incident Timeline (pushed)</td>
+</tr>
+<tr>
+<td>run 2: 5.4c</td>
+<td>Timeline took about 30 s and showed raw $ds_...$ tokens meanwhile</td>
+<td>Grid search from 13 appended searches to 7 (15.4 s to 7.8 s, same output); cards hidden until their data arrives; notable index read directly</td>
+<td>Incident Timeline (pushed)</td>
+</tr>
+<tr>
+<td>run 2: 5.4d</td>
+<td>Incident table listed oldest first, putting the outcome on page 5</td>
+<td>Newest first; dropped rows name the denying policy</td>
+<td>Incident Timeline (pushed)</td>
+</tr>
+<tr>
+<td>run 2: 3.1c</td>
+<td>A brief capture whose window predated a reset re-keyed an old agent run as a new run (duplicate investigation ES-00007); briefs were matched to the newest ZT finding of any workload</td>
+<td>ztbrief skips agent runs older than the reset stamp it reads and matches each brief to the newest finding of its own workload</td>
+<td>1.0.5</td>
+</tr>
+<tr>
+<td>run 2: 3.1d</td>
+<td>Analyst Queue entity read ci-runner.build-farm.svc (asset DNS name) next to the title build-farm/ci-runner</td>
+<td>Workload rows of the ES asset list carry no DNS name, so ES names the entity by the workload</td>
+<td>DA-ESS lookup (pushed), 1.0.5</td>
+</tr>
+<tr>
+<td>run 2: 1.6b, 1.5b</td>
+<td>Posture audit trail titled '(SOAR)' though it lists local approvals; routine rows read 'playbook (policy) (policy)'; home label 'Findings, last 24h' counted finding groups</td>
+<td>Panel and description reworded; approver label adds the role only once (search time, fixes existing events); 'Finding groups, last 24h', 'incidents fired, last 24h'</td>
+<td>dashboards and props (pushed), 1.0.5</td>
+</tr>
+<tr>
+<td>run 2: 4.6</td>
+<td>Request history showed 1970-01-01 for times not reached yet</td>
+<td>Blank until applied or verified</td>
+<td>Enforcement Approvals (pushed)</td>
+</tr>
+<tr>
+<td>run 2: A.11, restart</td>
+<td>Live generator logged client disconnects as tracebacks; a restart left the old process's lease in place for up to 45 s</td>
+<td>Disconnects are quiet; the lease is handed back first on shutdown and a dead local holder is cleared at start</td>
+<td>live generator</td>
 </tr>
 </tbody>
 </table></body></html>

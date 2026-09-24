@@ -9,8 +9,7 @@
 <dashboard version="2" theme="dark">
 <label>Zero Trust Incident</label>
 <description>Home: the three dashboards of the app with a live number each, and the headline posture and incident figures</description>
-<definition><![CDATA[
-{
+<definition><![CDATA[{
  "title": "Zero Trust Incident",
  "description": "Home: the three dashboards of the app with a live number each, and the headline posture and incident figures",
  "visualizations": {
@@ -65,7 +64,7 @@
     "majorValue": "> primary | seriesByName(\"count\") | lastPoint()",
     "majorColor": "#009CEB",
     "majorFontSize": 44,
-    "underLabel": "incidents, last 24h",
+    "underLabel": "incidents fired, last 24h",
     "underLabelFontSize": 13,
     "sparklineDisplay": "off",
     "trendDisplay": "off",
@@ -164,7 +163,7 @@
     "majorValue": "> primary | seriesByName(\"count\") | lastPoint()",
     "majorColor": "#CB2196",
     "majorFontSize": 44,
-    "underLabel": "Findings, last 24h",
+    "underLabel": "Finding groups, last 24h",
     "underLabelFontSize": 13,
     "sparklineDisplay": "off",
     "trendDisplay": "off",
@@ -401,6 +400,5 @@
   ],
   "globalInputs": []
  }
-}
-]]></definition>
+}]]></definition>
 </dashboard>

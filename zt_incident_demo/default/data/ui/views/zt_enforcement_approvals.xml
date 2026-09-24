@@ -195,7 +195,7 @@
       <title>Request history</title>
       <table>
         <search>
-          <query>| inputlookup zt_enforcement_requests_lookup | eval t="$tick$" | sort - requested_epoch | fieldformat applied_epoch=strftime(applied_epoch,"%Y-%m-%d %H:%M:%S") | fieldformat verified_epoch=strftime(verified_epoch,"%Y-%m-%d %H:%M:%S") | table request_id status finding_id investigation_id approvals applied_epoch verified_epoch last_error</query>
+          <query>| inputlookup zt_enforcement_requests_lookup | eval t="$tick$" | sort - requested_epoch | eval applied_at=if(applied_epoch>0, strftime(applied_epoch,"%Y-%m-%d %H:%M:%S"), ""), verified_at=if(verified_epoch>0, strftime(verified_epoch,"%Y-%m-%d %H:%M:%S"), "") | table request_id status finding_id investigation_id approvals applied_at verified_at last_error</query>
           <refresh>30s</refresh>
           <refreshType>delay</refreshType>
         </search>

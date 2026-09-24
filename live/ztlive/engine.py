@@ -107,7 +107,26 @@ class Engine:
         self.attack_pods = set()
 
     # ---- lifecycle -------------------------------------------------------------
+    def _clear_dead_local_lease(self):
+        """A previous live generator on this Mac that died without handing the lease back would hold it for LEASE_TTL."""
+        st = ST.load(self.sd)
+        holder = st.get("stream_owner") or ""
+        prefix = "live:%s:" % socket.gethostname().split(".")[0]
+        if holder.startswith(prefix) and holder != self.owner:
+            try:
+                os.kill(int(holder.rsplit(":", 1)[1]), 0)
+                return  # still running
+            except (OSError, ValueError):
+                snap = dict(st)
+                st["stream_owner"], st["stream_owner_epoch"] = "", 0.0
+                ST.save_changes(self.sd, st, snap)
+                log.info("cleared the lease of %s (process gone)", holder)
+
     def start(self):
+        try:
+            self._clear_dead_local_lease()
+        except Exception as e:  # noqa: BLE001
+            log.warning("lease check failed: %s", e)
         if self.stack_version < LEASE_APP_VERSION:
             self._set_input(disabled=True)
         self.threads = [threading.Thread(target=self._tick_loop, name="tick", daemon=True), threading.Thread(target=self._pipeline_loop, name="pipeline", daemon=True)]
@@ -116,13 +135,15 @@ class Engine:
         log.info("engine started as %s (stack app %s)", self.owner, ".".join(map(str, self.stack_version)))
 
     def stop(self):
+        # hand the lease back first: launchd kills the process if the threads take too long to finish
         self.stop_flag.set()
-        for t in self.threads:
-            t.join(timeout=10)
         try:
-            self.streamer.release_lease(self.owner)
+            with self.state_lock:
+                self.streamer.release_lease(self.owner)
         except Exception as e:  # noqa: BLE001
             log.warning("lease release failed: %s", e)
+        for t in self.threads:
+            t.join(timeout=10)
         if self.paused_input:
             self._set_input(disabled=False)
         log.info("engine stopped")

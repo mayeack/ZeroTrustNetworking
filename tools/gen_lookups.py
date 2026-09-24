@@ -31,8 +31,10 @@ def main():
     for key, meta in e.stores.items():
         w = e.workloads[key]
         cat = "k8s_workload|ai_data_store" + ("|crown_jewel" if meta["data_class"] == "crown-jewel" else "")
-        rows.append(["", "", key, "%s.%s.svc" % (w.name, w.namespace), meta["owner"], prio[key], "", "", "", "", w.team, cat, "untrust", "true", "false", "false", "false"])
-    rows.append(["", "", canon.RUNNER_WORKLOAD, "ci-runner.build-farm.svc", canon.RUNNER_OWNER, "medium", "", "", "", "", "platform-build", "k8s_workload|ci_runner", "untrust", "true", "false", "false", "false"])
+        # no dns for workloads: ES names an entity by its first asset identifier, and the story names workloads
+        # namespace/name (build-farm/ci-runner), not by their service DNS name
+        rows.append(["", "", key, "", meta["owner"], prio[key], "", "", "", "", w.team, cat, "untrust", "true", "false", "false", "false"])
+    rows.append(["", "", canon.RUNNER_WORKLOAD, "", canon.RUNNER_OWNER, "medium", "", "", "", "", "platform-build", "k8s_workload|ci_runner", "untrust", "true", "false", "false", "false"])
     for nname in (canon.RUNNER_NODE, canon.STORE_NODE):
         n = e.nodes[nname]
         rows.append([n.ip, n.mac, n.name, n.name + ".corp.internal", "platform", "high" if nname == canon.STORE_NODE else "medium", "", "", "", "", "platform", "kubernetes_node|" + n.role, "untrust", "true", "true", "false", "false"])

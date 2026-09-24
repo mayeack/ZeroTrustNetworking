@@ -11,10 +11,12 @@ STATUS_IN_PROGRESS = "In Progress"
 DISPOSITION_TP = "True Positive - Suspicious Activity"
 
 
-def newest_zt_finding(splunkd, rule, earliest=0):
-    """Newest finding group of the ZT finding-based detection since `earliest` (epoch), from index=notable."""
-    spl = ('search `notable` | search source="%s" | eval finding_epoch=_time, rule_title=coalesce(orig_rule_title, rule_title) | sort - _time | head 1 | table event_id _time finding_epoch rule_title normalized_risk_object risk_object risk_score source_count '
-           'orig_source threat_object annotations.mitre_attack.mitre_technique_id status_label disposition_label investigation_ids owner' % rule)
+def newest_zt_finding(splunkd, rule, earliest=0, workload=None):
+    """Newest finding group of the ZT finding-based detection since `earliest` (epoch), from index=notable; with
+    `workload`, the newest one for that workload (the finding carries it as zt_workload and risk_object)."""
+    only = (' | search zt_workload="%s" OR risk_object="%s"' % (workload, workload)) if workload else ""
+    spl = ('search `notable` | search source="{rule}"{only} | eval finding_epoch=_time, rule_title=coalesce(orig_rule_title, rule_title) | sort - _time | head 1 | table event_id _time finding_epoch rule_title normalized_risk_object risk_object risk_score source_count '
+           'orig_source threat_object annotations.mitre_attack.mitre_technique_id status_label disposition_label investigation_ids owner').format(rule=rule, only=only)
     rows = splunkd.search(spl, earliest=str(int(earliest)) if earliest else "-24h", latest="now", timeout=120)
     if not rows:
         return None
