@@ -11,6 +11,12 @@ table{border-collapse:collapse;margin:1rem 0;width:100%}th,td{border:1px solid #
 <li><code>docs/collateral/pdf/</code>: HTML sources and <code>render_pdfs.py</code> for the three collateral PDFs.</li>
 <li>Stack: Splunk Secure Networking Essentials setup completed (Searchbase installed; only <code>index_security</code> changed, to <code>zero_trust</code>).</li>
 </ul>
+<h2 id="107-2026-09-24">1.0.7 (2026-09-24)</h2>
+<ul>
+<li>Splunk Security Content: <code>pod_name</code>, <code>pod_namespace</code> and <code>pod_image_name</code> on <code>cisco:isovalent:processExec</code> and <code>cisco:isovalent:processConnect</code>, the names its ten Cisco Isovalent detections read. The detections stay disabled: over four hours of this estate, Non Allowlisted Image Use returns 2,413 rows, Shell Execution 402, Late Process Execution 293 and Access To Cloud Metadata Service 68, so they need allowlists and filters before they run next to the zero trust detections.</li>
+<li>Secure Networking Essentials: a Tetragon SIGKILL (<code>cisco:isovalent</code>, <code>process_kprobe.action=KPROBE_ACTION_SIGKILL</code>) gets <code>event_sourcetype=cisco:isovalent:alert</code>, so the Runtime Detections card lists the day's runtime policy alerts (<code>block-reverse-shell</code>, <code>block-unapproved-binaries</code>) instead of zero. No change to the data or its daily counts.</li>
+<li>SOAR playbook (imported, not part of the app): notes go only on this run's ES investigation. With no investigation, the message goes to the SOAR container, because ES reuses the finding group for every run on the same workload and a note on the group reappears in every later investigation.</li>
+</ul>
 <h2 id="106-2026-09-24">1.0.6 (2026-09-24)</h2>
 <ul>
 <li>Agent brief capture: <code>ZT Agent - Capture Brief</code> matches the raw terms <code>ZTFlowInvestigator</code> and <code>run_finished</code>, and <code>ztbrief</code> reads the run type and agent from the whole event. A long agent run put the <code>type</code> field past the 10,240 characters Splunk extracts at search time, so the brief was never stored and Mode A stopped before the approval.</li>

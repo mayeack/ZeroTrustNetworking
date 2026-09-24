@@ -8,6 +8,12 @@
 - `docs/collateral/pdf/`: HTML sources and `render_pdfs.py` for the three collateral PDFs.
 - Stack: Splunk Secure Networking Essentials setup completed (Searchbase installed; only `index_security` changed, to `zero_trust`).
 
+## 1.0.7 (2026-09-24)
+
+- Splunk Security Content: `pod_name`, `pod_namespace` and `pod_image_name` on `cisco:isovalent:processExec` and `cisco:isovalent:processConnect`, the names its ten Cisco Isovalent detections read. The detections stay disabled: over four hours of this estate, Non Allowlisted Image Use returns 2,413 rows, Shell Execution 402, Late Process Execution 293 and Access To Cloud Metadata Service 68, so they need allowlists and filters before they run next to the zero trust detections.
+- Secure Networking Essentials: a Tetragon SIGKILL (`cisco:isovalent`, `process_kprobe.action=KPROBE_ACTION_SIGKILL`) gets `event_sourcetype=cisco:isovalent:alert`, so the Runtime Detections card lists the day's runtime policy alerts (`block-reverse-shell`, `block-unapproved-binaries`) instead of zero. No change to the data or its daily counts.
+- SOAR playbook (imported, not part of the app): notes go only on this run's ES investigation. With no investigation, the message goes to the SOAR container, because ES reuses the finding group for every run on the same workload and a note on the group reappears in every later investigation.
+
 ## 1.0.6 (2026-09-24)
 
 - Agent brief capture: `ZT Agent - Capture Brief` matches the raw terms `ZTFlowInvestigator` and `run_finished`, and `ztbrief` reads the run type and agent from the whole event. A long agent run put the `type` field past the 10,240 characters Splunk extracts at search time, so the brief was never stored and Mode A stopped before the approval.

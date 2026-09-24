@@ -363,11 +363,17 @@ def read_brief_missing(action=None, success=None, container=None, results=None, 
     phantom.debug("read_brief_missing() called")
 
     state = _state()
-    target = state.get("investigation_guid") or state.get("finding_id")
+    content = "No ZTFlowInvestigator brief for finding %s after %d minutes; no enforcement requested by %s." % (state.get("event_id"), BRIEF_WAIT_SECONDS * BRIEF_MAX_ATTEMPTS // 60, PLAYBOOK_NAME)
+    target = state.get("investigation_guid")
+    if not target:
+        # no investigation for this run: ES reuses the finding group for every run on the workload, so a note on the group
+        # would reappear in every later investigation. Keep it on the SOAR container.
+        phantom.comment(container=container, comment="Quarantine not requested. " + content)
+        return
     parameters = [{
         "id": target,
         "title": "Quarantine not requested",
-        "content": "No ZTFlowInvestigator brief for finding %s after %d minutes; no enforcement requested by %s." % (state.get("event_id"), BRIEF_WAIT_SECONDS * BRIEF_MAX_ATTEMPTS // 60, PLAYBOOK_NAME),
+        "content": content,
         "ai_generated": False,
     }]
 
@@ -451,10 +457,14 @@ def pick_point_no_action(action=None, success=None, container=None, results=None
             "read_brief:action_result.data.*.brief_text"
         ])
 
+    content = content_formatted_string or "No enforcement by %s: %s at the %s." % (PLAYBOOK_NAME, brief.get("disposition"), brief.get("enforcement_point"))
+    if not state.get("investigation_guid"):
+        phantom.comment(container=container, comment="No enforcement. " + content)  # never on the reused finding group
+        return
     parameters = [{
-        "id": state.get("investigation_guid") or state.get("finding_id"),
+        "id": state.get("investigation_guid"),
         "title": "No enforcement",
-        "content": content_formatted_string or "No enforcement by %s: %s at the %s." % (PLAYBOOK_NAME, brief.get("disposition"), brief.get("enforcement_point")),
+        "content": content,
         "ai_generated": False,
     }]
 
@@ -1080,7 +1090,7 @@ def record_and_resolve_note(action=None, success=None, container=None, results=N
     state = _state()
     audit_state = record.get("state", "")
     by, role, approved_at = _approved_by(state)
-    target = state.get("investigation_guid") or state.get("finding_id")
+    target = state.get("investigation_guid")  # this run's investigation only: the finding group is reused across runs
 
     if audit_state == "requested":
         title = "Quarantine requested"
@@ -1105,6 +1115,8 @@ def record_and_resolve_note(action=None, success=None, container=None, results=N
         title, content = "", ""
 
     if not title or not target:
+        if title:
+            phantom.comment(container=container, comment="%s. %s" % (title, content))
         record_and_resolve_status(container=container)
         return
 

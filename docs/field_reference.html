@@ -281,6 +281,11 @@ table{border-collapse:collapse;margin:1rem 0;width:100%}th,td{border:1px solid #
 <td></td>
 </tr>
 <tr>
+<td><code>pod_name</code>, <code>pod_namespace</code>, <code>pod_image_name</code></td>
+<td><code>…process.pod.name</code>, <code>…pod.namespace</code>, <code>…pod.container.image.name</code></td>
+<td>The names Splunk Security Content (ESCU) Cisco Isovalent detections read; same values as <code>src_pod</code>, <code>src_namespace</code>, <code>container_image</code></td>
+</tr>
+<tr>
 <td><code>node</code>, <code>cluster</code></td>
 <td><code>node_name</code>, <code>cluster_name</code></td>
 <td></td>
@@ -394,6 +399,11 @@ table{border-collapse:collapse;margin:1rem 0;width:100%}th,td{border:1px solid #
 <td><code>action</code></td>
 <td><code>blocked</code> on SIGKILL, else <code>allowed</code></td>
 <td>CIM</td>
+</tr>
+<tr>
+<td><code>event_sourcetype</code></td>
+<td><code>cisco:isovalent:alert</code> on SIGKILL, else empty</td>
+<td>Splunk Secure Networking Essentials counts an event as a runtime policy alert when <code>coalesce(event_sourcetype, sourcetype)</code> is <code>cisco:isovalent:alert</code> (Runtime Detections card)</td>
 </tr>
 </tbody>
 </table>

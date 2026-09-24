@@ -87,6 +87,7 @@ All are `EVAL-` calculated fields or automatic lookups in `props.conf`. Lookups 
 | `parent_process_name`, `parent_process_id` | parent basename, parent pid | |
 | `container_image`, `container_id` | `…pod.container.image.name`, `…pod.container.id` | `registry.corp.internal/ci/build-base:2026.09` |
 | `src_namespace`, `src_pod`, `src_workload` | `…process.pod.namespace`, `…pod.name`, `namespace/workload` | |
+| `pod_name`, `pod_namespace`, `pod_image_name` | `…process.pod.name`, `…pod.namespace`, `…pod.container.image.name` | The names Splunk Security Content (ESCU) Cisco Isovalent detections read; same values as `src_pod`, `src_namespace`, `container_image` |
 | `node`, `cluster` | `node_name`, `cluster_name` | |
 | `dest` | `node_name` | CIM Endpoint host |
 | `user` | `"uid:" + uid` | CIM user |
@@ -117,6 +118,7 @@ All the `processExec` fields, read from `process_connect.*`, plus:
 | `policy_name` | `process_kprobe.policy_name` | The Tetragon tracing policy |
 | `dest` | `node_name` | CIM |
 | `action` | `blocked` on SIGKILL, else `allowed` | CIM |
+| `event_sourcetype` | `cisco:isovalent:alert` on SIGKILL, else empty | Splunk Secure Networking Essentials counts an event as a runtime policy alert when `coalesce(event_sourcetype, sourcetype)` is `cisco:isovalent:alert` (Runtime Detections card) |
 
 ### `ci:job:event`
 
