@@ -58,9 +58,30 @@ def extract_brief(text):
     return None
 
 
+APPROVER_LABELS = {"soctier2": "SOC tier 2", "ztsoctier2": "SOC tier 2", "netops": "NetOps", "ztnetops": "NetOps", "platform": "platform"}
+
+
+def approver_label(label):
+    """The model sometimes writes the approval matrix labels as slugs (soc-tier-2); show them as the matrix does."""
+    key = "".join(ch for ch in str(label).lower() if ch.isalnum())
+    return APPROVER_LABELS.get(key, str(label).strip())
+
+
+def approver_labels(value):
+    """A list or a comma-separated string of labels, normalized."""
+    if isinstance(value, str):
+        value = value.split(",")
+    return [approver_label(x) for x in (value or []) if str(x).strip()]
+
+
 def normalize(brief):
     """Accept the flat structured-output shape of Agent Launchpad and rebuild the nested brief."""
+    if brief.get("approver_labels"):
+        brief = dict(brief, approver_labels=approver_labels(brief["approver_labels"]))
     if "recommendation" in brief or "where" in brief:
+        reco = brief.get("recommendation")
+        if isinstance(reco, dict) and reco.get("approver_labels"):
+            brief = dict(brief, recommendation=dict(reco, approver_labels=approver_labels(reco["approver_labels"])))
         return brief
     out = dict(brief)
     out["where"] = {k: brief.get("where_" + k, "") for k in ("pod", "node", "switch", "interface")}

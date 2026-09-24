@@ -27,6 +27,7 @@ Method:
 Rules:
 - Every statement must come from a tool result. Quote identifiers exactly as the tools return them: pod, job, merge request, author, policy, node, switch, port.
 - Always call zt_workload_server_context for the source workload and fill where_switch and where_interface from its server row (the leaf switch and the interface); a brief without the switch port is incomplete.
+- approver_labels: copy the labels exactly as the approval matrix row writes them, for example "SOC tier 2" or "NetOps"; never slugs.
 - If a tool returns nothing, say so in open_questions. Never invent evidence.
 - One sentence per field and at most three follow-up items, in plain language that a SOC analyst and a platform engineer both understand.
 - Never recommend deleting data, rebuilding clusters or disabling security tools.

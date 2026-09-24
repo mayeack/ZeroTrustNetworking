@@ -1,6 +1,33 @@
 # Changelog
 
-## 1.0.3 (unreleased)
+## 1.0.6 (2026-09-24)
+
+- `ztbrief` writes the approval matrix labels as the matrix does (`SOC tier 2`, `NetOps`) when the agent returns them as slugs (`soc-tier-2`), for the flat and the nested brief shapes. The agent prompt now asks for the labels verbatim, and the Incident Timeline maps any slug already stored.
+- `DA-ESS-zt_incident_demo` is unchanged and stays at 1.0.5.
+
+## 1.0.5 (2026-09-24)
+
+- Incident Timeline: the incident selector declares its option context, so it lists every incident and opens on the newest; the journey grid runs as seven appended searches instead of thirteen (about 15 s to 8 s); cards stay hidden until their data arrives; the incident table lists the newest first and dropped rows name the denying policy.
+- `ztbrief` skips agent runs older than the reset stamp and matches each brief to the newest finding for its own workload.
+- ES asset list: workload rows carry no DNS name, so the Analyst Queue names the entity by the workload (DA-ESS 1.0.5).
+- Posture and home wording: the audit trail panel is no longer titled for SOAR only, the approver label adds the role once, and the home card counts finding groups.
+- Enforcement Approvals: request history leaves applied and verified times blank until they happen.
+- Live generator: client disconnects are quiet; on shutdown the streaming lease is handed back first, and a dead local holder is cleared at start.
+
+## 1.0.4 (2026-09-24)
+
+- State writers save only the fields they changed, on top of the current record, so a tick can no longer undo a fire, reset or mode change.
+- Background CI jobs, flows and processes run on the other ci-runner replicas; the story's runner pod carries only job 88213.
+- The finding rule sets `zt_workload` to the raw risk object; the title, description and drilldowns use it.
+- Agent tools: the server-context search returns one row per dataset, an explicit naming row and 40 rows, so the approval matrix and the policy naming reach the agent.
+- Kernel requests carry the action `CNP <policy name>`; the agent's sentence is kept as `agent_action`.
+- Request ids number one above the highest id of the day across the request store and the audit trail, in the app and in the playbook.
+- Without a CI job the pod names the policy and the label (`zt-quarantine-<pod>`); job 88213 applies only to the story's pod; same rule in the SOAR custom function.
+- Reset releases only pods that still carry a quarantine label, plus running attacks (from over 20 s to a few seconds).
+- The playbook reads only a brief of the current run, captured after the finding, and resolves that run's investigation; its prompt names the request, the ES investigation and `CNP <policy>`.
+- Mode switch (`make mode-soar`, `make mode-local`, the live generator's settings) also switches the ES automation rule on or off.
+
+## 1.0.3 (2026-09-24)
 
 - Live generator on the workstation (`live/`): browser page with a ten-minute timeline, live tail, counts, the incident's progress in Splunk and triggers (fire, reset, path attack for any workload, audit-mode flow, unapproved program, Live Protect, Nexus configuration change, enforcement action). Streams through the same `ztgen` code; a streaming lease in `zt_demo_state` keeps the search head input quiet while it runs.
 - `ztgen.attacks`: generic path attacks (any workload to any protected store) advanced by whichever streamer holds the lease; the reset releases their quarantines.

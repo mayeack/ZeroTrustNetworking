@@ -159,6 +159,17 @@ def test_state_merge():
     assert now["plan_status"] == "running" and now["plan_t0"] == 123.0 and now["stream_checkpoint"] == 456.0
 
 
+def test_brief_approver_labels():
+    sys.path.insert(0, os.path.join(ROOT, "zt_incident_demo", "bin", "lib"))
+    import ztbrief
+    flat = ztbrief.normalize({"approver_labels": ["soc-tier-2"], "recommendation_policy_name": "zt-quarantine-ci-runner-88213"})
+    assert flat["recommendation"]["approver_labels"] == ["SOC tier 2"]
+    assert ztbrief.normalize({"approver_labels": "zt_netops, SOC tier 2"})["recommendation"]["approver_labels"] == ["NetOps", "SOC tier 2"]
+    nested = ztbrief.normalize({"recommendation": {"approver_labels": "soc_tier_2"}, "where": {}})
+    assert nested["recommendation"]["approver_labels"] == ["SOC tier 2"]
+    assert ztbrief.approver_label("Security architect") == "Security architect"
+
+
 if __name__ == "__main__":
     import time
     for name, fn in list(globals().items()):

@@ -2,7 +2,8 @@
 PY ?= python3
 APP := zt_incident_demo
 DA := DA-ESS-zt_incident_demo
-VERSION := 1.0.5
+VERSION := 1.0.6
+DA_VERSION := 1.0.5
 LOCAL_SPLUNK ?= /opt/splunk104
 SPL := $(LOCAL_SPLUNK)/bin/splunk
 FRESH ?= 0
@@ -33,11 +34,11 @@ test: ## Unit tests of the estate, schedule and plan
 	$(PY) tests/test_ztgen.py
 package: lookups test ## Build both .tgz packages and run AppInspect with the cloud checks
 	$(PY) tools/package.py $(APP) $(VERSION)
-	$(PY) tools/package.py $(DA) $(VERSION)
+	$(PY) tools/package.py $(DA) $(DA_VERSION)
 	$(MAKE) appinspect
-	@mkdir -p "$(PACKAGE_DIR)" && cp $(APP)-$(VERSION).tgz $(DA)-$(VERSION).tgz "$(PACKAGE_DIR)/" && echo "packages copied to $(PACKAGE_DIR)"
+	@mkdir -p "$(PACKAGE_DIR)" && cp $(APP)-$(VERSION).tgz $(DA)-$(DA_VERSION).tgz "$(PACKAGE_DIR)/" && echo "packages copied to $(PACKAGE_DIR)"
 appinspect: ## AppInspect (cloud + private_victoria tags) on the built packages
-	@for p in $(APP)-$(VERSION).tgz $(DA)-$(VERSION).tgz; do echo "== $$p"; splunk-appinspect inspect $$p --mode precert --included-tags cloud --included-tags private_victoria --output-file local/appinspect-$$p.json > local/appinspect-$$p.txt 2>&1; grep -E "^(Failure|Error|Manual|Warning|Not Applicable|Success|Skipped)" -A0 local/appinspect-$$p.txt | tr '\n' ' '; echo; done
+	@for p in $(APP)-$(VERSION).tgz $(DA)-$(DA_VERSION).tgz; do echo "== $$p"; splunk-appinspect inspect $$p --mode precert --included-tags cloud --included-tags private_victoria --output-file local/appinspect-$$p.json > local/appinspect-$$p.txt 2>&1; $(PY) -c "import json,sys; d=json.load(open(sys.argv[1])); print({k: v for k, v in d['summary'].items() if k != 'not_applicable'})" local/appinspect-$$p.json; done
 sync-objects: ## Push knowledge objects (saved searches, macros, views, lookups) into the installed apps by REST
 	$(PY) tools/sync_objects.py
 backfill: ## | ztdemo action=backfill, then a count table by sourcetype
