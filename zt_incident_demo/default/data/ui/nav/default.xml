@@ -1,4 +1,6 @@
 <nav search_view="search" color="#0F1A2B">
   <view name="zt_posture" default="true" />
+  <view name="zt_incident_timeline" />
+  <view name="zt_enforcement_approvals" />
   <view name="search" />
 </nav>

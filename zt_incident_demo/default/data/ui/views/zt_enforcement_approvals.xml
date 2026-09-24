@@ -1,0 +1,243 @@
+<!--
+  zt_enforcement_approvals.xml - Enforcement Approvals
+  zt_incident_demo
+
+  Mode B (local approvals, no SOAR): the pending quarantine requests, the request details and
+  policy YAML of the selected request, a comment box, Approve and Reject, the request history
+  and the enforcement audit trail. A click runs `| ztsoar action=approve|reject request_id=...`,
+  which calls POST /services/zt_incident_demo/approvals as the signed-in user; the endpoint
+  checks the caller's roles against zt_approvers and applies with system privileges.
+  Classic Simple XML (click-to-run needs the done/unset handlers), dark theme.
+
+  Tokens: req (selected request), comment (text input), do_approve / do_reject (set by a click,
+  unset by the done handler so a reload never re-runs the command), tick (bumped after a
+  decision so every table re-runs at once), policy / policy_name / req_status (from the
+  selected request), last_* (the outcome of the last decision).
+-->
+<form version="1.1" theme="dark">
+  <init>
+    <set token="tick">0</set>
+  </init>
+  <label>Enforcement Approvals</label>
+  <description>Quarantine requests waiting for a named approver: the request, the policy to apply, a comment, Approve or Reject, the request history and the enforcement audit trail</description>
+
+  <fieldset submitButton="false" autoRun="true">
+    <input type="text" token="comment" searchWhenChanged="true">
+      <label>Comment (recorded with the decision)</label>
+      <default></default>
+      <initialValue></initialValue>
+    </input>
+  </fieldset>
+
+  <row>
+    <panel>
+      <title>Pending requests (click a row to review it)</title>
+      <table>
+        <search>
+          <query>| inputlookup zt_enforcement_requests_lookup where status="pending" | eval requested_at=strftime(requested_epoch,"%Y-%m-%d %H:%M:%S"), t="$tick$" | sort - requested_epoch | table request_id finding_id investigation_id workload pod enforcement_point action approver_labels requested_at</query>
+          <earliest>-24h</earliest>
+          <latest>now</latest>
+          <refresh>30s</refresh>
+          <refreshType>delay</refreshType>
+        </search>
+        <option name="count">10</option>
+        <option name="drilldown">row</option>
+        <option name="refresh.display">none</option>
+        <option name="rowNumbers">false</option>
+        <option name="wrap">true</option>
+        <drilldown>
+          <set token="req">$row.request_id$</set>
+          <set token="form.req">$row.request_id$</set>
+          <unset token="do_approve"></unset>
+          <unset token="do_reject"></unset>
+          <unset token="last_action"></unset>
+        </drilldown>
+      </table>
+    </panel>
+  </row>
+
+  <row depends="$req$">
+    <panel>
+      <title>Request $req$ · what the agent found</title>
+      <table>
+        <search>
+          <query>| inputlookup zt_enforcement_requests_lookup where request_id="$req$" | eval t="$tick$" | table request_id status what_happened disposition confidence dest_workload data_class blast_radius approvals</query>
+          <refresh>30s</refresh>
+          <refreshType>delay</refreshType>
+        </search>
+        <option name="count">1</option>
+        <option name="drilldown">none</option>
+        <option name="refresh.display">none</option>
+        <option name="rowNumbers">false</option>
+        <option name="wrap">true</option>
+        <format type="color" field="status">
+          <colorPalette type="map">{"pending":#F8BE34,"approved":#F1813F,"applied":#F1813F,"verified":#53A051,"failed":#E0453A,"rejected":#E0453A,"cancelled":#8C9BA5}</colorPalette>
+        </format>
+      </table>
+    </panel>
+    <panel>
+      <title>Policy to apply · $policy_name$ ($req_status$)</title>
+      <!-- Sets the policy tokens for the selected request; nothing is displayed from this search directly -->
+      <search>
+        <query>| inputlookup zt_enforcement_requests_lookup where request_id="$req$" | eval policy_yaml=coalesce(policy_yaml, "(no policy on this request)"), t="$tick$" | table policy_yaml policy_name enforcement_point status</query>
+        <done>
+          <set token="policy">$result.policy_yaml$</set>
+          <set token="policy_name">$result.policy_name$</set>
+          <set token="req_status">$result.status$</set>
+        </done>
+      </search>
+      <html>
+        <pre style="white-space: pre-wrap; font-family: 'Splunk Platform Mono', Menlo, monospace; font-size: 12px; line-height: 1.4; max-height: 360px; overflow: auto;">$policy$</pre>
+      </html>
+    </panel>
+  </row>
+
+  <row depends="$req$">
+    <panel>
+      <title>Approve</title>
+      <!-- Runs once per click: the query carries $do_approve$, so it cannot dispatch until a click sets it,
+           and the done/error handlers unset it so a reload or a comment change never re-runs the command -->
+      <search depends="$do_approve$">
+        <query>| ztsoar action=approve request_id="$req$" comment="$comment$" | eval trigger="$do_approve$" | fields - trigger</query>
+        <done>
+          <unset token="do_approve"></unset>
+          <set token="last_action">approve</set>
+          <set token="last_request">$req$</set>
+          <set token="last_message">$result.message$</set>
+          <set token="last_status">$result.status$</set>
+          <set token="last_http">$result.http_status$</set>
+          <set token="last_user">$result.user$</set>
+          <set token="tick">$job.sid$</set>
+        </done>
+        <error>
+          <unset token="do_approve"></unset>
+          <set token="last_action">approve</set>
+          <set token="last_request">$req$</set>
+          <set token="last_message">The approve command did not complete. Open the search log or check the approvals endpoint.</set>
+          <set token="last_status">error</set>
+          <set token="last_http">-</set>
+          <set token="last_user">-</set>
+        </error>
+      </search>
+      <table>
+        <search>
+          <query>| makeresults | eval decision="Approve $req$ as the signed-in user and apply the policy" | table decision</query>
+        </search>
+        <option name="count">1</option>
+        <option name="drilldown">row</option>
+        <option name="refresh.display">none</option>
+        <option name="rowNumbers">false</option>
+        <format type="color" field="decision">
+          <colorPalette type="expression">"#53A051"</colorPalette>
+        </format>
+        <drilldown>
+          <unset token="do_reject"></unset>
+          <set token="do_approve">$req$</set>
+        </drilldown>
+      </table>
+    </panel>
+    <panel>
+      <title>Reject</title>
+      <search depends="$do_reject$">
+        <query>| ztsoar action=reject request_id="$req$" comment="$comment$" | eval trigger="$do_reject$" | fields - trigger</query>
+        <done>
+          <unset token="do_reject"></unset>
+          <set token="last_action">reject</set>
+          <set token="last_request">$req$</set>
+          <set token="last_message">$result.message$</set>
+          <set token="last_status">$result.status$</set>
+          <set token="last_http">$result.http_status$</set>
+          <set token="last_user">$result.user$</set>
+          <set token="tick">$job.sid$</set>
+        </done>
+        <error>
+          <unset token="do_reject"></unset>
+          <set token="last_action">reject</set>
+          <set token="last_request">$req$</set>
+          <set token="last_message">The reject command did not complete. Open the search log or check the approvals endpoint.</set>
+          <set token="last_status">error</set>
+          <set token="last_http">-</set>
+          <set token="last_user">-</set>
+        </error>
+      </search>
+      <table>
+        <search>
+          <query>| makeresults | eval decision="Reject $req$ (the request is closed, nothing is applied)" | table decision</query>
+        </search>
+        <option name="count">1</option>
+        <option name="drilldown">row</option>
+        <option name="refresh.display">none</option>
+        <option name="rowNumbers">false</option>
+        <format type="color" field="decision">
+          <colorPalette type="expression">"#E0453A"</colorPalette>
+        </format>
+        <drilldown>
+          <unset token="do_approve"></unset>
+          <set token="do_reject">$req$</set>
+        </drilldown>
+      </table>
+    </panel>
+    <panel depends="$last_action$">
+      <title>Last decision</title>
+      <html>
+        <p><b>$last_action$</b> on <b>$last_request$</b> by <b>$last_user$</b> · HTTP $last_http$ · status <b>$last_status$</b></p>
+        <p>$last_message$</p>
+        <p style="color:#8C9BA5">An approved request is applied within a couple of seconds and verified within a minute; the tables on this page refresh on their own.</p>
+      </html>
+    </panel>
+  </row>
+
+  <row>
+    <panel>
+      <title>Request history</title>
+      <table>
+        <search>
+          <query>| inputlookup zt_enforcement_requests_lookup | eval t="$tick$" | sort - requested_epoch | fieldformat applied_epoch=strftime(applied_epoch,"%Y-%m-%d %H:%M:%S") | fieldformat verified_epoch=strftime(verified_epoch,"%Y-%m-%d %H:%M:%S") | table request_id status finding_id investigation_id approvals applied_epoch verified_epoch last_error</query>
+          <refresh>30s</refresh>
+          <refreshType>delay</refreshType>
+        </search>
+        <option name="count">10</option>
+        <option name="drilldown">row</option>
+        <option name="refresh.display">none</option>
+        <option name="rowNumbers">false</option>
+        <option name="wrap">true</option>
+        <format type="color" field="status">
+          <colorPalette type="map">{"pending":#F8BE34,"approved":#F1813F,"applied":#F1813F,"verified":#53A051,"failed":#E0453A,"rejected":#E0453A,"cancelled":#8C9BA5}</colorPalette>
+        </format>
+        <drilldown>
+          <set token="req">$row.request_id$</set>
+          <set token="form.req">$row.request_id$</set>
+          <unset token="do_approve"></unset>
+          <unset token="do_reject"></unset>
+          <unset token="last_action"></unset>
+        </drilldown>
+      </table>
+    </panel>
+  </row>
+
+  <row>
+    <panel>
+      <title>Enforcement audit trail (last 24 hours)</title>
+      <table>
+        <search>
+          <query>index=zero_trust sourcetype=zt:enforcement:audit earliest=-24h | eval t="$tick$" | sort - _time | table _time state request_id action approved_by_label comment status</query>
+          <earliest>-24h</earliest>
+          <latest>now</latest>
+          <refresh>30s</refresh>
+          <refreshType>delay</refreshType>
+        </search>
+        <option name="count">20</option>
+        <option name="drilldown">row</option>
+        <option name="refresh.display">none</option>
+        <option name="rowNumbers">false</option>
+        <option name="wrap">true</option>
+        <format type="color" field="state">
+          <colorPalette type="map">{"requested":#F8BE34,"approved":#F1813F,"applied":#F1813F,"verified":#53A051,"released":#53A051,"failed":#E0453A,"rejected":#E0453A,"refused":#E0453A}</colorPalette>
+        </format>
+        <drilldown>
+          <link target="_blank">search?q=search%20index%3Dzero_trust%20sourcetype%3Dzt%3Aenforcement%3Aaudit%20request_id%3D%22$row.request_id$%22&amp;earliest=-24h&amp;latest=now</link>
+        </drilldown>
+      </table>
+    </panel>
+  </row>
+</form>
