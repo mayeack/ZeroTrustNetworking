@@ -131,6 +131,14 @@ def main(argv):
         for fact in ("88213", "4417", "contractor-dev-17", canon.RUNNER_POD, "bf-node-03", "dc2-leaf-205", "Eth1/12", "7712"):
             check("brief cites %s" % fact, fact in text)
         check("AI note added", int(b0.get("note_added") or 0) == 1, b0.get("investigation_id"))
+        # criterion 5: the run called only zt_ tools, all five (from the run_finished trace in _audit)
+        runs = s.search('search index=_audit sourcetype=ai_agent:response agent_name=ZTFlowInvestigator type=run_finished | head 1 | table _raw', earliest=int(t0), latest="now")
+        try:
+            trace = json.loads(json.loads(runs[0]["_raw"]).get("trace") or "[]") if runs else []
+        except (ValueError, KeyError, TypeError):
+            trace = []
+        called = [c.get("name") for c in trace if isinstance(c, dict)]
+        check("agent called only zt_ tools, all five", bool(called) and all(str(n).startswith("zt_") for n in called) and len(set(called)) == 5, sorted(set(called)))
     # 6. Mode B request/approve/verify
     def req():
         r = s.kv_list("zt_enforcement_requests", {"status": {"$in": ["pending", "approved", "applied", "verified"]}})
