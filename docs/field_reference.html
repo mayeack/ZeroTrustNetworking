@@ -1,0 +1,822 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Field reference</title>
+<style>
+:root { --bg: #ffffff; --fg: #1f2933; --muted: #52606d; --line: #d9e2ec; --code-bg: #f1f5f9; --accent: #0f1a2b; --link: #0b5fff; }
+@media (prefers-color-scheme: dark) {
+  :root { --bg: #0f1a2b; --fg: #e4e9f0; --muted: #a9b4c2; --line: #2b3a4f; --code-bg: #182538; --accent: #e4e9f0; --link: #7ab8ff; }
+}
+html { -webkit-text-size-adjust: 100%; }
+body { margin: 0; padding: 24px 16px 48px; background: var(--bg); color: var(--fg);
+       font: 15px/1.55 -apple-system, "Segoe UI", Helvetica, Arial, sans-serif; }
+main { max-width: 1080px; margin: 0 auto; }
+h1, h2, h3, h4 { color: var(--accent); line-height: 1.25; margin: 1.6em 0 0.5em; }
+h1 { font-size: 1.9em; margin-top: 0; border-bottom: 2px solid var(--line); padding-bottom: 0.3em; }
+h2 { font-size: 1.45em; border-bottom: 1px solid var(--line); padding-bottom: 0.2em; }
+h3 { font-size: 1.15em; }
+h4 { font-size: 1em; }
+p, ul, ol, table, pre { margin: 0 0 1em; }
+a { color: var(--link); }
+code { font: 0.9em/1.4 "SFMono-Regular", Menlo, Consolas, monospace; background: var(--code-bg); padding: 0.1em 0.3em; border-radius: 3px; }
+pre { background: var(--code-bg); padding: 12px 14px; border-radius: 6px; overflow-x: auto; border: 1px solid var(--line); }
+pre code { background: none; padding: 0; font-size: 0.88em; }
+table { border-collapse: collapse; width: 100%; font-size: 0.93em; display: block; overflow-x: auto; }
+th, td { border: 1px solid var(--line); padding: 6px 9px; vertical-align: top; text-align: left; }
+th { background: var(--code-bg); }
+li { margin: 0.2em 0; }
+blockquote { border-left: 3px solid var(--line); margin: 0 0 1em; padding: 0 0 0 14px; color: var(--muted); }
+hr { border: 0; border-top: 1px solid var(--line); margin: 2em 0; }
+</style>
+</head>
+<body>
+<main>
+<h1>Field reference</h1>
+<p>Every sourcetype, raw key, normalized field, CIM mapping, eventtype, tag, lookup and KV collection of the Zero Trust Incident demo, as defined in <code>zt_incident_demo/default/props.conf</code>, <code>transforms.conf</code>, <code>eventtypes.conf</code>, <code>tags.conf</code>, <code>collections.conf</code>, <code>macros.conf</code> and the lookups. Canonical values are those of the story (design document section 3).</p>
+<h2>Index and envelope</h2>
+<p>All events are JSON, sent to HTTP Event Collector's <code>/services/collector/event</code> endpoint by the generator (<code>bin/ztgen/builders.py</code>), the emulator and the response code. The envelope carries <code>time</code> (epoch seconds with milliseconds), <code>host</code>, <code>source</code>, <code>sourcetype</code> and <code>index</code>. The index is <code>zero_trust</code> for every event sourcetype; <code>zt_summary</code> receives the posture rollup (source <code>ZT Posture - Rollup</code>, <code>stash</code> sourcetype through <code>collect</code>). The scripted input's own sourcetype <code>zt:stream</code> (index <code>main</code>) never carries events: the input prints nothing to stdout.</p>
+<p>Props common to every sourcetype: <code>KV_MODE = json</code>, <code>TRUNCATE = 0</code>, <code>SHOULD_LINEMERGE = false</code>, <code>LINE_BREAKER = ([\r\n]+)</code>, and <code>TIME_PREFIX</code> / <code>TIME_FORMAT</code> as a fallback for raw ingestion of the same JSON (the HEC envelope time is authoritative). Hubble and Tetragon timestamps are nanoseconds (<code>%Y-%m-%dT%H:%M:%S.%9NZ</code>); Tetragon's <code>TIME_PREFIX</code> is anchored to <code>},\s*"time":\s*"</code> so the process <code>start_time</code> never matches.</p>
+<h2>Sourcetypes</h2>
+<table>
+<thead>
+<tr>
+<th>Sourcetype</th>
+<th>What it is</th>
+<th>In production it arrives through</th>
+<th>host / source</th>
+<th>Per 24 h (background)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>cilium:hubble:flow</code></td>
+<td>Hubble flow, exporter JSON</td>
+<td>Hubble exporter → collector → HEC</td>
+<td>node / <code>hubble-exporter</code></td>
+<td>83,812: 11,400 ingress FORWARDED at protected stores, 2,306 ingress AUDIT on the eight known gaps, 13,706 egress FORWARDED for those connections, 55,000 other egress, 1,400 DROPPED (default deny between tenant namespaces)</td>
+</tr>
+<tr>
+<td><code>cisco:isovalent:processExec</code></td>
+<td>Tetragon process execution</td>
+<td>Cisco Security Cloud App (Isovalent Runtime Security)</td>
+<td>node / <code>tetragon</code></td>
+<td>12,000</td>
+</tr>
+<tr>
+<td><code>cisco:isovalent:processConnect</code></td>
+<td>Tetragon socket connect with the program behind it</td>
+<td>Cisco Security Cloud App</td>
+<td>node / <code>tetragon</code></td>
+<td>13,706 (one per protected-path connection)</td>
+</tr>
+<tr>
+<td><code>cisco:isovalent</code></td>
+<td>Tetragon kprobe (enforcement actions, <code>KPROBE_ACTION_SIGKILL</code>)</td>
+<td>Cisco Security Cloud App</td>
+<td>node / <code>tetragon</code></td>
+<td>2</td>
+</tr>
+<tr>
+<td><code>ci:job:event</code></td>
+<td>CI job webhook (GitLab job hook format plus <code>merge_request</code>)</td>
+<td>CI webhooks → HEC</td>
+<td><code>git.corp.internal</code> / <code>ci:job_hook</code></td>
+<td>1,400 jobs, 2 or 3 events each</td>
+</tr>
+<tr>
+<td><code>cisco:nexus:endpoint</code></td>
+<td>Nexus Dashboard endpoint inventory: which server is on which switch port</td>
+<td>Cisco data center networking add-on</td>
+<td>switch / <code>nexus-dashboard</code></td>
+<td>2,208 (one snapshot per node per hour, 92 nodes)</td>
+</tr>
+<tr>
+<td><code>cisco:nexus:liveprotect</code></td>
+<td>Live Protect status per switch</td>
+<td>Nexus Dashboard export</td>
+<td>switch / <code>nexus-dashboard</code></td>
+<td>6</td>
+</tr>
+<tr>
+<td><code>cisco:nexus:config</code></td>
+<td>Switch configuration change</td>
+<td>Cisco data center networking add-on</td>
+<td>switch / <code>nexus</code></td>
+<td>10 (4 enforcement, 6 routine)</td>
+</tr>
+<tr>
+<td><code>kube:apiserver:audit</code></td>
+<td>Kubernetes API audit event (<code>audit.k8s.io/v1</code>)</td>
+<td>API server audit log → HEC; live ones from the emulator</td>
+<td><code>kube-apiserver</code> / <code>k8s-audit</code></td>
+<td>about 37</td>
+</tr>
+<tr>
+<td><code>zt:enforcement:audit</code></td>
+<td>The enforcement audit trail, one event per state change</td>
+<td>SOAR playbook (Mode A) or the app's response code (Mode B)</td>
+<td><code>soar</code> or <code>splunk</code> / <code>zt_quarantine_workload</code></td>
+<td>64 (16 actions × 4 states)</td>
+</tr>
+</tbody>
+</table>
+<p>The Tetragon sourcetype names are the Cisco Security Cloud App's; their props sit in a marked block of <code>props.conf</code> to be removed if that app is installed. The <code>cisco:nexus:*</code> names may differ from the real add-on.</p>
+<h2>Raw JSON keys, summarised</h2>
+<p><strong><code>cilium:hubble:flow</code></strong> — <code>{"flow": {...}, "node_name": "&lt;cluster&gt;/&lt;node&gt;", "time": "&lt;RFC 3339 ns&gt;"}</code>. Inside <code>flow</code>: <code>time</code>, <code>uuid</code>, <code>verdict</code> (<code>FORWARDED</code>, <code>AUDIT</code>, <code>DROPPED</code>), <code>IP.source</code>, <code>IP.destination</code>, <code>IP.ipVersion</code>, <code>l4.TCP.source_port</code>, <code>l4.TCP.destination_port</code>, <code>l4.TCP.flags</code> (or <code>l4.UDP.*</code>), <code>source</code> and <code>destination</code> objects (<code>ID</code> on the local endpoint only, <code>identity</code>, <code>cluster_name</code>, <code>namespace</code>, <code>labels[]</code> in <code>k8s:key=value</code> form, <code>pod_name</code>, <code>workloads[].name</code>, <code>workloads[].kind</code>), <code>Type</code> (<code>L3_L4</code>), <code>node_name</code>, <code>node_labels[]</code>, <code>event_type.type</code> (5 for policy verdicts, 1 for drops) and <code>event_type.sub_type</code>, <code>traffic_direction</code> (<code>INGRESS</code>, <code>EGRESS</code>), <code>policy_match_type</code>, <code>is_reply</code>, <code>Summary</code>, and, when present, <code>egress_allowed_by[]</code>, <code>ingress_allowed_by[]</code>, <code>egress_denied_by[]</code>, <code>ingress_denied_by[]</code> (each with <code>name</code>, <code>namespace</code>, <code>labels[]</code>, <code>revision</code>, <code>kind</code>), <code>drop_reason</code> (181) and <code>drop_reason_desc</code> (<code>POLICY_DENY</code>). The incident's ingress AUDIT flow at the store has identities 48213 → 30719; the DROPPED flows after the quarantine carry source identity 48291 and the label <code>k8s:zt-quarantine=88213</code>.</p>
+<p><strong><code>cisco:isovalent:processExec</code></strong>, <strong><code>cisco:isovalent:processConnect</code></strong>, <strong><code>cisco:isovalent</code></strong> — <code>{"process_exec" | "process_connect" | "process_kprobe": {...}, "node_name", "time", "cluster_name", "node_labels": {...}}</code>. The <code>process</code> and <code>parent</code> objects carry <code>exec_id</code>, <code>pid</code>, <code>uid</code>, <code>cwd</code>, <code>binary</code>, <code>arguments</code>, <code>flags</code>, <code>start_time</code>, <code>auid</code>, <code>pod</code> (<code>namespace</code>, <code>name</code>, <code>container.id</code>, <code>container.name</code>, <code>container.image.id</code>, <code>container.image.name</code>, <code>container.start_time</code>, <code>container.pid</code>, <code>pod_labels</code>, <code>workload</code>, <code>workload_kind</code>), <code>docker</code>, <code>parent_exec_id</code>, <code>tid</code>. <code>process_connect</code> adds <code>source_ip</code>, <code>source_port</code>, <code>destination_ip</code>, <code>destination_port</code>, <code>sock_cookie</code>, <code>protocol</code> and <code>destination_pod</code> (<code>namespace</code>, <code>name</code>, <code>pod_labels</code>, <code>workload</code>, <code>workload_kind</code>). <code>process_kprobe</code> adds <code>function_name</code> (<code>security_bprm_check</code>), <code>action</code> (<code>KPROBE_ACTION_SIGKILL</code>) and <code>policy_name</code>.</p>
+<p><strong><code>ci:job:event</code></strong> — <code>object_kind</code> (<code>build</code>), <code>ref</code>, <code>tag</code>, <code>sha</code>, <code>build_id</code>, <code>build_name</code>, <code>build_stage</code>, <code>build_status</code> (<code>running</code>, <code>success</code>, <code>failed</code>), <code>build_created_at</code>, <code>build_started_at</code>, <code>build_finished_at</code>, <code>build_duration</code>, <code>build_failure_reason</code> (<code>script_failure</code>), <code>pipeline_id</code>, <code>project_id</code>, <code>project_name</code>, <code>project.path_with_namespace</code>, <code>project.web_url</code>, <code>user.username</code>, <code>user.name</code>, <code>commit.sha</code>, <code>commit.message</code>, <code>commit.author_name</code>, <code>runner.id</code>, <code>runner.description</code> (the pod), <code>runner.runner_type</code>, <code>runner.tags[]</code>, <code>merge_request.iid</code>, <code>merge_request.title</code>, <code>merge_request.source_branch</code>, <code>merge_request.target_branch</code>, <code>merge_request.url</code>, <code>job_script</code>.</p>
+<p><strong><code>cisco:nexus:endpoint</code></strong> — <code>timestamp</code>, <code>source</code> (<code>nexus-dashboard</code>), <code>fabric</code>, <code>switch</code>, <code>interface</code>, <code>hostname</code>, <code>endpoint_ip</code>, <code>endpoint_mac</code>, <code>vlan</code>, <code>vrf</code>, <code>learned</code>, <code>state</code>.</p>
+<p><strong><code>cisco:nexus:liveprotect</code></strong> — <code>timestamp</code>, <code>source</code>, <code>fabric</code>, <code>switch</code>, <code>feature</code> (<code>live_protect</code>), <code>advisory_id</code> (<code>NX-LP-00nn</code>), <code>component</code>, <code>shield</code>, <code>status</code>.</p>
+<p><strong><code>cisco:nexus:config</code></strong> — <code>timestamp</code>, <code>device</code>, <code>user</code>, <code>change</code>, <code>diff_summary</code>, <code>source</code> (<code>nexus</code>), plus <code>change_type</code> and <code>ticket</code> on enforcement changes (verify).</p>
+<p><strong><code>kube:apiserver:audit</code></strong> — <code>kind</code> (<code>Event</code>), <code>apiVersion</code> (<code>audit.k8s.io/v1</code>), <code>level</code>, <code>auditID</code>, <code>stage</code> (<code>ResponseComplete</code>), <code>requestURI</code>, <code>verb</code> (<code>create</code>, <code>patch</code>, <code>delete</code>), <code>user.username</code>, <code>user.groups[]</code>, <code>sourceIPs[]</code>, <code>userAgent</code>, <code>objectRef</code> (<code>resource</code>, <code>namespace</code>, <code>name</code>, <code>apiGroup</code>, <code>apiVersion</code>), <code>responseStatus.code</code>, <code>requestReceivedTimestamp</code>, <code>stageTimestamp</code>, <code>annotations</code> (<code>authorization.k8s.io/decision</code>, <code>authorization.k8s.io/reason</code>). The quarantine produces a <code>patch</code> on <code>pods/ci-runner-7d9f8-xk2lq</code> (200) and a <code>create</code> of <code>ciliumnetworkpolicies/zt-quarantine-ci-runner-88213</code> (201) by <code>system:serviceaccount:soar:zt-enforcer</code>; the reset produces a <code>delete</code> and a <code>patch</code> by <code>k.osei</code>.</p>
+<p><strong><code>zt:enforcement:audit</code></strong> — <code>time</code>, <code>request_id</code> (<code>ZTR-&lt;yyyymmdd&gt;-&lt;nnnn&gt;</code>), <code>finding_id</code>, <code>investigation_id</code>, <code>state</code> (<code>requested</code>, <code>approved</code>, <code>rejected</code>, <code>refused</code>, <code>applied</code>, <code>verified</code>, <code>failed</code>, <code>released</code>), <code>enforcement_point</code> (<code>kernel</code>, <code>dpu</code>, <code>switch</code>), <code>action</code>, <code>target</code> (<code>namespace/pod</code>), <code>workload</code> (<code>namespace/workload</code>), <code>policy_name</code>, <code>approved_by</code>, <code>approver_role</code>, <code>approved_at</code>, <code>executed_by</code> (<code>soar</code> or <code>splunk</code>), <code>playbook</code>, <code>run_id</code>, <code>k8s_audit_ids[]</code>, <code>comment</code>, <code>status</code>.</p>
+<h2>Normalized fields per sourcetype</h2>
+<p>All are <code>EVAL-</code> calculated fields or automatic lookups in <code>props.conf</code>. Lookups run after the evals, so they can use them.</p>
+<h3><code>cilium:hubble:flow</code></h3>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Source expression</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>verdict</code></td>
+<td><code>flow.verdict</code></td>
+<td><code>FORWARDED</code>, <code>AUDIT</code> or <code>DROPPED</code></td>
+</tr>
+<tr>
+<td><code>traffic_direction</code></td>
+<td><code>flow.traffic_direction</code></td>
+<td><code>INGRESS</code> (observed at the destination's node) or <code>EGRESS</code> (at the source's node)</td>
+</tr>
+<tr>
+<td><code>direction</code></td>
+<td><code>lower(flow.traffic_direction)</code></td>
+<td>CIM direction</td>
+</tr>
+<tr>
+<td><code>src_ip</code>, <code>dest_ip</code></td>
+<td><code>flow.IP.source</code>, <code>flow.IP.destination</code></td>
+<td>Pod IPs</td>
+</tr>
+<tr>
+<td><code>src_port</code>, <code>dest_port</code></td>
+<td><code>coalesce(flow.l4.TCP.*, flow.l4.UDP.*)</code></td>
+<td>Ports</td>
+</tr>
+<tr>
+<td><code>transport</code></td>
+<td><code>udp</code> if a UDP block exists, else <code>tcp</code></td>
+<td>CIM transport</td>
+</tr>
+<tr>
+<td><code>src_identity</code>, <code>dest_identity</code></td>
+<td><code>flow.source.identity</code>, <code>flow.destination.identity</code></td>
+<td>Cilium security identities (48213, 30719; 48291 after the quarantine label)</td>
+</tr>
+<tr>
+<td><code>src_namespace</code>, <code>src_pod</code>, <code>dest_namespace</code>, <code>dest_pod</code></td>
+<td><code>flow.source.namespace</code>, <code>flow.source.pod_name</code>, …</td>
+<td>Kubernetes namespace and pod on each side</td>
+</tr>
+<tr>
+<td><code>src_workload</code>, <code>dest_workload</code></td>
+<td><code>namespace + "/" + first workloads{}.name</code>, null without a workload</td>
+<td>The entity used everywhere: <code>build-farm/ci-runner</code>, <code>ai-train/checkpoint-store</code></td>
+</tr>
+<tr>
+<td><code>src_labels</code>, <code>dest_labels</code></td>
+<td><code>flow.source.labels{}</code>, <code>flow.destination.labels{}</code></td>
+<td>Multivalue <code>k8s:</code> labels</td>
+</tr>
+<tr>
+<td><code>node</code></td>
+<td><code>node_name</code> without the <code>cluster/</code> prefix</td>
+<td>The observing node (<code>bf-node-03</code>, <code>ai-train-stor-02</code>)</td>
+</tr>
+<tr>
+<td><code>cluster</code></td>
+<td><code>flow.source.cluster_name</code></td>
+<td><code>ai-platform-dc2</code></td>
+</tr>
+<tr>
+<td><code>policy_allowed</code></td>
+<td><code>mvdedup(egress_allowed_by{}.name + ingress_allowed_by{}.name)</code></td>
+<td>Names of the allowing policies (<code>build-farm-egress-internal</code>)</td>
+</tr>
+<tr>
+<td><code>policy_denied</code></td>
+<td><code>mvdedup(egress_denied_by{}.name + ingress_denied_by{}.name)</code></td>
+<td>Names of the denying policies (<code>zt-quarantine-ci-runner-88213</code>)</td>
+</tr>
+<tr>
+<td><code>drop_reason</code></td>
+<td><code>flow.drop_reason_desc</code></td>
+<td><code>POLICY_DENY</code> on drops</td>
+</tr>
+<tr>
+<td><code>would_deny</code></td>
+<td><code>1</code> if verdict is <code>AUDIT</code>, else <code>0</code></td>
+<td>The allowlist would have denied it</td>
+</tr>
+<tr>
+<td><code>action</code></td>
+<td><code>blocked</code> if <code>DROPPED</code>, else <code>allowed</code></td>
+<td>CIM action</td>
+</tr>
+<tr>
+<td><code>src</code>, <code>dest</code></td>
+<td>the IPs</td>
+<td>CIM</td>
+</tr>
+<tr>
+<td><code>dvc</code></td>
+<td>the node</td>
+<td>CIM</td>
+</tr>
+<tr>
+<td><code>app</code></td>
+<td>destination workload name, or <code>unknown</code></td>
+<td>CIM</td>
+</tr>
+<tr>
+<td><code>flow_uuid</code></td>
+<td><code>flow.uuid</code></td>
+<td>Exporter UUID of the flow</td>
+</tr>
+<tr>
+<td><code>dest_protected</code>, <code>dest_data_class</code>, <code>allowlist_policy</code>, <code>allowlist_mode</code>, <code>dest_owner</code></td>
+<td>lookup <code>zt_protected_stores</code> on <code>dest_workload</code></td>
+<td><code>true</code>, <code>crown-jewel</code>, <code>checkpoint-store-ingress-allowlist</code>, <code>audit</code>, <code>ml-platform</code> for the store</td>
+</tr>
+<tr>
+<td><code>src_owner</code>, <code>src_team</code>, <code>src_kind</code></td>
+<td>lookup <code>zt_workload_inventory</code> on <code>src_workload</code></td>
+<td>Owner, team and kind of the source workload</td>
+</tr>
+</tbody>
+</table>
+<h3><code>cisco:isovalent:processExec</code></h3>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Source expression</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>process</code>, <code>process_path</code></td>
+<td><code>process_exec.process.binary</code></td>
+<td>Full path of the program (<code>/usr/bin/curl</code>)</td>
+</tr>
+<tr>
+<td><code>process_name</code>, <code>process_exec</code></td>
+<td>basename of the binary</td>
+<td><code>curl</code></td>
+</tr>
+<tr>
+<td><code>process_args</code></td>
+<td><code>process_exec.process.arguments</code></td>
+<td>Arguments (the checkpoint URL)</td>
+</tr>
+<tr>
+<td><code>process_id</code></td>
+<td><code>process_exec.process.pid</code></td>
+<td>PID</td>
+</tr>
+<tr>
+<td><code>parent_process</code></td>
+<td>parent <code>binary + " " + arguments</code></td>
+<td><code>/bin/sh -c ./scripts/postbuild.sh</code></td>
+</tr>
+<tr>
+<td><code>parent_process_name</code>, <code>parent_process_id</code></td>
+<td>parent basename, parent pid</td>
+<td></td>
+</tr>
+<tr>
+<td><code>container_image</code>, <code>container_id</code></td>
+<td><code>…pod.container.image.name</code>, <code>…pod.container.id</code></td>
+<td><code>registry.corp.internal/ci/build-base:2026.09</code></td>
+</tr>
+<tr>
+<td><code>src_namespace</code>, <code>src_pod</code>, <code>src_workload</code></td>
+<td><code>…process.pod.namespace</code>, <code>…pod.name</code>, <code>namespace/workload</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>node</code>, <code>cluster</code></td>
+<td><code>node_name</code>, <code>cluster_name</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>dest</code></td>
+<td><code>node_name</code></td>
+<td>CIM Endpoint host</td>
+</tr>
+<tr>
+<td><code>user</code></td>
+<td><code>"uid:" + uid</code></td>
+<td>CIM user</td>
+</tr>
+<tr>
+<td><code>exec_id</code>, <code>cwd</code></td>
+<td><code>…process.exec_id</code>, <code>…process.cwd</code></td>
+<td>Tetragon execution ID; working directory (<code>/builds/ml-infra/train-utils</code>)</td>
+</tr>
+<tr>
+<td><code>src_owner</code>, <code>src_team</code>, <code>src_kind</code></td>
+<td>lookup <code>zt_workload_inventory</code> on <code>src_workload</code></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<h3><code>cisco:isovalent:processConnect</code></h3>
+<p>All the <code>processExec</code> fields, read from <code>process_connect.*</code>, plus:</p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Source expression</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>src_ip</code>, <code>src_port</code>, <code>dest_ip</code>, <code>dest_port</code></td>
+<td><code>process_connect.source_ip</code>, <code>source_port</code>, <code>destination_ip</code>, <code>destination_port</code></td>
+<td>The socket</td>
+</tr>
+<tr>
+<td><code>transport</code></td>
+<td><code>lower(process_connect.protocol)</code></td>
+<td><code>tcp</code></td>
+</tr>
+<tr>
+<td><code>dest_namespace</code>, <code>dest_pod</code>, <code>dest_workload</code></td>
+<td><code>process_connect.destination_pod.*</code></td>
+<td><code>ai-train</code>, <code>checkpoint-store-1</code>, <code>ai-train/checkpoint-store</code></td>
+</tr>
+<tr>
+<td><code>src</code>, <code>dest</code>, <code>dvc</code></td>
+<td>the IPs; <code>node_name</code></td>
+<td>CIM Network Traffic</td>
+</tr>
+<tr>
+<td><code>action</code></td>
+<td><code>allowed</code></td>
+<td>CIM</td>
+</tr>
+<tr>
+<td><code>dest_protected</code>, <code>dest_data_class</code>, <code>allowlist_policy</code>, <code>allowlist_mode</code>, <code>dest_owner</code></td>
+<td>lookup <code>zt_protected_stores</code> on <code>dest_workload</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>process_approved</code></td>
+<td>lookup <code>zt_process_allowlist</code> on <code>src_workload</code>, <code>dest_workload</code>, <code>process</code></td>
+<td><code>true</code> when the program is approved for that store; empty otherwise</td>
+</tr>
+</tbody>
+</table>
+<h3><code>cisco:isovalent</code> (kprobe)</h3>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Source expression</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>process</code>, <code>process_name</code>, <code>process_args</code>, <code>parent_process</code></td>
+<td><code>process_kprobe.process.*</code>, parent</td>
+<td>The killed program</td>
+</tr>
+<tr>
+<td><code>src_namespace</code>, <code>src_pod</code>, <code>src_workload</code>, <code>node</code>, <code>cluster</code></td>
+<td>as above</td>
+<td></td>
+</tr>
+<tr>
+<td><code>kprobe_action</code></td>
+<td><code>process_kprobe.action</code></td>
+<td><code>KPROBE_ACTION_SIGKILL</code></td>
+</tr>
+<tr>
+<td><code>policy_name</code></td>
+<td><code>process_kprobe.policy_name</code></td>
+<td>The Tetragon tracing policy</td>
+</tr>
+<tr>
+<td><code>dest</code></td>
+<td><code>node_name</code></td>
+<td>CIM</td>
+</tr>
+<tr>
+<td><code>action</code></td>
+<td><code>blocked</code> on SIGKILL, else <code>allowed</code></td>
+<td>CIM</td>
+</tr>
+</tbody>
+</table>
+<h3><code>ci:job:event</code></h3>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Source expression</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>job_id</code></td>
+<td><code>build_id</code></td>
+<td>88213</td>
+</tr>
+<tr>
+<td><code>job_name</code>, <code>job_stage</code>, <code>job_status</code></td>
+<td><code>build_name</code>, <code>build_stage</code>, <code>build_status</code></td>
+<td><code>package</code>, <code>post-build</code>, <code>running</code> / <code>failed</code></td>
+</tr>
+<tr>
+<td><code>pod</code></td>
+<td><code>runner.description</code></td>
+<td><code>ci-runner-7d9f8-xk2lq</code></td>
+</tr>
+<tr>
+<td><code>project</code></td>
+<td><code>project.path_with_namespace</code></td>
+<td><code>ml-infra/train-utils</code></td>
+</tr>
+<tr>
+<td><code>mr</code>, <code>mr_title</code>, <code>mr_url</code></td>
+<td><code>merge_request.iid</code>, <code>.title</code>, <code>.url</code></td>
+<td>4417, "postbuild: cache model shards for integration tests"</td>
+</tr>
+<tr>
+<td><code>author</code></td>
+<td><code>user.username</code></td>
+<td><code>contractor-dev-17</code></td>
+</tr>
+<tr>
+<td><code>commit</code>, <code>commit_short</code></td>
+<td><code>commit.sha</code>, first 7 characters</td>
+<td><code>9f1c2ab</code></td>
+</tr>
+<tr>
+<td><code>failure_reason</code>, <code>duration</code>, <code>script</code></td>
+<td><code>build_failure_reason</code>, <code>build_duration</code>, <code>job_script</code></td>
+<td><code>script_failure</code>, seconds, <code>scripts/postbuild.sh</code></td>
+</tr>
+</tbody>
+</table>
+<h3><code>cisco:nexus:endpoint</code>, <code>cisco:nexus:liveprotect</code>, <code>cisco:nexus:config</code></h3>
+<table>
+<thead>
+<tr>
+<th>Sourcetype</th>
+<th>Field</th>
+<th>Source expression</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>endpoint</td>
+<td><code>node</code>, <code>node_ip</code></td>
+<td><code>hostname</code>, <code>endpoint_ip</code></td>
+<td>The server on the port</td>
+</tr>
+<tr>
+<td>endpoint, liveprotect</td>
+<td><code>dvc</code></td>
+<td><code>switch</code></td>
+<td>CIM device</td>
+</tr>
+<tr>
+<td>config</td>
+<td><code>dvc</code>, <code>object</code></td>
+<td><code>device</code></td>
+<td>The switch</td>
+</tr>
+<tr>
+<td>config</td>
+<td><code>action</code>, <code>object_category</code>, <code>status</code></td>
+<td>constants <code>modified</code>, <code>network device</code>, <code>success</code></td>
+<td>CIM Change</td>
+</tr>
+<tr>
+<td>config</td>
+<td><code>command</code></td>
+<td><code>change</code></td>
+<td>The configuration line</td>
+</tr>
+</tbody>
+</table>
+<h3><code>kube:apiserver:audit</code></h3>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Source expression</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>k8s_verb</code>, <code>k8s_user</code>, <code>k8s_resource</code>, <code>k8s_name</code>, <code>k8s_namespace</code></td>
+<td><code>verb</code>, <code>user.username</code>, <code>objectRef.*</code></td>
+<td>The call</td>
+</tr>
+<tr>
+<td><code>status_code</code>, <code>audit_id</code></td>
+<td><code>responseStatus.code</code>, <code>auditID</code></td>
+<td>200 for the patch, 201 for the create</td>
+</tr>
+<tr>
+<td><code>user</code></td>
+<td><code>user.username</code></td>
+<td>CIM</td>
+</tr>
+<tr>
+<td><code>action</code></td>
+<td><code>created</code> / <code>deleted</code> / <code>modified</code> from <code>verb</code></td>
+<td>CIM Change</td>
+</tr>
+<tr>
+<td><code>object</code>, <code>object_category</code></td>
+<td><code>namespace/name</code>, <code>objectRef.resource</code></td>
+<td><code>build-farm/zt-quarantine-ci-runner-88213</code>, <code>ciliumnetworkpolicies</code></td>
+</tr>
+<tr>
+<td><code>status</code></td>
+<td><code>success</code> below 300, else <code>failure</code></td>
+<td>CIM</td>
+</tr>
+<tr>
+<td><code>command</code></td>
+<td><code>verb + " " + requestURI</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>src</code></td>
+<td>first of <code>sourceIPs{}</code></td>
+<td><code>10.40.2.18</code> for the enforcer</td>
+</tr>
+</tbody>
+</table>
+<h3><code>zt:enforcement:audit</code></h3>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Source expression</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>approved_by_label</code></td>
+<td><code>approved_by (approver_role)</code></td>
+<td><code>j.chen (SOC tier 2)</code>, as shown on the posture dashboard</td>
+</tr>
+<tr>
+<td><code>finding</code></td>
+<td><code>finding_id</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>at</code></td>
+<td><code>enforcement_point</code></td>
+<td><code>kernel</code>, <code>dpu</code>, <code>switch</code></td>
+</tr>
+<tr>
+<td><code>user</code></td>
+<td><code>approved_by</code></td>
+<td>CIM</td>
+</tr>
+<tr>
+<td><code>object</code>, <code>object_category</code></td>
+<td><code>target</code>, <code>workload</code></td>
+<td>CIM Change</td>
+</tr>
+<tr>
+<td><code>command</code></td>
+<td><code>action</code></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<h2>CIM mapping</h2>
+<table>
+<thead>
+<tr>
+<th>Data model</th>
+<th>Eventtype and tags</th>
+<th>Sourcetypes</th>
+<th>Fields provided</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Network Traffic</td>
+<td><code>zt_flow</code> (<code>network</code>, <code>communicate</code>)</td>
+<td><code>cilium:hubble:flow</code></td>
+<td><code>src</code>, <code>dest</code>, <code>src_ip</code>, <code>dest_ip</code>, <code>src_port</code>, <code>dest_port</code>, <code>transport</code>, <code>action</code>, <code>direction</code>, <code>dvc</code>, <code>app</code></td>
+</tr>
+<tr>
+<td>Endpoint (Processes)</td>
+<td><code>zt_process</code> (<code>process</code>, <code>report</code>)</td>
+<td><code>cisco:isovalent:processExec</code>, <code>cisco:isovalent:processConnect</code>, <code>cisco:isovalent</code></td>
+<td><code>process</code>, <code>process_name</code>, <code>process_path</code>, <code>process_exec</code>, <code>process_id</code>, <code>process_args</code>, <code>parent_process</code>, <code>parent_process_name</code>, <code>parent_process_id</code>, <code>user</code>, <code>dest</code>, <code>action</code></td>
+</tr>
+<tr>
+<td>Change</td>
+<td><code>zt_enforcement</code> (<code>change</code>)</td>
+<td><code>zt:enforcement:audit</code>, <code>kube:apiserver:audit</code>, <code>cisco:nexus:config</code> with <code>change_type=config</code></td>
+<td><code>action</code>, <code>object</code>, <code>object_category</code>, <code>status</code>, <code>command</code>, <code>user</code>, <code>dvc</code>, <code>src</code></td>
+</tr>
+</tbody>
+</table>
+<p><code>cisco:isovalent:processConnect</code> also carries the Network Traffic fields (<code>src</code>, <code>dest</code>, ports, <code>transport</code>, <code>action=allowed</code>) although it is tagged as a process event. <code>zt_ci</code> (tag <code>ci</code>) and <code>zt_fabric</code> (tags <code>network</code>, <code>inventory</code>) group the CI and Nexus data for searches; they do not feed a CIM data model.</p>
+<h2>Eventtypes and tags</h2>
+<table>
+<thead>
+<tr>
+<th>Eventtype</th>
+<th>Search</th>
+<th>Tags</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>zt_flow</code></td>
+<td><code>index=zero_trust sourcetype=cilium:hubble:flow</code></td>
+<td><code>network</code>, <code>communicate</code></td>
+</tr>
+<tr>
+<td><code>zt_process</code></td>
+<td><code>index=zero_trust sourcetype=cisco:isovalent:processExec OR sourcetype=cisco:isovalent:processConnect OR sourcetype=cisco:isovalent</code></td>
+<td><code>process</code>, <code>report</code></td>
+</tr>
+<tr>
+<td><code>zt_ci</code></td>
+<td><code>index=zero_trust sourcetype=ci:job:event</code></td>
+<td><code>ci</code></td>
+</tr>
+<tr>
+<td><code>zt_fabric</code></td>
+<td><code>index=zero_trust sourcetype=cisco:nexus:endpoint OR sourcetype=cisco:nexus:liveprotect OR sourcetype=cisco:nexus:config</code></td>
+<td><code>network</code>, <code>inventory</code></td>
+</tr>
+<tr>
+<td><code>zt_enforcement</code></td>
+<td><code>index=zero_trust sourcetype=zt:enforcement:audit OR sourcetype=kube:apiserver:audit OR (sourcetype=cisco:nexus:config change_type=config)</code></td>
+<td><code>change</code></td>
+</tr>
+</tbody>
+</table>
+<h2>Lookups</h2>
+<p>CSV lookups in <code>zt_incident_demo/lookups/</code>, generated from the estate model by <code>make lookups</code> (<code>tools/gen_lookups.py</code>), except <code>zt_node_fabric</code>, which <code>ZT Lookup - Node Fabric</code> rebuilds hourly from <code>cisco:nexus:endpoint</code>.</p>
+<table>
+<thead>
+<tr>
+<th>Lookup</th>
+<th>Columns</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>zt_workload_inventory</code> (1,283 rows)</td>
+<td><code>workload</code>, <code>namespace</code>, <code>kind</code>, <code>owner</code>, <code>team</code>, <code>tier</code>, <code>data_class</code>, <code>description</code></td>
+<td>Every workload of the cluster; automatic lookup on <code>src_workload</code></td>
+</tr>
+<tr>
+<td><code>zt_protected_stores</code> (4 rows)</td>
+<td><code>dest_workload</code>, <code>port</code>, <code>protected</code>, <code>data_class</code>, <code>owner</code>, <code>allowlist_policy</code>, <code>mode</code>, <code>description</code></td>
+<td>The protected AI data stores: <code>ai-train/checkpoint-store</code> 9000 (crown-jewel), <code>ai-train/dataset-cache</code> 8443, <code>ai-infer/model-registry</code> 443, <code>ai-infer/vector-index</code> 6333; all allowlists in <code>audit</code> mode</td>
+</tr>
+<tr>
+<td><code>zt_store_allowlist</code> (57 rows)</td>
+<td><code>dest_workload</code>, <code>src_workload</code>, <code>port</code>, <code>policy</code></td>
+<td>The members of each store's ingress allowlist (the 57 enforced paths)</td>
+</tr>
+<tr>
+<td><code>zt_process_allowlist</code> (65 rows)</td>
+<td><code>src_workload</code>, <code>dest_workload</code>, <code>process</code>, <code>approved</code></td>
+<td>Programs approved per path; used by the program detection and <code>process_approved</code></td>
+</tr>
+<tr>
+<td><code>zt_known_gaps</code> (8 rows)</td>
+<td><code>src_workload</code>, <code>dest_workload</code>, <code>dest_port</code>, <code>ticket</code>, <code>owner</code>, <code>status</code></td>
+<td>The eight audit-mode paths with an open ticket (<code>ZT-231</code> … <code>ZT-258</code>); excluded from the flow detection and counted as the 8 unprotected paths</td>
+</tr>
+<tr>
+<td><code>zt_protected_data</code> (8 rows, <code>WILDCARD(path_prefix)</code>)</td>
+<td><code>dest_workload</code>, <code>path_prefix</code>, <code>dataset</code>, <code>training_job_id</code>, <code>job_name</code>, <code>scheduler</code>, <code>gpus</code>, <code>owner</code></td>
+<td>What lies behind a request path: <code>/ckpt/llm-7712/</code> = checkpoints of training job 7712 (Slurm, 512 GPUs, owner <code>ml-research</code>)</td>
+</tr>
+<tr>
+<td><code>zt_node_fabric</code> (92 rows)</td>
+<td><code>node</code>, <code>node_ip</code>, <code>fabric</code>, <code>switch</code>, <code>interface</code>, <code>vrf</code>, <code>last_seen</code></td>
+<td>Node to switch port: <code>bf-node-03</code> → <code>dc2-leaf-205 Eth1/12</code>, <code>ai-train-stor-02</code> → <code>dc2-leaf-207 Eth1/05</code></td>
+</tr>
+<tr>
+<td><code>zt_approvers</code> (3 rows)</td>
+<td><code>enforcement_point</code>, <code>approver_roles</code>, <code>approver_labels</code>, <code>approvals_required</code></td>
+<td>The approval matrix: kernel needs one <code>zt_soc_tier2</code> (SOC tier 2); dpu and switch need <code>zt_soc_tier2,zt_netops</code> (SOC tier 2, NetOps), two approvals</td>
+</tr>
+<tr>
+<td><code>zt_role_labels</code> (4 rows)</td>
+<td><code>user</code>, <code>role_label</code></td>
+<td>Display labels: <code>j.chen</code> and <code>m.ruiz</code> SOC tier 2, <code>a.patel</code> NetOps, <code>k.osei</code> platform</td>
+</tr>
+<tr>
+<td><code>zt_es_assets</code> (7 rows, in <code>DA-ESS-zt_incident_demo</code>)</td>
+<td>ES asset header <code>ip, mac, nt_host, dns, owner, priority, lat, long, city, country, bunit, category, pci_domain, is_expected, should_timesync, should_update, requires_av</code></td>
+<td>Asset source <code>zt_workload_assets</code>: the four stores (<code>ai-train/checkpoint-store</code> critical, category <code>k8s_workload|ai_data_store|crown_jewel</code>), <code>build-farm/ci-runner</code> (medium, <code>k8s_workload|ci_runner</code>) and the servers <code>bf-node-03</code> (10.40.12.33) and <code>ai-train-stor-02</code> (10.40.17.52)</td>
+</tr>
+</tbody>
+</table>
+<h2>KV store collections</h2>
+<p>Defined in <code>collections.conf</code>; each has a <code>_lookup</code> definition in <code>transforms.conf</code> for <code>inputlookup</code>.</p>
+<table>
+<thead>
+<tr>
+<th>Collection (lookup)</th>
+<th>Fields</th>
+<th>Used by</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>zt_demo_state</code> (<code>zt_demo_state_lookup</code>), one record <code>_key=global</code></td>
+<td><code>stream_checkpoint</code>, <code>backfill_done</code>, <code>last_reset_epoch</code>, <code>speed</code>, <code>response_mode</code>, <code>agent_mode</code>, <code>plan_t0</code>, <code>plan_attempt</code>, <code>plan_status</code>, <code>plan_dropped_attempts</code>, <code>plan_fail_at</code>, <code>plan_completed_epoch</code>, <code>last_fire_epoch</code>, <code>last_tick_epoch</code>, <code>last_tick_events</code>, <code>last_error</code> (plus the backfill lock fields)</td>
+<td>The stream, <code>ztdemo</code>, the macros (<code>last_reset_epoch</code>)</td>
+</tr>
+<tr>
+<td><code>zt_policy_state</code> (<code>zt_policy_state_lookup</code>)</td>
+<td><code>kind</code>, <code>namespace</code>, <code>name</code>, <code>spec_json</code>, <code>selector_json</code>, <code>labels_json</code>, <code>label_epochs_json</code>, <code>created_by</code>, <code>created_epoch</code>, <code>resource_version</code>, <code>uid</code></td>
+<td>The emulator (pods' labels with the epoch of each label change, CiliumNetworkPolicies); the plan reads it to decide AUDIT or DROPPED</td>
+</tr>
+<tr>
+<td><code>zt_agent_briefs</code> (<code>zt_agent_briefs_lookup</code>)</td>
+<td><code>finding_id</code>, <code>finding_display_id</code>, <code>investigation_id</code>, <code>investigation_guid</code>, <code>workload</code>, <code>pod</code>, <code>node</code>, <code>job_id</code>, <code>what_happened</code>, <code>dest_workload</code>, <code>data_class</code>, <code>disposition</code>, <code>confidence</code>, <code>enforcement_point</code>, <code>action</code>, <code>policy_name</code>, <code>blast_radius</code>, <code>approver_labels</code>, <code>brief_json</code>, <code>brief_text</code>, <code>session_id</code>, <code>run_epoch</code>, <code>note_added</code></td>
+<td><code>ztbrief</code> writes; the playbook and <code>ZT Response - Request Enforcement</code> read</td>
+</tr>
+<tr>
+<td><code>zt_enforcement_requests</code> (<code>zt_enforcement_requests_lookup</code>)</td>
+<td><code>request_id</code>, <code>finding_id</code>, <code>investigation_id</code>, <code>investigation_guid</code>, <code>workload</code>, <code>pod</code>, <code>job_id</code>, <code>enforcement_point</code>, <code>action</code>, <code>policy_name</code>, <code>policy_yaml</code>, <code>label_patch_json</code>, <code>cnp_json</code>, <code>approvals_required</code>, <code>approver_roles</code>, <code>approver_labels</code>, <code>approvals</code>, <code>status</code> (<code>pending</code>, <code>approved</code>, <code>applied</code>, <code>verified</code>, <code>failed</code>, <code>rejected</code>, <code>cancelled</code>), <code>dest_workload</code>, <code>data_class</code>, <code>disposition</code>, <code>confidence</code>, <code>what_happened</code>, <code>blast_radius</code>, <code>requested_epoch</code>, <code>approved_epoch</code>, <code>applied_epoch</code>, <code>verified_epoch</code>, <code>k8s_audit_ids</code>, <code>comment</code>, <code>last_error</code></td>
+<td>Mode B: <code>ztsoar</code>, the approvals endpoint, the Enforcement Approvals dashboard</td>
+</tr>
+</tbody>
+</table>
+<h2>Macros</h2>
+<table>
+<thead>
+<tr>
+<th>Macro</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>zt_index</code></td>
+<td><code>index=zero_trust</code></td>
+</tr>
+<tr>
+<td><code>zt_since_reset</code></td>
+<td>Detection window: the last 60 minutes, or since the last reset if that is later (a subsearch returning <code>earliest</code>)</td>
+</tr>
+<tr>
+<td><code>zt_risk_window</code></td>
+<td>The same window as <code>earliest</code> and <code>latest</code> for the finding-based detection's <code>tstats</code></td>
+</tr>
+<tr>
+<td><code>zt_last_reset</code></td>
+<td>The epoch of the last reset (0 if never), for use inside <code>eval</code></td>
+</tr>
+<tr>
+<td><code>zt_not_already_risked(rule, object_field, threat_field)</code></td>
+<td>Excludes object/threat pairs that the named rule has already risked since the last reset, so each detection adds risk once per path or program</td>
+</tr>
+<tr>
+<td><code>zt_incident_since_reset</code></td>
+<td>The incident's own events since the last reset (the pod, job 88213, the enforcement and Kubernetes audit records)</td>
+</tr>
+</tbody>
+</table>
+</main>
+</body>
+</html>
