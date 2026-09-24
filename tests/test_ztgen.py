@@ -170,6 +170,16 @@ def test_brief_approver_labels():
     assert ztbrief.approver_label("Security architect") == "Security architect"
 
 
+def test_brief_run_info():
+    sys.path.insert(0, os.path.join(ROOT, "zt_incident_demo", "bin", "lib"))
+    import ztbrief
+    long_raw = json.dumps({"agent_name": "ZTFlowInvestigator", "trace": "x" * 11000, "response": "{}", "type": "run_finished"})
+    # search time stopped extracting before the type field: only agent_name came through
+    assert ztbrief.run_info({"_raw": long_raw, "agent_name": "ZTFlowInvestigator"}) == ("run_finished", "ZTFlowInvestigator")
+    assert ztbrief.run_info({"_raw": json.dumps({"agent_name": "ZTFlowInvestigator", "type": "run_started"})})[0] == "run_started"
+    assert ztbrief.run_info({"_raw": "not json", "type": "run_finished", "agent_name": "Other"}) == ("run_finished", "Other")
+
+
 if __name__ == "__main__":
     import time
     for name, fn in list(globals().items()):

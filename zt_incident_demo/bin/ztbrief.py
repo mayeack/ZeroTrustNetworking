@@ -98,6 +98,21 @@ def normalize(brief):
     return out
 
 
+AGENT_NAME = "ZTFlowInvestigator"
+
+
+def run_info(record):
+    """(type, agent_name) of an ai_agent:response event, read from the whole _raw: Splunk extracts fields from the first
+    10,240 characters only, and a long trace pushes the type field past that point."""
+    try:
+        obj = json.loads(record.get("_raw") or "")
+    except ValueError:
+        obj = None
+    if not isinstance(obj, dict):
+        obj = {}
+    return (obj.get("type") or record.get("type") or ""), (obj.get("agent_name") or record.get("agent_name") or "")
+
+
 def candidate_texts(record):
     for key in ("response", "agent_response", "result", "output", "final_response", "message", "content"):
         if record.get(key):
@@ -124,6 +139,12 @@ class ZtBriefCommand(StreamingCommand):
         since = float(st.get("last_reset_epoch") or 0)
         findings = {}  # newest ZT finding group since the reset, per workload
         for rec in records:
+            run_type, agent = run_info(rec)
+            if run_type != "run_finished" or agent != AGENT_NAME:
+                out = dict(rec)
+                out["ztbrief"] = "not a finished %s run (%s, %s); skipped" % (AGENT_NAME, run_type or "no type", agent or "no agent")
+                yield out
+                continue
             brief = None
             for text in candidate_texts(rec):
                 brief = extract_brief(text)

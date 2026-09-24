@@ -141,7 +141,7 @@ def main(argv):
             check("brief cites %s" % fact, fact in text)
         check("AI note added", int(b0.get("note_added") or 0) == 1, b0.get("investigation_id"))
         # criterion 5: the run called only zt_ tools, all five (from the run_finished trace in _audit)
-        runs = s.search('search index=_audit sourcetype=ai_agent:response agent_name=ZTFlowInvestigator type=run_finished | head 1 | table _raw', earliest=int(t0), latest="now")
+        runs = [r for r in s.search('search index=_audit sourcetype=ai_agent:response "ZTFlowInvestigator" "run_finished" | table _raw', earliest=int(t0), latest="now") if json.loads(r["_raw"]).get("type") == "run_finished"][:1]
         try:
             trace = json.loads(json.loads(runs[0]["_raw"]).get("trace") or "[]") if runs else []
         except (ValueError, KeyError, TypeError):
