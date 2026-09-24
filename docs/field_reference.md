@@ -20,10 +20,12 @@ Props common to every sourcetype: `KV_MODE = json`, `TRUNCATE = 0`, `SHOULD_LINE
 | `cisco:nexus:endpoint` | Nexus Dashboard endpoint inventory: which server is on which switch port | Cisco data center networking add-on | switch / `nexus-dashboard` | 2,208 (one snapshot per node per hour, 92 nodes) |
 | `cisco:nexus:liveprotect` | Live Protect status per switch | Nexus Dashboard export | switch / `nexus-dashboard` | 6 |
 | `cisco:nexus:config` | Switch configuration change | Cisco data center networking add-on | switch / `nexus` | 10 (4 enforcement, 6 routine) |
+| `cisco:dc:nd:advisories` | Nexus Dashboard advisory (PSIRT) for switches of the fabric, in the Cisco DC Networking app's schema | Cisco DC Networking app (Splunkbase 7777) | `nd-dc2` / `nexus-dashboard` | 16 (4 advisories at each of 4 polls) |
+| `cisco:dc:nd:anomalies` | Nexus Dashboard anomaly, raised and cleared, in the Cisco DC Networking app's schema | Cisco DC Networking app | `nd-dc2` / `nexus-dashboard` | 10 (5 anomalies, raised and cleared) |
 | `kube:apiserver:audit` | Kubernetes API audit event (`audit.k8s.io/v1`) | API server audit log → HEC; live ones from the emulator | `kube-apiserver` / `k8s-audit` | about 37 |
 | `zt:enforcement:audit` | The enforcement audit trail, one event per state change | SOAR playbook (Mode A) or the app's response code (Mode B) | `soar` or `splunk` / `zt_quarantine_workload` | 64 (16 actions × 4 states) |
 
-The Tetragon sourcetype names are the Cisco Security Cloud App's; their props sit in a marked block of `props.conf` to be removed if that app is installed. The `cisco:nexus:*` names may differ from the real add-on.
+The Tetragon sourcetype names are the Cisco Security Cloud App's; their props sit in a marked block of `props.conf`, kept with that app installed because it does not provide the zero trust fields (see the README). The `cisco:nexus:*` names are this build's own; the two `cisco:dc:nd:*` sourcetypes use the Cisco DC Networking app's names and fields, so its props (severity normalisation, `calculated_severity`, `node_names`, `signature`) and Secure Networking Essentials read them.
 
 ## Raw JSON keys, summarised
 
@@ -38,6 +40,10 @@ The Tetragon sourcetype names are the Cisco Security Cloud App's; their props si
 **`cisco:nexus:liveprotect`** — `timestamp`, `source`, `fabric`, `switch`, `feature` (`live_protect`), `advisory_id` (`NX-LP-00nn`), `component`, `shield`, `status`.
 
 **`cisco:nexus:config`** — `timestamp`, `device`, `user`, `change`, `diff_summary`, `source` (`nexus`), plus `change_type` and `ticket` on every change (`ticket` is the finding id for enforcement changes, a change number otherwise).
+
+**`cisco:dc:nd:advisories`** — `advisoryId` (for example `cisco-sa-nxos-bgp-dos-3fzrsx`), `title`, `advisoryStr`, `category` (`PSIRT`), `severity` as Nexus Dashboard reports it (`major`, `minor`, `warning`; the DC Networking app turns it into `calculated_severity` critical, high, medium), `resourceType`, `nodeNames[]`, `fabricName` (`dc2`), `insights_group`, `nd_host`, `vendor` (`CISCO_NX-OS`), `startTs` (first seen), `endTs` (the poll; the app's timestamp), `clearTs`, `cleared`, `acknowledged`, `verificationStatus`, `assignee`. Four advisories, one per component that Live Protect shields (BGP on dc2-leaf-201 and 205, LLDP on 202 and 203, SNMP on 207, SSH on 208), at 00:30, 06:30, 12:30 and 18:30.
+
+**`cisco:dc:nd:anomalies`** — `anomalyId`, `anomalyType`, `anomalyStr`, `category`, `severity`, `anomalyScore`, `entityName`, `resourceType`, `nodeNames[]`, `fabricName`, `insights_group`, `nd_host`, `vendor`, `mnemonicTitle` and `mnemonicNum` (the app's `signature` and `signature_id`), `startTs`, `endTs`, `clearTs`, `cleared`, `acknowledged`, `verificationStatus`, `assignee`. Five anomalies a day, each raised and later cleared: a duplicate IP behind dc2-leaf-202 (03:12), the BGP peer 10.40.19.44 down on dc2-leaf-206 until the 08:15 neighbour fix, policy CAM at 81% on dc2-leaf-205 (11:02), the MTU mismatch on dc2-leaf-208 Eth1/26 until the 16:05 change, and CRC errors on dc2-leaf-203 Eth1/7 until the 17:33 shutdown.
 
 **`kube:apiserver:audit`** — `kind` (`Event`), `apiVersion` (`audit.k8s.io/v1`), `level`, `auditID`, `stage` (`ResponseComplete`), `requestURI`, `verb` (`create`, `patch`, `delete`), `user.username`, `user.groups[]`, `sourceIPs[]`, `userAgent`, `objectRef` (`resource`, `namespace`, `name`, `apiGroup`, `apiVersion`), `responseStatus.code`, `requestReceivedTimestamp`, `stageTimestamp`, `annotations` (`authorization.k8s.io/decision`, `authorization.k8s.io/reason`). The quarantine produces a `patch` on `pods/ci-runner-7d9f8-xk2lq` (200) and a `create` of `ciliumnetworkpolicies/zt-quarantine-ci-runner-88213` (201) by `system:serviceaccount:soar:zt-enforcer`; the reset produces a `delete` and a `patch` by `k.osei`.
 

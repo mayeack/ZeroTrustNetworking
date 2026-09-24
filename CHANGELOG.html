@@ -3,6 +3,20 @@
 code,pre{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:.92em}pre{background:#f3f4f6;padding:.75rem;overflow-x:auto;border-radius:6px}code{background:#f3f4f6;padding:.1em .3em;border-radius:4px}pre code{background:none;padding:0}
 table{border-collapse:collapse;margin:1rem 0;width:100%}th,td{border:1px solid #d1d5db;padding:.4rem .6rem;text-align:left;vertical-align:top}th{background:#f9fafb}h1,h2,h3{line-height:1.25}a{color:#0b5cad}
 @media (prefers-color-scheme: dark){body{background:#0f172a;color:#e5e7eb}pre,code{background:#1e293b}th{background:#1e293b}th,td{border-color:#334155}a{color:#7dd3fc}}</style></head><body><h1 id="changelog">Changelog</h1>
+<h2 id="108-2026-09-24">1.0.8 (2026-09-24)</h2>
+<ul>
+<li>Nexus Dashboard data in the Cisco DC Networking app's schema: <code>cisco:dc:nd:advisories</code> (16 a day: four advisories for the NX-OS components that Live Protect shields, polled every six hours) and <code>cisco:dc:nd:anomalies</code> (10 a day: five anomalies raised and cleared, matching the day's Nexus changes). With the DC Networking app installed, its props map the severity and the switch list, and Secure Networking Essentials shows them: Fabric Operations › Critical Security Advisories, Infrastructure Posture › Data Center Signals and Critical Advisories. The live generator page lists the two sourcetypes.</li>
+<li><code>ZT Agent - Recover Brief</code> (every minute): when the AI Toolkit fails to write the agent's result to <code>_audit</code> (its <code>mltk/hec_operations</code> handler answers HTTP 500 now and then), no brief arrives and the demo stops at the brief step. The search runs the agent once more inline, at most twice per finding group, when a result write failed after the run started or no brief arrived seven minutes after the finding, and stores the brief from the command's output with <code>ztbrief</code>.</li>
+<li>Zero Trust Fabric Posture: the verdict chart starts at the last reset (or 30 minutes ago, whichever is later), so it is empty until the incident starts, as its placeholder says.</li>
+<li><code>props.conf</code>: the Tetragon block stays with the Cisco Security Cloud App installed; the comment says what that app adds and what it does not.</li>
+<li>SOAR playbook (imported, not part of the app): waits up to 10 minutes for the brief, which covers a recovered one.</li>
+</ul>
+<h2 id="docs-and-collateral-handoff-pass-2026-09-24-no-app-change">Docs and collateral: handoff pass (2026-09-24, no app change)</h2>
+<ul>
+<li>The handoff checklist of the collateral review was worked through: Secure Networking Essentials wording after 1.0.7 (Runtime Detections 2, the fields as calculated fields, the noise counts), the fact corrections F1 to F5 in both decks, the talk track, the co-sell and One Incident PDFs and the review, a slide 19 posture image rendered by Splunk, and a review section on other dCloud demos and Isovalent labs.</li>
+<li><code>sync_collateral.py</code> replaces a picture only when it changed; <code>verify_collateral.py</code> checks the collateral against the stack and the checklist.</li>
+<li>After the Cisco DC Networking and Cisco Security Cloud apps were installed: the talk track (§3, Beat 5, the data-path answer, §7 and §8), the demo script and the review say what those apps show and why the demo app keeps its Tetragon parsing.</li>
+</ul>
 <h2 id="docs-and-collateral-2026-09-24-no-app-change">Docs and collateral (2026-09-24, no app change)</h2>
 <ul>
 <li><code>docs/collateral/collateral.yaml</code> follows the 22-slide One Incident deck (initiatives slide at 3, "What ships, and what we build for you" at 13, live steps at 14 to 19) and the ten-beat talk track (beats 5 to 8 kept here, §3 "Before the lab phase" column added).</li>

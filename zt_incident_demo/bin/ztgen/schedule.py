@@ -250,6 +250,31 @@ NEXUS_ROUTINE = [("00:20:11", "dc2-leaf-204", "netops-automation", "interface Et
                  ("12:40:05", "dc2-leaf-203", "a.patel", "ip prefix-list k8s-pods seq 40 permit 10.42.24.0/24", "+ seq 40 permit 10.42.24.0/24"),
                  ("16:05:48", "dc2-leaf-208", "netops-automation", "interface Eth1/26 mtu 9216", "- mtu 1500\n+ mtu 9216"),
                  ("21:50:19", "dc2-leaf-202", "a.patel", "snmp-server host 10.40.5.10 traps version 2c", "+ snmp-server host 10.40.5.10")]
+# Nexus Dashboard advisories (polled every six hours) for the components that Live Protect shields, and anomalies that
+# match the day's Nexus changes: the BGP neighbour fix at 08:15, the MTU change at 16:05, the Eth1/7 shutdown at 17:33
+ND_ADVISORY_POLLS = ["00:30:00", "06:30:00", "12:30:00", "18:30:00"]
+ND_ADVISORIES = [
+    {"id": "cisco-sa-nxos-bgp-dos-3fzrsx", "title": "NX-OS BGP denial of service", "category": "PSIRT", "severity": "major", "nodes": ["dc2-leaf-201", "dc2-leaf-205"],
+     "text": "The NX-OS release on these switches is affected; Live Protect shield NX-LP-0007 (nxos-bgp) is active until the upgrade.", "acknowledged": True, "assignee": "a.patel", "age_days": 12},
+    {"id": "cisco-sa-nxos-lldp-dos-8ncl2", "title": "NX-OS LLDP denial of service", "category": "PSIRT", "severity": "minor", "nodes": ["dc2-leaf-202", "dc2-leaf-203"],
+     "text": "The NX-OS release on these switches is affected; Live Protect shield NX-LP-0009 (nxos-lldp) is active until the upgrade.", "acknowledged": True, "assignee": "a.patel", "age_days": 9},
+    {"id": "cisco-sa-nxos-snmp-dos-5tvbq", "title": "NX-OS SNMP denial of service", "category": "PSIRT", "severity": "warning", "nodes": ["dc2-leaf-207"],
+     "text": "The NX-OS release on this switch is affected; Live Protect shield NX-LP-0011 (nxos-snmp) is active until the upgrade.", "acknowledged": False, "age_days": 5},
+    {"id": "cisco-sa-nxos-ssh-dos-2hm7x", "title": "NX-OS SSH denial of service", "category": "PSIRT", "severity": "warning", "nodes": ["dc2-leaf-208"],
+     "text": "The NX-OS release on this switch is affected; Live Protect shield NX-LP-0012 (nxos-ssh) is active until the upgrade.", "acknowledged": False, "age_days": 3},
+]
+ND_ANOMALIES = [
+    ("03:12:44", "03:58:20", {"type": "ENDPOINT_DUPLICATE_IP", "category": "Connectivity", "severity": "minor", "score": 44, "node": "dc2-leaf-202", "entity": "10.42.9.17",
+                              "resource": "endpoint", "mnemonic": "EP_DUPLICATE_IP", "mnemonic_num": "EP-0004", "text": "10.42.9.17 is learned on two MAC addresses behind dc2-leaf-202", "assignee": "a.patel"}),
+    ("08:09:40", "08:16:10", {"type": "BGP_PEER_DOWN", "category": "Connectivity", "severity": "major", "score": 72, "node": "dc2-leaf-206", "entity": "BGP peer 10.40.19.44 (VRF default)",
+                              "resource": "bgpPeer", "mnemonic": "BGP_PEER_STATE_DOWN", "mnemonic_num": "BGP-0003", "text": "BGP session to 10.40.19.44 is down: the neighbour expects loopback0 as the update source", "assignee": "netops-automation"}),
+    ("11:02:17", "11:47:50", {"type": "POLICY_CAM_UTILIZATION", "category": "Resources", "severity": "warning", "score": 35, "node": "dc2-leaf-205", "entity": "dc2-leaf-205",
+                              "resource": "node", "mnemonic": "TCAM_UTILIZATION_HIGH", "mnemonic_num": "RES-0007", "text": "Policy CAM utilization at 81% (threshold 80%)", "assignee": "a.patel"}),
+    ("15:41:22", "16:06:30", {"type": "INTERFACE_MTU_MISMATCH", "category": "Connectivity", "severity": "minor", "score": 48, "node": "dc2-leaf-208", "entity": "dc2-leaf-208 Eth1/26",
+                              "resource": "interface", "mnemonic": "IF_MTU_MISMATCH", "mnemonic_num": "IF-0021", "text": "MTU 1500 on Eth1/26 does not match the peer (9216)", "assignee": "netops-automation"}),
+    ("17:21:05", "17:33:40", {"type": "INTERFACE_ERRORS", "category": "System", "severity": "major", "score": 66, "node": "dc2-leaf-203", "entity": "dc2-leaf-203 Eth1/7",
+                              "resource": "interface", "mnemonic": "IF_CRC_ERRORS", "mnemonic_num": "IF-0012", "text": "CRC errors on Eth1/7 above threshold; unknown MAC addresses learned on the legacy bridge port", "assignee": "a.patel"}),
+]
 ROUTINE_K8S_USERS = [("system:serviceaccount:argocd:argocd-application-controller", ["system:serviceaccounts", "system:serviceaccounts:argocd", "system:authenticated"], "10.42.10.14", "argocd-application-controller/v2.12", B.ARGOCD_REASON),
                      ("k.osei", ["platform-admins", "system:authenticated"], "10.40.2.44", "kubectl/v1.31.2", B.PLATFORM_REASON)]
 
@@ -282,6 +307,18 @@ def gen_fixed(estate, day_number, start, end):
         t = day_start + _tod(tod)
         if within(t):
             yield B.nexus_config(t, dev, user, change, diff, ticket="CHG-%d" % (40000 + day_number % 1000))
+    # Nexus Dashboard: each advisory at every poll (200 ms apart), each anomaly when raised and when cleared
+    for tod in ND_ADVISORY_POLLS:
+        for i, adv in enumerate(ND_ADVISORIES):
+            t = day_start + _tod(tod) + i * 0.2
+            if within(t):
+                yield B.nd_advisory(t, adv, day_start - adv["age_days"] * DAY + 9 * 3600)
+    for raise_tod, clear_tod, anomaly in ND_ANOMALIES:
+        t0, t1 = day_start + _tod(raise_tod), day_start + _tod(clear_tod)
+        if within(t0):
+            yield B.nd_anomaly(t0, anomaly, t0)
+        if within(t1):
+            yield B.nd_anomaly(t1, anomaly, t0, t1)
     # routine Kubernetes audit: 24 per day at hh:17:23
     for hour in range(24):
         t = day_start + hour * 3600 + 17 * 60 + 23
@@ -381,4 +418,5 @@ def daily_expectations():
     """Expected counts per sourcetype per 24 hours (for smoke tests)."""
     return OrderedDict([("cilium:hubble:flow", 13706 * 2 + 55000 + 1400), ("cisco:isovalent:processConnect", 13706), ("cisco:isovalent:processExec", 12000),
                         ("cisco:isovalent", 2), ("ci:job:event", None), ("cisco:nexus:endpoint", 2208), ("cisco:nexus:liveprotect", 6), ("cisco:nexus:config", 10),
+                        ("cisco:dc:nd:advisories", 16), ("cisco:dc:nd:anomalies", 10),
                         ("kube:apiserver:audit", 24 + 5 * 2 + 3), ("zt:enforcement:audit", 64)])

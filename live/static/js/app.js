@@ -3,8 +3,8 @@
   'use strict';
   const $ = (s) => document.querySelector(s);
   const $$ = (s) => Array.from(document.querySelectorAll(s));
-  const ST_ORDER = ['cilium:hubble:flow', 'cisco:isovalent:processConnect', 'cisco:isovalent:processExec', 'cisco:isovalent', 'ci:job:event', 'cisco:nexus:endpoint', 'cisco:nexus:liveprotect', 'cisco:nexus:config', 'kube:apiserver:audit', 'zt:enforcement:audit'];
-  const ST_COLOR = { 'cilium:hubble:flow': '#009CEB', 'cisco:isovalent:processConnect': '#00CDAF', 'cisco:isovalent:processExec': '#00CDAF', 'cisco:isovalent': '#00CDAF', 'ci:job:event': '#8C9BA5', 'cisco:nexus:endpoint': '#7B56DB', 'cisco:nexus:liveprotect': '#DD9900', 'cisco:nexus:config': '#7B56DB', 'kube:apiserver:audit': '#F1813F', 'zt:enforcement:audit': '#53A051' };
+  const ST_ORDER = ['cilium:hubble:flow', 'cisco:isovalent:processConnect', 'cisco:isovalent:processExec', 'cisco:isovalent', 'ci:job:event', 'cisco:nexus:endpoint', 'cisco:nexus:liveprotect', 'cisco:nexus:config', 'cisco:dc:nd:advisories', 'cisco:dc:nd:anomalies', 'kube:apiserver:audit', 'zt:enforcement:audit'];
+  const ST_COLOR = { 'cilium:hubble:flow': '#009CEB', 'cisco:isovalent:processConnect': '#00CDAF', 'cisco:isovalent:processExec': '#00CDAF', 'cisco:isovalent': '#00CDAF', 'ci:job:event': '#8C9BA5', 'cisco:nexus:endpoint': '#7B56DB', 'cisco:nexus:liveprotect': '#DD9900', 'cisco:nexus:config': '#7B56DB', 'cisco:dc:nd:advisories': '#DD9900', 'cisco:dc:nd:anomalies': '#7B56DB', 'kube:apiserver:audit': '#F1813F', 'zt:enforcement:audit': '#53A051' };
   const K_COLOR = { background: null, incident: '#ff4d7d', attack: '#ff9f43', trigger: '#f6e05e' };
   const WINDOW = 10 * 60 * 1000;
   const state = { events: [], lastSeq: 0, paused: false, filters: new Set(), kinds: new Set(), status: null, catalog: null, pipeline: null };

@@ -54,6 +54,10 @@ def summarize(env):
             return "Live Protect %s %s %s" % (ev.get("switch") or ev.get("device"), ev.get("advisory_id") or ev.get("advisory"), ev.get("status") or "")
         if st == "cisco:nexus:config":
             return "config %s by %s: %s" % (ev.get("device"), ev.get("user"), (ev.get("change") or "")[:70])
+        if st == "cisco:dc:nd:advisories":
+            return "Nexus Dashboard advisory %s (%s) on %s" % (ev.get("advisoryId"), ev.get("severity"), ", ".join(ev.get("nodeNames") or []))
+        if st == "cisco:dc:nd:anomalies":
+            return "Nexus Dashboard anomaly %s %s on %s%s" % (ev.get("anomalyType"), ev.get("severity"), ", ".join(ev.get("nodeNames") or []), " (cleared)" if ev.get("cleared") else "")
         if st == "kube:apiserver:audit":
             return "k8s %s %s/%s %s" % (ev.get("verb"), ev.get("objectRef", {}).get("resource"), ev.get("objectRef", {}).get("name"), ev.get("responseStatus", {}).get("code"))
         if st == "zt:enforcement:audit":

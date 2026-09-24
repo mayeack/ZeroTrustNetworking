@@ -38,7 +38,7 @@ APPROVER_LABELS = {"kernel": "SOC tier 2", "dpu": "SOC tier 2, NetOps", "switch"
 PROMPT_MINUTES = 30
 
 BRIEF_WAIT_SECONDS = 30
-BRIEF_MAX_ATTEMPTS = 12                 # 12 x 30 s = 6 minutes
+BRIEF_MAX_ATTEMPTS = 20                 # 20 x 30 s = 10 minutes: covers ZT Agent - Recover Brief when the first result is lost
 VERIFY_WAIT_SECONDS = 15
 VERIFY_MAX_ATTEMPTS = 12                # 12 x 15 s = 3 minutes
 
@@ -290,7 +290,7 @@ def start_from_finding_record_investigation(action=None, success=None, container
 # ------------------------------------------------------------------------------------------------ 2 read_brief
 @phantom.playbook_block()
 def read_brief(action=None, success=None, container=None, results=None, handle=None, filtered_artifacts=None, filtered_results=None, custom_function=None, loop_state_json=None, **kwargs):
-    """Read the agent brief for this finding from the KV store lookup (polled every 30 s for up to 6 minutes)."""
+    """Read the agent brief for this finding from the KV store lookup (polled every 30 s for up to 10 minutes)."""
     phantom.debug("read_brief() called")
 
     query_formatted_string = phantom.format(

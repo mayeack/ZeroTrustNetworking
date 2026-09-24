@@ -2,6 +2,8 @@
 
 CLUSTER = "ai-platform-dc2"
 FABRIC = "dc2"
+ND_HOST = "nd-dc2"                 # Nexus Dashboard that manages the dc2 fabric
+ND_INSIGHTS_GROUP = "dc2-insights"
 
 # Runner (source)
 RUNNER_NS = "build-farm"

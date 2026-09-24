@@ -61,7 +61,7 @@ def main(argv):
     runs = sorted((n for n in names if "-" not in n), key=run_order)
     stopped = sorted((n for n in names if "-" in n), key=run_order)
     fixes = json.load(open(os.path.join(E2E, "fixes.json"))) if os.path.exists(os.path.join(E2E, "fixes.json")) else []
-    titles = {"run1": "Run 1", "run2": "Run 2", "run3": "Run 3", "run4": "Run 4", "run5": "Run 5", "run6": "Run 6", "run7": "Run 7"}
+    titles = {"run%d" % i: "Run %d" % i for i in range(1, 20)}
     md = ["# End-to-end test of the demo flow", "",
           "Every step of `docs/demo_script.md` executed against the Splunk Cloud stack and SOAR Cloud, as a presenter would: the live generator page in a browser for fire, reset, mode and triggers; the searches and pages of the Zero Trust Incident app; Enterprise Security, Agent Launchpad and SOAR through the same searches and REST calls their pages use. Each run starts from a reset. A defect is fixed, then the test restarts from the beginning.", "",
           "Splunk Web pages were opened in the signed-in tab of the desktop app's built-in browser and read from the page. Values in tables that the hidden browser pane does not draw were read through the search API with the same searches.", "",
@@ -70,7 +70,11 @@ def main(argv):
     md += [summary_row(r, titles.get(r, r)) for r in runs]
     md.append("")
     if stopped:
-        md += ["Not counted: %s, restarted after a fix found in their first steps." % ", ".join("`%s`" % n for n in stopped), ""]
+        md += ["Not counted: %s, stopped to fix a defect (see the table of defects at the end) and restarted from the beginning." % ", ".join("`%s`" % n for n in stopped), ""]
+    if runs:
+        rows, last = load(runs[-1])
+        fails = [r for r in last.values() if r["result"] == "FAIL"]
+        md += ["The latest run, %s, is the dry run of record%s" % (titles.get(runs[-1], runs[-1]), (": its failed steps are " + "; ".join("%s (%s)" % (r["step"], r["action"]) for r in fails) + ".") if fails else ": every step passed."), ""]
     for run in runs:
         md += section(run, titles.get(run, run))
     if fixes:

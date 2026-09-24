@@ -1,5 +1,19 @@
 # Changelog
 
+## 1.0.8 (2026-09-24)
+
+- Nexus Dashboard data in the Cisco DC Networking app's schema: `cisco:dc:nd:advisories` (16 a day: four advisories for the NX-OS components that Live Protect shields, polled every six hours) and `cisco:dc:nd:anomalies` (10 a day: five anomalies raised and cleared, matching the day's Nexus changes). With the DC Networking app installed, its props map the severity and the switch list, and Secure Networking Essentials shows them: Fabric Operations › Critical Security Advisories, Infrastructure Posture › Data Center Signals and Critical Advisories. The live generator page lists the two sourcetypes.
+- `ZT Agent - Recover Brief` (every minute): when the AI Toolkit fails to write the agent's result to `_audit` (its `mltk/hec_operations` handler answers HTTP 500 now and then), no brief arrives and the demo stops at the brief step. The search runs the agent once more inline, at most twice per finding group, when a result write failed after the run started or no brief arrived seven minutes after the finding, and stores the brief from the command's output with `ztbrief`.
+- Zero Trust Fabric Posture: the verdict chart starts at the last reset (or 30 minutes ago, whichever is later), so it is empty until the incident starts, as its placeholder says.
+- `props.conf`: the Tetragon block stays with the Cisco Security Cloud App installed; the comment says what that app adds and what it does not.
+- SOAR playbook (imported, not part of the app): waits up to 10 minutes for the brief, which covers a recovered one.
+
+## Docs and collateral: handoff pass (2026-09-24, no app change)
+
+- The handoff checklist of the collateral review was worked through: Secure Networking Essentials wording after 1.0.7 (Runtime Detections 2, the fields as calculated fields, the noise counts), the fact corrections F1 to F5 in both decks, the talk track, the co-sell and One Incident PDFs and the review, a slide 19 posture image rendered by Splunk, and a review section on other dCloud demos and Isovalent labs.
+- `sync_collateral.py` replaces a picture only when it changed; `verify_collateral.py` checks the collateral against the stack and the checklist.
+- After the Cisco DC Networking and Cisco Security Cloud apps were installed: the talk track (§3, Beat 5, the data-path answer, §7 and §8), the demo script and the review say what those apps show and why the demo app keeps its Tetragon parsing.
+
 ## Docs and collateral (2026-09-24, no app change)
 
 - `docs/collateral/collateral.yaml` follows the 22-slide One Incident deck (initiatives slide at 3, "What ships, and what we build for you" at 13, live steps at 14 to 19) and the ten-beat talk track (beats 5 to 8 kept here, §3 "Before the lab phase" column added).

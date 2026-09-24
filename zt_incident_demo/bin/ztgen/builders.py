@@ -259,6 +259,32 @@ def nexus_config(t, device, user, change, diff_summary, change_type="config", ti
     return envelope(t, device, "nexus", "cisco:nexus:config", ev)
 
 
+# --------------------------------------------------------------------------- Nexus Dashboard (Cisco DC Networking app schema)
+# cisco:dc:nd:advisories and cisco:dc:nd:anomalies as the Cisco DC Networking app (Splunkbase 7777) indexes them from
+# Nexus Dashboard: JSON with the time in endTs, severity as Nexus Dashboard reports it (the app derives
+# calculated_severity), nodeNames as a list. Secure Networking Essentials reads them for its data center cards.
+def nd_advisory(t, advisory, first_seen):
+    ev = OrderedDict([("advisoryId", advisory["id"]), ("title", advisory["title"]), ("advisoryStr", advisory["text"]), ("category", advisory["category"]),
+                      ("severity", advisory["severity"]), ("resourceType", "node"), ("nodeNames", list(advisory["nodes"])), ("fabricName", canon.FABRIC),
+                      ("insights_group", canon.ND_INSIGHTS_GROUP), ("nd_host", canon.ND_HOST), ("vendor", "CISCO_NX-OS"),
+                      ("startTs", iso_ms(first_seen)), ("endTs", iso_ms(t)), ("clearTs", ""), ("cleared", False),
+                      ("acknowledged", advisory["acknowledged"]), ("verificationStatus", "VERIFIED" if advisory["acknowledged"] else "NOT_VERIFIED"),
+                      ("assignee", advisory.get("assignee", ""))])
+    return envelope(t, canon.ND_HOST, "nexus-dashboard", "cisco:dc:nd:advisories", ev)
+
+
+def nd_anomaly(t, anomaly, start_t, clear_t=None):
+    cleared = clear_t is not None and t >= clear_t
+    ev = OrderedDict([("anomalyId", det_uuid("nd-anomaly", anomaly["type"], anomaly["node"], int(start_t))), ("anomalyType", anomaly["type"]),
+                      ("anomalyStr", anomaly["text"]), ("category", anomaly["category"]), ("severity", anomaly["severity"]),
+                      ("anomalyScore", anomaly["score"]), ("entityName", anomaly["entity"]), ("resourceType", anomaly["resource"]),
+                      ("nodeNames", [anomaly["node"]]), ("fabricName", canon.FABRIC), ("insights_group", canon.ND_INSIGHTS_GROUP), ("nd_host", canon.ND_HOST),
+                      ("vendor", "CISCO_NX-OS"), ("mnemonicTitle", anomaly["mnemonic"]), ("mnemonicNum", anomaly["mnemonic_num"]),
+                      ("startTs", iso_ms(start_t)), ("endTs", iso_ms(t)), ("clearTs", iso_ms(clear_t) if cleared else ""), ("cleared", cleared),
+                      ("acknowledged", cleared), ("verificationStatus", "VERIFIED" if cleared else "NOT_VERIFIED"), ("assignee", anomaly.get("assignee", "") if cleared else "")])
+    return envelope(t, canon.ND_HOST, "nexus-dashboard", "cisco:dc:nd:anomalies", ev)
+
+
 # --------------------------------------------------------------------------- Kubernetes audit
 def k8s_audit(t, *, audit_id, verb, uri, resource, namespace, name, api_group, api_version, code, user, groups, source_ip, user_agent, reason, received_t=None):
     ev = OrderedDict()
