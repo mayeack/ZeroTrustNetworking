@@ -43,13 +43,34 @@ def section(run, title):
     return out
 
 
+def run_order(name):
+    num = "".join(ch for ch in name[3:] if ch.isdigit())
+    return (int(num or 0), name)
+
+
+def summary_row(run, title):
+    rows, last = load(run)
+    final = list(last.values())
+    c = {k: sum(1 for r in final if r["result"] == k) for k in ("PASS", "FAIL", "BLOCKED", "INFO")}
+    verdict = "all steps passed" if not c["FAIL"] and not c["BLOCKED"] else "%d failed" % c["FAIL"] + (", %d blocked" % c["BLOCKED"] if c["BLOCKED"] else "")
+    return "| %s | %s to %s | %d | %d | %d | %d | %s |" % (title, rows[0]["utc"][:16], rows[-1]["utc"][11:16], len(final), c["PASS"], c["FAIL"], c["INFO"], verdict)
+
+
 def main(argv):
-    runs = sorted(os.path.basename(p)[:-6] for p in glob.glob(os.path.join(E2E, "run*.jsonl")))
+    names = [os.path.basename(p)[:-6] for p in glob.glob(os.path.join(E2E, "run*.jsonl"))]
+    runs = sorted((n for n in names if "-" not in n), key=run_order)
+    stopped = sorted((n for n in names if "-" in n), key=run_order)
     fixes = json.load(open(os.path.join(E2E, "fixes.json"))) if os.path.exists(os.path.join(E2E, "fixes.json")) else []
+    titles = {"run1": "Run 1", "run2": "Run 2", "run3": "Run 3", "run4": "Run 4", "run5": "Run 5", "run6": "Run 6", "run7": "Run 7"}
     md = ["# End-to-end test of the demo flow", "",
           "Every step of `docs/demo_script.md` executed against the Splunk Cloud stack and SOAR Cloud, as a presenter would: the live generator page in a browser for fire, reset, mode and triggers; the searches and pages of the Zero Trust Incident app; Enterprise Security, Agent Launchpad and SOAR through the same searches and REST calls their pages use. Each run starts from a reset. A defect is fixed, then the test restarts from the beginning.", "",
-          "The one step not performed by hand is signing in to Splunk Web or SOAR as `j.chen`: I do not type passwords into sign-in forms. j.chen's approval was sent to the same endpoint the Approve button calls (`POST /services/zt_incident_demo/approvals`, Mode B) and to the prompt API the SOAR Approve button uses (`POST /rest/approval/<id>`, Mode A), with j.chen's credentials.", ""]
-    titles = {"run1": "Run 1", "run2": "Run 2 (after the fixes)", "run3": "Run 3"}
+          "Splunk Web pages were opened in the signed-in tab of the desktop app's built-in browser and read from the page. Values in tables that the hidden browser pane does not draw were read through the search API with the same searches.", "",
+          "The one step not performed by hand is signing in to Splunk Web or SOAR as `j.chen`: I do not type passwords into sign-in forms. j.chen's approval was sent to the same endpoint the Approve button calls (`POST /services/zt_incident_demo/approvals`, Mode B) and to the prompt API the SOAR Approve button uses (`POST /rest/approval/<id>`, Mode A), with j.chen's credentials.", "",
+          "## Summary", "", "| Run | UTC | Steps | Passed | Failed | Notes | Result |", "|---|---|---|---|---|---|---|"]
+    md += [summary_row(r, titles.get(r, r)) for r in runs]
+    md.append("")
+    if stopped:
+        md += ["Not counted: %s, restarted after a fix found in their first steps." % ", ".join("`%s`" % n for n in stopped), ""]
     for run in runs:
         md += section(run, titles.get(run, run))
     if fixes:

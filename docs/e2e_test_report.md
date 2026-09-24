@@ -2,7 +2,22 @@
 
 Every step of `docs/demo_script.md` executed against the Splunk Cloud stack and SOAR Cloud, as a presenter would: the live generator page in a browser for fire, reset, mode and triggers; the searches and pages of the Zero Trust Incident app; Enterprise Security, Agent Launchpad and SOAR through the same searches and REST calls their pages use. Each run starts from a reset. A defect is fixed, then the test restarts from the beginning.
 
+Splunk Web pages were opened in the signed-in tab of the desktop app's built-in browser and read from the page. Values in tables that the hidden browser pane does not draw were read through the search API with the same searches.
+
 The one step not performed by hand is signing in to Splunk Web or SOAR as `j.chen`: I do not type passwords into sign-in forms. j.chen's approval was sent to the same endpoint the Approve button calls (`POST /services/zt_incident_demo/approvals`, Mode B) and to the prompt API the SOAR Approve button uses (`POST /rest/approval/<id>`, Mode A), with j.chen's credentials.
+
+## Summary
+
+| Run | UTC | Steps | Passed | Failed | Notes | Result |
+|---|---|---|---|---|---|---|
+| Run 1 | 2026-09-24 15:40 to 16:22 | 70 | 51 | 16 | 2 | 16 failed, 1 blocked |
+| Run 2 | 2026-09-24 16:44 to 17:26 | 65 | 56 | 8 | 1 | 8 failed |
+| Run 3 | 2026-09-24 17:48 to 18:20 | 57 | 54 | 2 | 1 | 2 failed |
+| Run 4 | 2026-09-24 18:41 to 19:14 | 41 | 38 | 1 | 2 | 1 failed |
+| Run 5 | 2026-09-24 19:15 to 19:47 | 61 | 57 | 1 | 3 | 1 failed |
+| Run 6 | 2026-09-24 19:47 to 20:18 | 61 | 58 | 1 | 2 | 1 failed |
+
+Not counted: `run2-aborted`, `run4-stopped`, restarted after a fix found in their first steps.
 
 ## Run 1
 
@@ -118,7 +133,7 @@ The one step not performed by hand is signing in to Splunk Web or SOAR as `j.che
 | T.7 | 16:21:31 | Live generator page: Reset after the triggers | **PASS** | released: ml-notebooks/jupyter-75e4a-11141 zt-quarantine-jupyter-88213 ('attack contained, policy retired'); attacks: attack:jupyter-1790266360 stopped; plan idle |
 | T.7b | 16:22:06 | Reset duration | **FAIL** | the reset took over 20 s: it asks the emulator to release every attack record ever created, one call through the tunnel each |
 
-## Run 2 (after the fixes)
+## Run 2
 
 2026-09-24 16:44:40 to 17:26:48 UTC. 65 steps: 56 passed, 8 failed, 0 blocked, 1 notes.
 
@@ -227,16 +242,396 @@ The one step not performed by hand is signing in to Splunk Web or SOAR as `j.che
 | T.3g | 17:25:45 | ES investigation of the attack (after verification) | **PASS** | ES-00010 status 4, True Positive - Suspicious Activity |
 | T.7 | 17:26:47 | Live generator page: Reset after the triggers | **PASS** | reset stamped 17:26:03, about 6 s after the click (was over 20 s in run 1): released zt-quarantine-jupyter-75e4a-11141 only; attack stopped |
 
-## run2-aborted
+## Run 3
 
-2026-09-24 16:35:24 to 16:35:27 UTC. 2 steps: 2 passed, 0 failed, 0 blocked, 0 notes.
+2026-09-24 17:48:07 to 18:20:18 UTC. 57 steps: 54 passed, 2 failed, 0 blocked, 1 notes.
 
 ### Before the call
 
 | Step | Time (UTC) | Action | Result | Observed |
 |---|---|---|---|---|
-| 1.0 | 16:35:24 | Live generator (launchd, restarted on the fixed code) | **PASS** | owner live:MYEACK-M-P9QJ:72185 holds the lease, 100 ticks, search head input stands down; stack apps {'DA-ESS-zt_incident_demo': '1.0.4', 'zt_incident_demo': '1.0.3'} |
-| 1.1 | 16:35:27 | Search: \| ztdemo action=status | **PASS** | {"backfill_done": "1", "checkpoint_age_s": "4", "plan_status": "idle", "quarantine_policies": "none", "speed": "fast", "response_mode": "local", "agent_mode": "mcp"} |
+| 1.0 | 17:48:07 | Live generator (launchd) and stack versions | **PASS** | owner live:MYEACK-M-P9QJ:47110 holds the lease; search head input: '261, 'skipped': 'streaming is owned by live:MYEACK-M-P9QJ:47110 (lease 2s old)'}'; apps {'DA-ESS-zt_incident_demo': '1.0.5', 'zt_incident_demo': '1.0.5'} |
+| 1.1 | 17:48:11 | Search: \| ztdemo action=status | **PASS** | {"backfill_done": "1", "checkpoint_age_s": "2", "plan_status": "idle", "quarantine_policies": "none", "speed": "fast", "response_mode": "local", "agent_mode": "mcp"} |
+| 1.2 | 17:49:03 | make emulator-status | **PASS** | local /version HTTP 200; public https://zt-k8s.yeackbot.com HTTP 200 v1.31 |
+| 1.3 | 17:49:43 | Live generator page: Reset (two clicks) | **PASS** | page: 'plan idle, reset stamped · released none · cancelled 0' within 10 s |
+| 1.4 | 17:49:45 | Posture before-state (rollup) | **PASS** | identities 1285, coverage 86.8% (59 of 68), unprotected 9, audit flows 2468, enforcement 27 (kernel 21, DPU 2, switch 4); carries runs 1-2 and their trigger paths for 24 h |
+| 1.5 | 17:50:58 | Splunk Web: Zero Trust Incident home | **PASS** | cards: 86.8 protected-path coverage · 7 incidents fired, last 24h · 0 pending approvals; scoreboard 1,285 / 86.8 / 9 / 2 finding groups, last 24h / 28 enforcements verified |
+| 1.6 | 17:50:58 | Splunk Web: Zero Trust Fabric Posture before the fire | **PASS** | panel 'Enforcement Audit Trail' (no '(SOAR)'); routine rows read 'playbook (policy)'; KPIs as the rollup: 1,285 / 86.8% / 9 / 27 |
+
+### Step 2: two signals in Splunk
+
+| Step | Time (UTC) | Action | Result | Observed |
+|---|---|---|---|---|
+| 2.1 | 17:52:49 | Live generator page: Fire the incident | **PASS** | page: 'incident started at 2026-09-24T17:51:06.634Z · attempts every 30s' |
+| 2.2 | 17:52:52 | Search 1 (Splunk Web showed '1 event, Statistics (1)'; values read by search API because the hidden pane does not draw the table) | **PASS** | 17:52:36.663 checkpoint-store-1:9000, 48213 -> 30719, checkpoint-store-ingress-allowlist (audit), owner platform-build |
+| 2.3 | 17:52:53 | Search 2: processConnect process_name=curl | **PASS** | 17:51:06.634 /usr/bin/curl from /bin/sh -c ./scripts/postbuild.sh on bf-node-03 -> checkpoint-store-1 (0/ckpt/llm-7712/step-184000/model-00001-of-00008.safetensors) |
+| 2.4 | 17:53:12 | Compare _time of the first Tetragon connect and the first Hubble AUDIT flow (re-checked: the first check compared the newest AUDIT flow) | **PASS** | cisco:isovalent:processConnect then cilium:hubble:flow: 29 ms apart |
+| 2.5 | 17:52:57 | Context: ci:job:event pod="ci-runner-7d9f8-xk2lq" (last 15 min); zt_node_fabric bf-node-03 | **PASS** | jobs on the pod: 1 (88213) package/post-build MR 4417 by contractor-dev-17; fabric dc2-leaf-205 Eth1/12 |
+| 2.6 | 17:53:14 | Rerun search 1 (attempt count) | **PASS** | 5 AUDIT flows since the fire, one per 30 s attempt |
+
+### Step 3: one finding, one brief
+
+| Step | Time (UTC) | Action | Result | Observed |
+|---|---|---|---|---|
+| 3.0 | 17:53:28 | Risk events for build-farm/ci-runner since the fire | **PASS** | 17:52:07 ZT - Unapproved Program Connected to Protected AI Data Store +40.0 (normalized build-farm/ci-runner); 17:52:07 ZT - Audit-Mode Flow Into Protected AI Data Store +50.0 (normalized build-farm/ci-runner) (total 90) |
+| 3.1 | 17:54:15 | Splunk Web: ES Analyst Queue | **PASS** | top row 'Unprotected path: build-farm/ci-runner reached a protected AI data store', entity build-farm/ci-runner (ES now names it by the workload), score 90, 5:53 PM, New; finding 17:53:11 (T0+2m05s), risk 90 from 2 detections, severity high, threat objects /usr/bin/curl,ai-train/checkpoint-store, MITRE T1059.004,T1530 |
+| 3.1b | 17:54:16 | Analyst Queue: ES's own 24-hour threshold | **INFO** | after several runs in a day, ES's 'Risk - 24 Hour Risk Threshold Exceeded' rule also opens a finding for build-farm/ci-runner (score 180); Enterprise Security content, not changed; the talk track should mention it or filter the queue on 'Unprotected path' |
+| 3.2 | 17:54:38 | Run the three drilldowns of the finding rule ($zt_workload$ = build-farm/ci-runner) | **PASS** | Raw Hubble flows for build-farm/ci-runner: 66; Tetragon events for build-farm/ci-runner: 85; CI jobs on build-farm/ci-runner pods: 4 |
+| 3.3 | 17:54:58 | Agent run history (ZTFlowInvestigator) | **PASS** | 5 tool calls: zt_finding_context > zt_flow_evidence > zt_process_evidence > zt_ci_job_context > zt_workload_server_context; run 60 s |
+| 3.4 | 17:54:58 | Read the brief | **FAIL** | true_positive (high); where ci-runner-7d9f8-xk2lq on bf-node-03, dc2-leaf-205 Eth1/12; recommends zt-quarantine-ci-runner-88213 at the kernel; missing facts: ['SOC tier 2'] |
+| 3.5 | 17:56:12 | ES investigation ES-00011 notes | **PASS** | [('ZTFlowInvestigator brief', True), ('Quarantine requested', False)] |
+
+### Step 4: approve the quarantine (Mode B)
+
+| Step | Time (UTC) | Action | Result | Observed |
+|---|---|---|---|---|
+| 4.1 | 17:56:12 | Pending request (Enforcement Approvals data) | **PASS** | ZTR-20260924-0026 pending, ES-00011, action 'CNP zt-quarantine-ci-runner-88213', approvers 'SOC tier 2' (from the approval matrix, not the brief), requested 17:56:01 |
+| 4.2 | 17:56:12 | The request's policy YAML | **PASS** | zt-quarantine-ci-runner-88213, endpointSelector zt-quarantine: "88213", egressDeny/ingressDeny all |
+| 4.3 | 17:56:42 | Approve as a.patel (NetOps) through the approvals endpoint (the page's Approve button was clicked as admin in run 2; this session's pane is not on screen) | **PASS** | HTTP 403: {"message": "a.patel is not an approver for the kernel enforcement point (needs SOC tier 2)", "request_id": "Z; refusal audited: {'approved_by_label': 'a.patel (NetOps)', 'comment': 'a.patel is not an approver for the kernel enforcement point (needs SOC tier 2)'} |
+| 4.4 | 17:56:47 | Approve as j.chen (SOC tier 2) through POST /services/zt_incident_demo/approvals | **PASS** | HTTP 200 in 5.1 s: {"message": "request ZTR-20260924-0026 approved by j.chen (SOC tier 2)", "request_id": "ZTR-20260924-0026", "status": "a |
+| 4.5 | 17:56:57 | index=zero_trust sourcetype=kube:apiserver:audit (zt-enforcer) | **PASS** | 17:56:43 patch pods/ci-runner-7d9f8-xk2lq 200; 17:56:45 create ciliumnetworkpolicies/zt-quarantine-ci-runner-88213 201 |
+
+### Step 5: verify and prove it
+
+| Step | Time (UTC) | Action | Result | Observed |
+|---|---|---|---|---|
+| 5.0 | 18:00:20 | First retry after the approval | **PASS** | 17:57:06.641 DROPPED (POLICY_DENY), identity 48291, egress_denied_by zt-quarantine-ci-runner-88213 (apply + 24 s) |
+| 5.1 | 18:00:21 | Request status after the first DROPPED | **PASS** | ZTR-20260924-0026 verified 34 s after apply |
+| 5.2 | 18:00:24 | ES investigation ES-00011 after verification | **PASS** | status 4 (Resolved), True Positive - Suspicious Activity |
+| 5.3 | 18:00:29 | Runner retries and CI job 88213 outcome | **PASS** | 6 DROPPED; job failed at 17:59:51 with script_failure |
+| 5.4 | 18:01:34 | Splunk Web: Incident Timeline (selector on the newest incident) | **PASS** | selector '2026-09-24 17:50:39 UTC · CI job 88213 · MR !4417'; five cards ticked; grid 12/12 ticked (1:17:51:06 2:17:51:06 3:17:51:10 4:17:52:07 5:17:53:11 6:17:54:21 7:17:56:46 8:17:56:45 9:17:56:43 10:17:57:06 11:17:57:00 12:17:57:20); Decide names ES-00011 and zt-quarantine-ci-runner-88213; Verify: coverage 85.3% during -> 86.8% now; incident table newest first: six DROPPED rows by zt-quarantine-ci-runner-88213, verified CNP (j.chen (SOC tier 2)) |
+| 5.4b | 18:01:34 | Incident Timeline: Decide card approver | **FAIL** | reads 'approver soc-tier-2' because this run's brief returned the approver as a slug (run 2's said 'SOC tier 2'); the request itself takes approvers from the approval matrix |
+| 5.5 | 18:02:10 | Splunk Web: Zero Trust Fabric Posture after the quarantine | **PASS** | identities 1285, coverage 86.8% 'up from 85.3%', unprotected 9 'down from 10', enforcement 28 (kernel 22 · DPU 2 · switch 4) = before-state 27 + 1 kernel |
+| 5.6 | 18:02:12 | Verdict chart build-farm/ci-runner -> ai-train/checkpoint-store:9000 | **PASS** | AUDIT 12 then DROPPED 6 in the last 30 minutes |
+| 5.7 | 18:02:15 | Enforcement Audit Trail, first row | **PASS** | 2026-09-24 17:57:20 \| ES-00011 \| CNP zt-quarantine-ci-runner-88213 \| kernel \| j.chen (SOC tier 2) \| verified |
+
+### After the call
+
+| Step | Time (UTC) | Action | Result | Observed |
+|---|---|---|---|---|
+| 6.1 | 18:02:58 | Live generator page: Reset (two clicks); \| ztdemo action=status | **PASS** | page: 'plan idle, reset stamped · released zt-quarantine-ci-runner-88213 · cancelled 0'; released by k.osei (platform) ('merge request reverted'); plan idle, quarantine none |
+
+### Mode A: the same incident through SOAR
+
+| Step | Time (UTC) | Action | Result | Observed |
+|---|---|---|---|---|
+| A.1 | 18:03:44 | Live generator page › Settings › Response mode: SOAR (one click); Dashboard › Fire the incident | **PASS** | page: now {response_mode: soar, agent_mode: mcp, automation_rule: on}; 'incident started at 2026-09-24T18:03:24.235Z' |
+| A.2 | 18:08:23 | ES finding and automation rule (Mode A) | **PASS** | finding 18:05:12 (entity build-farm/ci-runner); playbook run 545 on a new container 1067 named 'Unprotected path: build-farm/ci-runner reached a protected AI data store' at 18:05:23; read_brief polled until this run's brief existed (18:07:16, ES-00012); no local request |
+| A.3 | 18:08:24 | SOAR prompt ask_approval (role SOC tier 2) | **PASS** | 'Quarantine request ZTR-20260924-0027 for ES-00012: build-farm/ci-runner reached ai-train/checkpoint-store (crown-jewel).'; recommends CNP zt-quarantine-ci-runner-88213 at the kernel; this run's brief (18:03:24-18:05:24 UTC) |
+| A.4 | 18:08:25 | Answer the prompt as j.chen: Approve with a comment (POST /rest/approval/7) | **PASS** | status approved, responses ['Approve', 'Contractor merge request; not approved for checkpoint access'] |
+| A.5 | 18:12:02 | Playbook applies the quarantine | **PASS** | 18:08:30 patch pods/ci-runner-7d9f8-xk2lq 200; 18:08:34 create ciliumnetworkpolicies/zt-quarantine-ci-runner-88213 201 |
+| A.6 | 18:12:06 | Enforcement audit trail (Mode A) | **PASS** | requested 18:07:29, approved 18:08:25, applied 18:08:36, verified 18:09:11; executed_by soar, playbook run 545, j.chen (SOC tier 2), ES-00012, 'CNP zt-quarantine-ci-runner-88213' |
+| A.7 | 18:12:09 | ES investigation of this run after the playbook | **PASS** | ES-00012 status 4, True Positive - Suspicious Activity |
+| A.8 | 18:12:13 | Runner retries and CI job outcome (Mode A) | **PASS** | 6 DROPPED; job failed at 18:11:39 with script_failure |
+| A.9 | 18:12:51 | Live generator page: Reset; Settings › Response mode: Local (one click) | **PASS** | page: 'plan idle, reset stamped · released zt-quarantine-ci-runner-88213 · cancelled 0'; then now {response_mode: local, agent_mode: mcp, automation_rule: off} |
+
+### Live generator triggers
+
+| Step | Time (UTC) | Action | Result | Observed |
+|---|---|---|---|---|
+| T.1 | 18:16:10 | Triggers › Audit-mode flow: data-eng/spark-driver -> ai-train/checkpoint-store | **PASS** | page 'audit-mode connection sent (2 events)'; risk: 18:13:08 ZT - Audit-Mode Flow Into Protected AI Data Store +50.0 on data-eng/spark-driver |
+| T.2 | 18:16:10 | Triggers › Unapproved program: observability/log-shipper, /usr/bin/curl | **PASS** | page 'unapproved program connect sent (2 events)'; risk: 18:14:06 ZT - Unapproved Program Connected to Protected AI Data Store +40.0 on observability/log-shipper |
+| T.4 | 18:16:10 | Triggers › Nexus Live Protect | **PASS** | page 'Live Protect event sent (1 events)'; indexed 18:13:10 cisco:nexus:liveprotect dc2-leaf-201 cisco-sa-nxos-ospf-memleak-4qkw3 protected |
+| T.5 | 18:16:10 | Triggers › Nexus configuration change | **PASS** | page 'Nexus config change sent (1 events)'; indexed 18:13:14 cisco:nexus:config dc2-leaf-201 netops-cli 'interface Eth1/12 description zt-live' success |
+| T.6 | 18:16:37 | Triggers › Enforcement action (kernel, platform/jump-host, j.chen) | **PASS** | page 'enforcement ZTR-20260924-0028 recorded (6 events)'; audit trail: requested 18:10:50, approved 18:12:23, applied 18:12:25, verified 18:13:10; one above the playbook's 0027, no collision |
+| T.3a | 18:18:43 | Triggers › Path attack: ml-notebooks/jupyter -> ai-train/checkpoint-store | **PASS** | page 'attack started (4 events) · attempts every 30s'; attack jupyter-1790273601 started 18:13:21 |
+| T.3b | 18:18:43 | Path attack detected | **PASS** | risk 50 + 40 on ml-notebooks/jupyter at 18:14:06; finding 18:15:12 (ZT - Workload Exceeded Risk Threshold on Protected-Path Signals, zt_workload ml-notebooks/jupyter, risk 90, 2 sources) |
+| T.3c | 18:18:43 | Agent brief for the attack | **PASS** | brief 18:16:44, ES-00013, job_id empty (no CI job), true_positive (high), recommends CNP zt-quarantine-jupyter-75e4a-11141 at the kernel, approver 'SOC tier 2' (verbatim, no slug) |
+| T.3d | 18:18:43 | Quarantine request for the attack (scheduled search) | **PASS** | ZTR-20260924-0029 (next free id after the trigger's 0028), pending 18:18:02, ES-00013, action 'CNP zt-quarantine-jupyter-75e4a-11141' |
+| T.3e | 18:19:25 | Approve the attack's request as j.chen (POST /services/zt_incident_demo/approvals) | **PASS** | HTTP 200 in 6.4 s: 'request ZTR-20260924-0029 approved by j.chen (SOC tier 2)', status applied |
+| T.3f | 18:19:25 | Attack retries after the approval | **PASS** | kube: patch pods/jupyter-75e4a-11141 200 (18:18:44), create ciliumnetworkpolicies/zt-quarantine-jupyter-75e4a-11141 201 (18:18:46) in ml-notebooks; first DROPPED 18:18:51, identity 25317, denied by zt-quarantine-jupyter-75e4a-11141; request verified 17 s after apply (run 2: 94 s) |
+| T.3g | 18:19:25 | ES investigation of the attack | **PASS** | ES-00013 'Unprotected path: ml-notebooks/jupyter reached a protected AI data store' status 4 (Resolved), True Positive - Suspicious Activity |
+| T.7 | 18:20:18 | Live generator page: Reset (two clicks) after the triggers | **PASS** | page 'plan idle, reset stamped · released zt-quarantine-jupyter-75e4a-11141 · cancelled 0'; reset stamped 18:19:40, a few seconds after the click; attack jupyter-1790273601 stopped (12 attempts, 2 dropped); no quarantine left in zt_policy_state |
+
+## Run 4
+
+2026-09-24 18:41:36 to 19:14:33 UTC. 41 steps: 38 passed, 1 failed, 0 blocked, 2 notes.
+
+### Before the call
+
+| Step | Time (UTC) | Action | Result | Observed |
+|---|---|---|---|---|
+| 1.0 | 18:41:36 | Live generator (launchd) and stack versions | **PASS** | owner live:MYEACK-M-P9QJ:40412 holds the lease (age 5s), 5 ticks; page shows stack app 1.0.5; stack apps {'zt_incident_demo': '1.0.5', 'DA-ESS-zt_incident_demo': '1.0.5'} |
+| 1.1 | 18:41:39 | Search: \| ztdemo action=status | **PASS** | {"backfill_done": "1", "checkpoint_age_s": "3", "plan_status": "idle", "quarantine_policies": "none", "speed": "fast", "response_mode": "local", "agent_mode": "mcp"} |
+| 1.2 | 18:41:39 | make emulator-status | **PASS** | local  : HTTP 200 public : https://zt-k8s.yeackbot.com -> HTTP 200 {"major": "1", "minor": "31", "gitVersion": "v1.31.2", "platform": "linux/amd64" |
+| 1.3 | 18:42:17 | Live generator page: Reset (two clicks) | **PASS** | page: 'plan idle, reset stamped · released none · cancelled 0' within 10 s; Settings shows stack app 1.0.5 |
+| 1.4 | 18:42:19 | Posture before-state (rollup) | **PASS** | identities 1285, coverage 86.8% (59 of 68), unprotected 9, audit flows 2503, enforcement 31 (kernel 25, DPU 2, switch 4) |
+| 1.5 | 18:43:22 | Splunk Web (built-in browser, signed-in tab): Zero Trust Incident home | **PASS** | cards: 86.8 protected-path coverage · 9 incidents fired, last 24h · 0 pending approvals; scoreboard 1,285 / 86.8 / 9 / 3 finding groups, last 24h / 33 enforcements verified, last 24h |
+| 1.6 | 18:43:22 | Splunk Web: Zero Trust Fabric Posture before the fire | **PASS** | KPIs as the rollup: 1,285 / 86.8% 'up from 85.3%' / 9 'down from 10' / 2,503 / 31 (kernel 25 · DPU 2 · switch 4); verdict chart shows 'No incident since the last reset'; panel 'Enforcement Audit Trail', routine rows 'playbook (policy)', run 3 rows ES-00011..ES-00013 with j.chen (SOC tier 2) |
+
+### Step 2: two signals in Splunk
+
+| Step | Time (UTC) | Action | Result | Observed |
+|---|---|---|---|---|
+| 2.1 | 18:43:42 | Live generator page: Fire the incident | **PASS** | page: 'incident started at 2026-09-24T18:43:29.345Z · attempts every 30s' |
+| 2.2 | 18:44:26 | Search 1: hubble AUDIT flows from build-farm/ci-runner | **PASS** | 18:43:29.374 checkpoint-store-1:9000, 48213 -> 30719, checkpoint-store-ingress-allowlist (audit), owner platform-build |
+| 2.3 | 18:44:28 | Search 2: processConnect process_name=curl | **PASS** | 18:43:29.345 /usr/bin/curl from /bin/sh -c ./scripts/postbuild.sh on bf-node-03 -> checkpoint-store-1 (0/ckpt/llm-7712/step-184000/model-00001-of-00008.safetensors) |
+| 2.4 | 18:44:28 | Compare _time of the first Tetragon connect and the first Hubble AUDIT flow | **PASS** | connect 18:43:29.345, AUDIT 18:43:29.374: 29 ms apart |
+| 2.5 | 18:44:31 | Context: ci:job:event pod="ci-runner-7d9f8-xk2lq" (last 15 min); zt_node_fabric bf-node-03 | **PASS** | jobs on the pod: 1 (88213) package/post-build MR 4417 by contractor-dev-17; fabric dc2-leaf-205 Eth1/12 |
+| 2.6 | 18:44:42 | Rerun search 1 (attempt count) | **PASS** | 3 AUDIT flows since the fire, one per 30 s attempt (73 s after the fire) |
+
+### Step 3: one finding, one brief
+
+| Step | Time (UTC) | Action | Result | Observed |
+|---|---|---|---|---|
+| 3.0 | 18:45:39 | Risk events for build-farm/ci-runner since the fire | **PASS** | 18:44:06 ZT - Audit-Mode Flow Into Protected AI Data Store +50.0; 18:44:06 ZT - Unapproved Program Connected to Protected AI Data Store +40.0 (total 90) |
+| 3.2 | 18:45:48 | Run the three drilldowns of the finding rule ($zt_workload$ = build-farm/ci-runner) | **PASS** | Raw Hubble flows for build-farm/ci-runner: 68; Tetragon events for build-farm/ci-runner: 89; CI jobs on build-farm/ci-runner pods: 5 |
+| 3.1 | 18:46:26 | Splunk Web: ES Analyst Queue | **PASS** | top row 'Unprotected path: build-farm/ci-runner reached a protected AI data store', entity build-farm/ci-runner, 2 intermediate findings, score 90, New; notable 18:45:13 (T0+1m44s), severity high, threat objects /usr/bin/curl and ai-train/checkpoint-store, MITRE T1059.004 and T1530 |
+| 3.1b | 18:46:26 | Analyst Queue: time of a re-fired finding group | **INFO** | the row's time reads 5:53 PM, when this finding group was first created (run 3): ES reuses the group for the same rule and entity and keeps its first time; a fresh stack shows the fire time. ES's own 24-hour threshold rule also lists build-farm/ci-runner after several runs a day (run 3 note) |
+| 3.3 | 18:47:09 | Agent run history (ZTFlowInvestigator) | **PASS** | 6 tool calls: zt_finding_context > zt_flow_evidence > zt_process_evidence > zt_ci_job_context > zt_workload_server_context > zt_workload_server_context; run 100 s |
+| 3.4 | 18:47:10 | Read the brief | **PASS** | true_positive (high); where ci-runner-7d9f8-xk2lq on bf-node-03, dc2-leaf-205 Eth1/12; recommends zt-quarantine-ci-runner-88213 at the kernel; approver_labels ["SOC tier 2"]; missing facts: none |
+| 3.5 | 18:49:18 | ES investigation ES-00014 notes | **PASS** | [('ZTFlowInvestigator brief', True), ('Quarantine requested', False)]; brief KV approver_labels 'SOC tier 2' |
+
+### Step 4: approve the quarantine (Mode B)
+
+| Step | Time (UTC) | Action | Result | Observed |
+|---|---|---|---|---|
+| 4.1 | 18:49:18 | Pending request (Enforcement Approvals data) | **PASS** | ZTR-20260924-0030 pending, ES-00014, action 'CNP zt-quarantine-ci-runner-88213', approvers 'SOC tier 2', requested 18:49:02 |
+| 4.2 | 18:49:18 | The request's policy YAML | **PASS** | zt-quarantine-ci-runner-88213, endpointSelector zt-quarantine: "88213", egressDeny/ingressDeny all |
+| 4.0 | 18:49:52 | Splunk Web: Enforcement Approvals with the request pending | **PASS** | pending row ZTR-20260924-0030 · ES-00014 · build-farm/ci-runner · ci-runner-7d9f8-xk2lq · kernel · CNP zt-quarantine-ci-runner-88213 · SOC tier 2 · 18:49:02; history lists it as pending with applied/verified blank; the finding_id column shows ES's internal finding group id next to the investigation number |
+| 4.3 | 18:50:05 | Approve as a.patel (NetOps) through the approvals endpoint | **PASS** | HTTP 403: {"message": "a.patel is not an approver for the kernel enforcement point (needs SOC tier 2)", "request_id": "Z; refusal audited: {'approved_by_label': 'a.patel (NetOps)', 'comment': 'a.patel is not an approver for the kernel enforcement point (needs SOC tier 2)'} |
+| 4.4 | 18:50:14 | Approve as j.chen (SOC tier 2) through POST /services/zt_incident_demo/approvals | **PASS** | HTTP 200 in 9.1 s: {"message": "request ZTR-20260924-0030 approved by j.chen (SOC tier 2)", "request_id": "ZTR-20260924-0030", "status": "a |
+| 4.5 | 18:50:25 | index=zero_trust sourcetype=kube:apiserver:audit (zt-enforcer) | **PASS** | 18:50:07 patch pods/ci-runner-7d9f8-xk2lq 200; 18:50:09 create ciliumnetworkpolicies/zt-quarantine-ci-runner-88213 201 |
+
+### Step 5: verify and prove it
+
+| Step | Time (UTC) | Action | Result | Observed |
+|---|---|---|---|---|
+| 5.0 | 18:53:30 | First retry after the approval | **PASS** | 18:50:29.352 DROPPED (POLICY_DENY), identity 48291, egress_denied_by zt-quarantine-ci-runner-88213 (apply + 24 s) |
+| 5.1 | 18:53:31 | Request status after the first DROPPED | **PASS** | ZTR-20260924-0030 verified 35 s after apply |
+| 5.2 | 18:53:33 | ES investigation ES-00014 after verification | **PASS** | status 4 (Resolved), True Positive - Suspicious Activity |
+| 5.3 | 18:53:35 | Runner retries and CI job 88213 outcome | **PASS** | 6 DROPPED; job failed at 18:53:14 with script_failure |
+| 5.4 | 18:54:32 | Incident Timeline data (selector's newest incident, journey grid) | **PASS** | selector '2026-09-24 18:43:02 UTC · CI job 88213 · MR !4417'; grid 12/12 ticked (1:18:43:29 2:18:43:29 3:18:43:32 4:18:44:06 5:18:45:13 6:18:47:06 7:18:50:11 8:18:50:09 9:18:50:07 10:18:50:29 11:18:51:00 12:18:50:46) |
+| 5.4b | 18:54:35 | Incident Timeline: Decide card | **PASS** | Risk events 18:44:06 → 18:44:06 · 2 signals · 90.0 risk on build-farm/ci-runner / Finding group ES-00014 18:45:13 · risk 90 from 2 detections, over the threshold of 80 / Agent brief 18:47:06 · true positive (high) · recommends zt-quarantine-ci-runner-88213 at the kernel, approver SOC tier 2 |
+| 5.5 | 18:54:59 | Zero Trust Fabric Posture after the quarantine (KPI search) | **PASS** | identities 1285, coverage 86.8%, unprotected 9, enforcement 32 (kernel 26 · DPU 2 · switch 4); before-state 1285 / 86.8% / 9 / 31 |
+| 5.6 | 18:55:01 | Verdict chart build-farm/ci-runner -> ai-train/checkpoint-store:9000 | **PASS** | AUDIT 14 then DROPPED 6 in the last 30 minutes |
+| 5.7 | 18:55:08 | Enforcement Audit Trail, first row | **PASS** | 2026-09-24 18:50:46 \| ES-00014 \| CNP zt-quarantine-ci-runner-88213 \| kernel \| j.chen (SOC tier 2) \| verified |
+
+### After the call
+
+| Step | Time (UTC) | Action | Result | Observed |
+|---|---|---|---|---|
+| 6.1 | 18:55:48 | Live generator page: Reset (two clicks); \| ztdemo action=status | **PASS** | released zt-quarantine-ci-runner-88213 by k.osei (platform) ('merge request reverted'); plan idle, quarantine none |
+
+### Mode A: the same incident through SOAR
+
+| Step | Time (UTC) | Action | Result | Observed |
+|---|---|---|---|---|
+| A.1 | 18:56:34 | Live generator page › Settings › Response mode: SOAR (one click); Dashboard › Fire the incident | **PASS** | page: now {response_mode: soar, agent_mode: mcp, automation_rule: on}; 'incident started at 2026-09-24T18:56:20.451Z' |
+| A.2 | 19:06:44 | ES finding and automation rule (Mode A) | **FAIL** | finding 18:58:12 (entity build-farm/ci-runner); playbook run 569 on container 1067 'Unprotected path: build-farm/ci-runner reached a protected AI data store' started 18:58:31; brief - (-); local requests: 0 |
+| A.2b | 19:13:40 | Root cause of A.2 | **INFO** | the agent ran (18:58:22-19:00:07, 5 tools, success), but its run_finished event in _audit is 10,656 characters and its type field starts at character 10,371; Splunk extracts search-time fields from the first 10,240 characters only, so 'type=run_finished' in ZT Agent - Capture Brief missed it, no brief was stored, and the playbook noted 'no agent brief within 6 minutes' and stopped (Mode B's event was 10,247 characters with type at 9,962, just inside the limit) |
+| A.2c | 19:13:40 | Fix check: capture search on raw terms, pushed to the stack | **PASS** | the next Capture Brief run stored the missed brief: run 19:00:07, ES-00015, approver 'SOC tier 2', note added; ztbrief now also reads the type from the whole event (1.0.6) |
+| A.9 | 19:14:33 | Live generator page: Reset; Settings › Response mode: Local (one click) | **PASS** | page: 'plan idle, reset stamped · released none · cancelled 0' (no quarantine in this Mode A attempt); then now {response_mode: local, agent_mode: mcp, automation_rule: off} |
+
+## Run 5
+
+2026-09-24 19:15:38 to 19:47:24 UTC. 61 steps: 57 passed, 1 failed, 0 blocked, 3 notes.
+
+### Before the call
+
+| Step | Time (UTC) | Action | Result | Observed |
+|---|---|---|---|---|
+| 1.0 | 19:15:38 | Live generator (launchd) and stack versions | **PASS** | owner live:MYEACK-M-P9QJ:40412 holds the lease (age 2s), 482 ticks; page shows stack app 1.0.5; stack apps {'zt_incident_demo': '1.0.5', 'DA-ESS-zt_incident_demo': '1.0.5'} |
+| 1.1 | 19:15:41 | Search: \| ztdemo action=status | **PASS** | {"backfill_done": "1", "checkpoint_age_s": "4", "plan_status": "idle", "quarantine_policies": "none", "speed": "fast", "response_mode": "local", "agent_mode": "mcp"} |
+| 1.2 | 19:15:42 | make emulator-status | **PASS** | local  : HTTP 200 public : https://zt-k8s.yeackbot.com -> HTTP 200 {"major": "1", "minor": "31", "gitVersion": "v1.31.2", "platform": "linux/amd64" |
+| 1.3 | 19:16:16 | Live generator page: Reset (two clicks) | **PASS** | reset stamped 19:15:49, a few seconds after the second click; page: 'plan idle, reset stamped · released none · cancelled 0' |
+| 1.4 | 19:16:18 | Posture before-state (rollup) | **PASS** | identities 1285, coverage 85.3% (58 of 68), unprotected 10, audit flows 2552, enforcement 32 (kernel 26, DPU 2, switch 4) |
+| 1.5 | 19:17:15 | Splunk Web (built-in browser): Zero Trust Incident home | **PASS** | cards: 85.3 protected-path coverage · 11 incidents fired, last 24h · 0 pending approvals; scoreboard 1,285 / 85.3 / 10 / 3 finding groups / 34 enforcements verified (run 4's stopped Mode A left the runner's path in audit) |
+| 1.6 | 19:17:15 | Splunk Web: Zero Trust Fabric Posture before the fire | **PASS** | KPIs as the rollup: 1,285 / 85.3% 'target 95%' / 10 / 32 (kernel 26 · DPU 2 · switch 4); verdict chart 'No incident since the last reset'; panel 'Enforcement Audit Trail' |
+
+### Step 2: two signals in Splunk
+
+| Step | Time (UTC) | Action | Result | Observed |
+|---|---|---|---|---|
+| 2.1 | 19:17:33 | Live generator page: Fire the incident | **PASS** | page: 'incident started at 2026-09-24T19:17:20.224Z · attempts every 30s' |
+| 2.2 | 19:17:35 | Search 1: hubble AUDIT flows from build-farm/ci-runner | **PASS** | 19:17:20.253 checkpoint-store-1:9000, 48213 -> 30719, checkpoint-store-ingress-allowlist (audit), owner platform-build |
+| 2.3 | 19:17:36 | Search 2: processConnect process_name=curl | **PASS** | 19:17:20.224 /usr/bin/curl from /bin/sh -c ./scripts/postbuild.sh on bf-node-03 -> checkpoint-store-1 (0/ckpt/llm-7712/step-184000/model-00001-of-00008.safetensors) |
+| 2.4 | 19:17:36 | Compare _time of the first Tetragon connect and the first Hubble AUDIT flow | **PASS** | connect 19:17:20.224, AUDIT 19:17:20.253: 29 ms apart |
+| 2.5 | 19:17:39 | Context: ci:job:event pod="ci-runner-7d9f8-xk2lq" (last 15 min); zt_node_fabric bf-node-03 | **PASS** | jobs on the pod: 1 (88213) package/post-build MR 4417 by contractor-dev-17; fabric dc2-leaf-205 Eth1/12 |
+| 2.3b | 19:18:41 | Splunk Web: Search 2 over the last 10 minutes | **INFO** | Events (13): the runner's curl connects to checkpoint-store-1, this fire's plus the unquarantined retries of run 4's stopped Mode A attempt (every 30 s until its reset at 19:13); a presenter who searches since the fire sees this incident only |
+| 2.6 | 19:18:43 | Rerun search 1 (attempt count) | **PASS** | 3 AUDIT flows since the fire, one per 30 s attempt (84 s after the fire) |
+
+### Step 3: one finding, one brief
+
+| Step | Time (UTC) | Action | Result | Observed |
+|---|---|---|---|---|
+| 3.0 | 19:19:22 | Risk events for build-farm/ci-runner since the fire | **PASS** | 19:18:09 ZT - Unapproved Program Connected to Protected AI Data Store +40.0; 19:18:09 ZT - Audit-Mode Flow Into Protected AI Data Store +50.0 (total 90) |
+| 3.2 | 19:19:30 | Run the three drilldowns of the finding rule ($zt_workload$ = build-farm/ci-runner) | **PASS** | Raw Hubble flows for build-farm/ci-runner: 112; Tetragon events for build-farm/ci-runner: 127; CI jobs on build-farm/ci-runner pods: 4 |
+| 3.1 | 19:20:09 | Splunk Web: ES Analyst Queue | **PASS** | top row 'Unprotected path: build-farm/ci-runner reached a protected AI data store', entity build-farm/ci-runner, 2 intermediate findings, score 90, New, urgency High; notable 19:19:07 (T0+1m47s), threat objects /usr/bin/curl and ai-train/checkpoint-store, MITRE T1059.004 and T1530; the reused group carries run 4's investigation number ES-00015 until this run's brief opens a new one |
+| 3.3 | 19:20:38 | Agent run history (ZTFlowInvestigator) | **PASS** | 5 tool calls: zt_finding_context > zt_flow_evidence > zt_process_evidence > zt_ci_job_context > zt_workload_server_context; run 60 s |
+| 3.4 | 19:20:38 | Read the brief | **PASS** | true_positive (high); where ci-runner-7d9f8-xk2lq on bf-node-03, dc2-leaf-205 Eth1/12; recommends zt-quarantine-ci-runner-88213 at the kernel; approver_labels ["SOC tier 2"]; missing facts: none |
+| 3.5 | 19:22:16 | ES investigation ES-00016 notes | **FAIL** | [('Quarantine not requested', False), ('ZTFlowInvestigator brief', True), ('Quarantine requested', False)]; brief KV approver_labels 'SOC tier 2' |
+| 3.5b | 19:25:47 | Notes on ES-00016 | **INFO** | the first note is 'Quarantine not requested' from 19:05 UTC, written by the SOAR playbook in run 4's stopped Mode A attempt onto the finding group itself (no investigation existed); ES reuses that finding group for every run on build-farm/ci-runner, so the note reappears in each new investigation; playbook fixed to keep such notes on the SOAR container (imported as 250); the existing note must be removed in ES by the user |
+
+### Step 4: approve the quarantine (Mode B)
+
+| Step | Time (UTC) | Action | Result | Observed |
+|---|---|---|---|---|
+| 4.1 | 19:22:16 | Pending request (Enforcement Approvals data) | **PASS** | ZTR-20260924-0031 pending, ES-00016, action 'CNP zt-quarantine-ci-runner-88213', approvers 'SOC tier 2', requested 19:22:01 |
+| 4.2 | 19:22:16 | The request's policy YAML | **PASS** | zt-quarantine-ci-runner-88213, endpointSelector zt-quarantine: "88213", egressDeny/ingressDeny all |
+| 4.0 | 19:25:47 | Splunk Web: Enforcement Approvals with the request pending | **PASS** | ZTR-20260924-0031 listed as pending (ES-00016, CNP zt-quarantine-ci-runner-88213, SOC tier 2) and in the request history |
+| 4.3 | 19:25:56 | Approve as a.patel (NetOps) through the approvals endpoint | **PASS** | HTTP 403: {"message": "a.patel is not an approver for the kernel enforcement point (needs SOC tier 2)", "request_id": "Z; refusal audited: {'approved_by_label': 'a.patel (NetOps)', 'comment': 'a.patel is not an approver for the kernel enforcement point (needs SOC tier 2)'} |
+| 4.4 | 19:26:05 | Approve as j.chen (SOC tier 2) through POST /services/zt_incident_demo/approvals | **PASS** | HTTP 200 in 9.8 s: {"message": "request ZTR-20260924-0031 approved by j.chen (SOC tier 2)", "request_id": "ZTR-20260924-0031", "status": "a |
+| 4.5 | 19:26:16 | index=zero_trust sourcetype=kube:apiserver:audit (zt-enforcer) | **PASS** | 19:25:57 patch pods/ci-runner-7d9f8-xk2lq 200; 19:25:58 create ciliumnetworkpolicies/zt-quarantine-ci-runner-88213 201 |
+
+### Step 5: verify and prove it
+
+| Step | Time (UTC) | Action | Result | Observed |
+|---|---|---|---|---|
+| 5.0 | 19:29:26 | First retry after the approval | **PASS** | 19:26:20.231 DROPPED (POLICY_DENY), identity 48291, egress_denied_by zt-quarantine-ci-runner-88213 (apply + 24 s) |
+| 5.1 | 19:29:26 | Request status after the first DROPPED | **PASS** | ZTR-20260924-0031 verified 37 s after apply |
+| 5.2 | 19:29:28 | ES investigation ES-00016 after verification | **PASS** | status 4 (Resolved), True Positive - Suspicious Activity |
+| 5.3 | 19:29:30 | Runner retries and CI job 88213 outcome | **PASS** | 6 DROPPED; job failed at 19:29:05 with script_failure |
+| 5.4 | 19:31:29 | Incident Timeline data (selector's newest incident, journey grid) | **PASS** | selector '2026-09-24 19:16:53 UTC · CI job 88213 · MR !4417'; grid 12/12 ticked (1:19:17:20 2:19:17:20 3:19:17:26 4:19:18:09 5:19:19:07 6:19:20:18 7:19:26:00 8:19:25:58 9:19:25:57 10:19:26:20 11:19:27:00 12:19:26:37) |
+| 5.4b | 19:31:33 | Incident Timeline: Decide card | **PASS** | Risk events 19:18:09 → 19:18:09 · 2 signals · 90.0 risk on build-farm/ci-runner / Finding group ES-00016 19:19:07 · risk 90 from 2 detections, over the threshold of 80 / Agent brief 19:20:18 · true positive (high) · recommends zt-quarantine-ci-runner-88213 at the kernel, approver SOC tier 2 |
+| 5.5 | 19:31:35 | Zero Trust Fabric Posture after the quarantine (KPI search) | **PASS** | identities 1285, coverage 86.8%, unprotected 9, enforcement 33 (kernel 27 · DPU 2 · switch 4); before-state 1285 / 85.3% / 10 / 32 |
+| 5.6 | 19:31:37 | Verdict chart build-farm/ci-runner -> ai-train/checkpoint-store:9000 | **PASS** | AUDIT 42 then DROPPED 6 in the last 30 minutes |
+| 5.7 | 19:31:38 | Enforcement Audit Trail, first row | **PASS** | 2026-09-24 19:26:37 \| ES-00016 \| CNP zt-quarantine-ci-runner-88213 \| kernel \| j.chen (SOC tier 2) \| verified |
+| 5.5b | 19:32:21 | Splunk Web: Zero Trust Fabric Posture after the quarantine | **PASS** | coverage 'up from 85.3% · target 95%', unprotected 'down from 10', audit trail lists ES-00016 |
+
+### After the call
+
+| Step | Time (UTC) | Action | Result | Observed |
+|---|---|---|---|---|
+| 6.1 | 19:32:25 | Live generator page: Reset (two clicks); \| ztdemo action=status | **PASS** | released zt-quarantine-ci-runner-88213 by k.osei (platform) ('merge request reverted'); plan idle, quarantine none |
+
+### Mode A: the same incident through SOAR
+
+| Step | Time (UTC) | Action | Result | Observed |
+|---|---|---|---|---|
+| A.1 | 19:32:57 | Live generator page › Settings › Response mode: SOAR (one click); Dashboard › Fire the incident | **PASS** | page: now {response_mode: soar, agent_mode: mcp, automation_rule: on}; 'incident started at 2026-09-24T19:32:42.969Z' |
+| A.2 | 19:36:52 | ES finding and automation rule (Mode A) | **PASS** | finding 19:34:09 (entity build-farm/ci-runner); playbook run 570 on container 1067 'Unprotected path: build-farm/ci-runner reached a protected AI data store' started 19:34:26; brief 19:35:41 (ES-00017); local requests: 0 |
+| A.3 | 19:36:53 | SOAR prompt ask_approval (role SOC tier 2) | **PASS** | 'Quarantine request ZTR-20260924-0032 for ES-00017: build-farm/ci-runner reached ai-train/checkpoint-store (crown-jewel). Agent brief: true positive, high confidence. Pod ci-runner-7d9f8-xk2lq executed /usr/bin/curl to download 4 model shard files from checkpoint-store.ai-train.svc:9000/ckpt/llm-7712/step-184000/ between 19:32:42' |
+| A.4 | 19:36:54 | Answer the prompt as j.chen: Approve with a comment (POST /rest/approval/9) | **PASS** | status approved, responses ['Approve', 'Contractor merge request; not approved for checkpoint access'] |
+| A.5 | 19:40:14 | Playbook applies the quarantine | **PASS** | 19:37:00 patch pods/ci-runner-7d9f8-xk2lq 200; 19:37:05 create ciliumnetworkpolicies/zt-quarantine-ci-runner-88213 201 |
+| A.6 | 19:40:17 | Enforcement audit trail (Mode A) | **PASS** | requested 19:36:31, approved 19:36:54, applied 19:37:07, verified 19:37:42; executed_by soar, playbook run 570, j.chen (SOC tier 2), ES-00017, ZTR-20260924-0032, 'CNP zt-quarantine-ci-runner-88213' |
+| A.7 | 19:40:18 | ES investigation of this run after the playbook | **PASS** | ES-00017 status 4, True Positive - Suspicious Activity |
+| A.8 | 19:40:21 | Runner retries and CI job outcome (Mode A) | **PASS** | 6 DROPPED; job failed at 19:39:57 with script_failure |
+| A.9 | 19:41:12 | Live generator page: Reset (two clicks); \| ztdemo action=status | **PASS** | released zt-quarantine-ci-runner-88213 by k.osei (platform) ('merge request reverted'); plan idle, quarantine none |
+
+### Live generator triggers
+
+| Step | Time (UTC) | Action | Result | Observed |
+|---|---|---|---|---|
+| T.1 | 19:43:07 | Triggers › Audit-mode flow: data-eng/spark-driver -> ai-train/checkpoint-store | **PASS** | page 'audit-mode connection sent (2 events)'; risk: 19:42:06 ZT - Audit-Mode Flow Into Protected AI Data Store +50.0 |
+| T.2 | 19:43:07 | Triggers › Unapproved program: observability/log-shipper, /usr/bin/curl | **PASS** | page 'unapproved program connect sent (2 events)'; risk: 19:42:07 ZT - Unapproved Program Connected to Protected AI Data Store +40.0 |
+| T.4 | 19:43:11 | Triggers › Nexus Live Protect | **PASS** | page 'Live Protect event sent (1 events)'; indexed {"t": "19:41:38", "sourcetype": "cisco:nexus:liveprotect", "switch": "dc2-leaf-201", "advisory_id": "cisco-sa-nxos-nxapi-rce-9pwbe", "status": "protected"} |
+| T.5 | 19:43:11 | Triggers › Nexus configuration change | **PASS** | page 'Nexus config change sent (1 events)'; indexed {"t": "19:41:39", "sourcetype": "cisco:nexus:config", "device": "dc2-leaf-201", "status": "success", "user": "netops-cli", "change": "interface Eth1/12 description zt-live"} |
+| T.6 | 19:43:13 | Triggers › Enforcement action (kernel, platform/jump-host, j.chen) | **PASS** | ZTR-20260924-0033 ['applied', 'approved', 'requested', 'verified'] 19:39:18-19:41:38 platform/jump-host j.chen (SOC tier 2) |
+| T.6b | 19:43:25 | T.6 first check | **INFO** | the first T.6 check returned nothing because my query named a field 'by' (a search keyword); the corrected query found the four states; not an app defect |
+| T.3a | 19:43:26 | Triggers › Path attack: ml-notebooks/jupyter -> ai-train/checkpoint-store | **PASS** | page 'attack started (4 events) · attempts every 30s'; attack jupyter-1790278910 started 19:41:50 |
+| T.3b | 19:43:29 | Path attack detected | **PASS** | risk 19:42:06 +50.0; 19:42:07 +40.0; finding 19:43:11 risk 90 from 2 sources |
+| T.3c | 19:45:22 | Agent brief for the attack | **PASS** | brief 19:44:41, ES-00018, job_id '', true_positive (high), recommends zt-quarantine-jupyter-75e4a-11141 at the kernel, approver 'SOC tier 2' |
+| T.3d | 19:46:11 | Quarantine request for the attack (scheduled search) | **PASS** | ZTR-20260924-0034 pending 19:46:02, ES-00018, action 'CNP zt-quarantine-jupyter-75e4a-11141' |
+| T.3e | 19:46:16 | Approve the attack's request as j.chen (POST /services/zt_incident_demo/approvals) | **PASS** | HTTP 200 in 4.6 s: {"message": "request ZTR-20260924-0034 approved by j.chen (SOC tier 2)", "request_id": "ZTR-20260924-0034", "s |
+| T.3f | 19:46:41 | Attack retries after the approval | **PASS** | kube: 19:46:12 patch pods/jupyter-75e4a-11141 200; 19:46:14 create ciliumnetworkpolicies/zt-quarantine-jupyter-75e4a-11141 201; drops from 19:46:20 by zt-quarantine-jupyter-75e4a-11141, identity 25317; verified 15 s after apply |
+| T.3g | 19:46:42 | ES investigation of the attack | **PASS** | ES-00018 'Unprotected path: ml-notebooks/jupyter reached a protected AI data store' status 4, True Positive - Suspicious Activity |
+| T.7 | 19:47:24 | Live generator page: Reset (two clicks) after the triggers | **PASS** | reset stamped 19:46:58; page lists 'released CNP zt-quarantine-jupyter-75e4a-11141 (k.osei)'; attack jupyter-1790278910 stopped (10 attempts, 2 dropped); no quarantine left in zt_policy_state |
+
+## Run 6
+
+2026-09-24 19:47:44 to 20:18:04 UTC. 61 steps: 58 passed, 1 failed, 0 blocked, 2 notes.
+
+### Before the call
+
+| Step | Time (UTC) | Action | Result | Observed |
+|---|---|---|---|---|
+| 1.0 | 19:47:44 | Live generator (launchd) and stack versions | **PASS** | owner live:MYEACK-M-P9QJ:40412 holds the lease (age 3s), 925 ticks; page shows stack app 1.0.5; stack apps {'zt_incident_demo': '1.0.5', 'DA-ESS-zt_incident_demo': '1.0.5'} |
+| 1.1 | 19:47:47 | Search: \| ztdemo action=status | **PASS** | {"backfill_done": "1", "checkpoint_age_s": "2", "plan_status": "idle", "quarantine_policies": "none", "speed": "fast", "response_mode": "local", "agent_mode": "mcp"} |
+| 1.2 | 19:47:48 | make emulator-status | **PASS** | local  : HTTP 200 public : https://zt-k8s.yeackbot.com -> HTTP 200 {"major": "1", "minor": "31", "gitVersion": "v1.31.2", "platform": "linux/amd64" |
+| 1.3 | 19:48:15 | Live generator page: Reset (two clicks) | **PASS** | reset stamped 19:47:54; page: 'plan idle, reset stamped · released none · cancelled 0' |
+| 1.4 | 19:48:18 | Posture before-state (rollup) | **PASS** | identities 1285, coverage 86.8% (59 of 68), unprotected 9, audit flows 2589, enforcement 36 (kernel 30, DPU 2, switch 4) |
+| 1.5 | 19:49:02 | Splunk Web (built-in browser): Zero Trust Incident home | **PASS** | cards: 86.8 protected-path coverage · 13 incidents fired, last 24h · 0 pending approvals; scoreboard 1,285 / 86.8 / 9 / 3 finding groups / 38 enforcements verified |
+| 1.6 | 19:49:02 | Splunk Web: Zero Trust Fabric Posture before the fire | **PASS** | KPIs as the rollup: 1,285 / 86.8% 'up from 85.3% · target 95%' / 9 / 36 (kernel 30 · DPU 2 · switch 4); verdict chart 'No incident since the last reset' |
+
+### Step 2: two signals in Splunk
+
+| Step | Time (UTC) | Action | Result | Observed |
+|---|---|---|---|---|
+| 2.1 | 19:49:23 | Live generator page: Fire the incident | **PASS** | page: 'incident started at 2026-09-24T19:49:08.677Z · attempts every 30s' |
+| 2.2 | 19:49:25 | Search 1: hubble AUDIT flows from build-farm/ci-runner | **PASS** | 19:49:08.706 checkpoint-store-1:9000, 48213 -> 30719, checkpoint-store-ingress-allowlist (audit), owner platform-build |
+| 2.3 | 19:49:27 | Search 2: processConnect process_name=curl | **PASS** | 19:49:08.677 /usr/bin/curl from /bin/sh -c ./scripts/postbuild.sh on bf-node-03 -> checkpoint-store-1 (0/ckpt/llm-7712/step-184000/model-00001-of-00008.safetensors) |
+| 2.4 | 19:49:27 | Compare _time of the first Tetragon connect and the first Hubble AUDIT flow | **PASS** | connect 19:49:08.677, AUDIT 19:49:08.706: 29 ms apart |
+| 2.5 | 19:49:30 | Context: ci:job:event pod="ci-runner-7d9f8-xk2lq" (last 15 min); zt_node_fabric bf-node-03 | **PASS** | jobs on the pod: 1 (88213) package/post-build MR 4417 by contractor-dev-17; fabric dc2-leaf-205 Eth1/12 |
+| 2.6 | 19:51:47 | Rerun search 1 (attempt count) | **PASS** | 6 AUDIT flows since the fire, one per 30 s attempt (159 s after the fire) |
+| 2.6b | 19:52:01 | 2.6 first check | **INFO** | the first attempt count ran 24 s after the fire (my check started too early), before the second attempt; re-checked at 159 s: 6 AUDIT flows, one per 30 s |
+
+### Step 3: one finding, one brief
+
+| Step | Time (UTC) | Action | Result | Observed |
+|---|---|---|---|---|
+| 3.0 | 19:51:24 | Risk events for build-farm/ci-runner since the fire | **PASS** | 19:50:14 ZT - Audit-Mode Flow Into Protected AI Data Store +50.0; 19:50:13 ZT - Unapproved Program Connected to Protected AI Data Store +40.0 (total 90) |
+| 3.2 | 19:51:34 | Run the three drilldowns of the finding rule ($zt_workload$ = build-farm/ci-runner) | **PASS** | Raw Hubble flows for build-farm/ci-runner: 156; Tetragon events for build-farm/ci-runner: 186; CI jobs on build-farm/ci-runner pods: 7 |
+| 3.1 | 19:52:53 | Splunk Web: ES Analyst Queue | **PASS** | the build-farm/ci-runner rows (entity build-farm/ci-runner, 2 intermediate findings, score 90) carry this run's finding (notable 19:51:07, T0+1m58s, risk 90 from 2 detections, severity high); ES shows the reused finding group under its latest investigation number until this run's brief opens a new one |
+| 3.1c | 19:52:53 | Analyst Queue: an open investigation from run 4 | **INFO** | ES-00015 is still New/Undetermined: run 4's brief was stored late (after the capture fix), after the playbook had given up, so nothing resolved it; close it in ES or leave it |
+| 3.3 | 19:52:57 | Agent run history (ZTFlowInvestigator) | **PASS** | 5 tool calls: zt_finding_context > zt_flow_evidence > zt_process_evidence > zt_ci_job_context > zt_workload_server_context; run 80 s |
+| 3.4 | 19:52:57 | Read the brief | **PASS** | true_positive (high); where ci-runner-7d9f8-xk2lq on bf-node-03, dc2-leaf-205 Eth1/12; recommends zt-quarantine-ci-runner-88213 at the kernel; approver_labels ["SOC tier 2"]; missing facts: none |
+| 3.5 | 19:54:21 | ES investigation ES-00019 notes | **FAIL** | this run: [('ZTFlowInvestigator brief', True), ('Quarantine requested', False)]; inherited from before the reset: [('Quarantine not requested', 1790276720.1210823)]; brief KV approver_labels 'SOC tier 2' |
+
+### Step 4: approve the quarantine (Mode B)
+
+| Step | Time (UTC) | Action | Result | Observed |
+|---|---|---|---|---|
+| 4.1 | 19:54:21 | Pending request (Enforcement Approvals data) | **PASS** | ZTR-20260924-0035 pending, ES-00019, action 'CNP zt-quarantine-ci-runner-88213', approvers 'SOC tier 2', requested 19:54:02 |
+| 4.2 | 19:54:21 | The request's policy YAML | **PASS** | zt-quarantine-ci-runner-88213, endpointSelector zt-quarantine: "88213", egressDeny/ingressDeny all |
+| 4.0 | 19:54:59 | Splunk Web: Enforcement Approvals with the request pending | **PASS** | ZTR-20260924-0035 listed as pending (ES-00019, CNP zt-quarantine-ci-runner-88213, SOC tier 2) and in the request history |
+| 4.3 | 19:55:11 | Approve as a.patel (NetOps) through the approvals endpoint | **PASS** | HTTP 403: {"message": "a.patel is not an approver for the kernel enforcement point (needs SOC tier 2)", "request_id": "Z; refusal audited: {'approved_by_label': 'a.patel (NetOps)', 'comment': 'a.patel is not an approver for the kernel enforcement point (needs SOC tier 2)'} |
+| 4.4 | 19:55:18 | Approve as j.chen (SOC tier 2) through POST /services/zt_incident_demo/approvals | **PASS** | HTTP 200 in 7.1 s: {"message": "request ZTR-20260924-0035 approved by j.chen (SOC tier 2)", "request_id": "ZTR-20260924-0035", "status": "a |
+| 4.5 | 19:55:29 | index=zero_trust sourcetype=kube:apiserver:audit (zt-enforcer) | **PASS** | 19:55:13 patch pods/ci-runner-7d9f8-xk2lq 200; 19:55:15 create ciliumnetworkpolicies/zt-quarantine-ci-runner-88213 201 |
+
+### Step 5: verify and prove it
+
+| Step | Time (UTC) | Action | Result | Observed |
+|---|---|---|---|---|
+| 5.0 | 19:58:32 | First retry after the approval | **PASS** | 19:55:38.684 DROPPED (POLICY_DENY), identity 48291, egress_denied_by zt-quarantine-ci-runner-88213 (apply + 27 s) |
+| 5.1 | 19:58:33 | Request status after the first DROPPED | **PASS** | ZTR-20260924-0035 verified 34 s after apply |
+| 5.2 | 19:58:35 | ES investigation ES-00019 after verification | **PASS** | status 4 (Resolved), True Positive - Suspicious Activity |
+| 5.3 | 19:58:37 | Runner retries and CI job 88213 outcome | **PASS** | 6 DROPPED; job failed at 19:58:23 with script_failure |
+| 5.4 | 19:58:48 | Incident Timeline data (selector's newest incident, journey grid) | **PASS** | selector '2026-09-24 19:48:41 UTC · CI job 88213 · MR !4417'; grid 12/12 ticked (1:19:49:08 2:19:49:08 3:19:49:14 4:19:50:13 5:19:51:07 6:19:52:38 7:19:55:16 8:19:55:15 9:19:55:13 10:19:55:38 11:19:56:00 12:19:55:50) |
+| 5.4b | 19:58:52 | Incident Timeline: Decide card | **PASS** | Risk events 19:50:13 → 19:50:14 · 2 signals · 90.0 risk on build-farm/ci-runner / Finding group ES-00019 19:51:07 · risk 90 from 2 detections, over the threshold of 80 / Agent brief 19:52:38 · true positive (high) · recommends zt-quarantine-ci-runner-88213 at the kernel, approver SOC tier 2 |
+| 5.5 | 19:58:53 | Zero Trust Fabric Posture after the quarantine (KPI search) | **PASS** | identities 1285, coverage 86.8%, unprotected 9, enforcement 37 (kernel 31 · DPU 2 · switch 4); before-state 1285 / 86.8% / 9 / 36 |
+| 5.6 | 19:58:55 | Verdict chart build-farm/ci-runner -> ai-train/checkpoint-store:9000 | **PASS** | AUDIT 22 then DROPPED 12 in the last 30 minutes |
+| 5.7 | 19:58:57 | Enforcement Audit Trail, first row | **PASS** | 2026-09-24 19:55:50 \| ES-00019 \| CNP zt-quarantine-ci-runner-88213 \| kernel \| j.chen (SOC tier 2) \| verified |
+| 5.4c | 19:59:53 | Splunk Web: Incident Timeline (built-in browser) | **PASS** | selector on '2026-09-24 19:48:41 UTC · CI job 88213 · MR !4417'; Verify card 'Verified 19:55:50 · quarantine confirmed, ES investigation resolved' |
+| 5.5b | 19:59:53 | Splunk Web: Zero Trust Fabric Posture after the quarantine | **PASS** | enforcement 'kernel 31 · DPU 2 · switch 4'; audit trail lists ES-00019 |
+
+### After the call
+
+| Step | Time (UTC) | Action | Result | Observed |
+|---|---|---|---|---|
+| 6.1 | 20:00:21 | Live generator page: Reset (two clicks); \| ztdemo action=status | **PASS** | released zt-quarantine-ci-runner-88213 by k.osei (platform) ('merge request reverted'); plan idle, quarantine none |
+
+### Mode A: the same incident through SOAR
+
+| Step | Time (UTC) | Action | Result | Observed |
+|---|---|---|---|---|
+| A.1 | 20:00:53 | Live generator page › Settings › Response mode: SOAR (one click); Dashboard › Fire the incident | **PASS** | page: now {response_mode: soar, agent_mode: mcp, automation_rule: on}; 'incident started at 2026-09-24T20:00:38.530Z' |
+| A.2 | 20:06:14 | ES finding and automation rule (Mode A) | **PASS** | finding 20:02:10 (entity build-farm/ci-runner); playbook run 597 on container 1067 'Unprotected path: build-farm/ci-runner reached a protected AI data store' started 20:02:32; brief 20:04:03 (ES-00020); local requests: 0 |
+| A.3 | 20:06:15 | SOAR prompt ask_approval (role SOC tier 2) | **PASS** | 'Quarantine request ZTR-20260924-0036 for ES-00020: build-farm/ci-runner reached ai-train/checkpoint-store (crown-jewel). Agent brief: true positive, high confidence. The ci-runner pod executed /usr/bin/curl to download 4 model shard files from the checkpoint-store protected data store on port 9000, triggered by a merge request t' |
+| A.4 | 20:06:16 | Answer the prompt as j.chen: Approve with a comment (POST /rest/approval/11) | **PASS** | status approved, responses ['Approve', 'Contractor merge request; not approved for checkpoint access'] |
+| A.5 | 20:09:47 | Playbook applies the quarantine | **PASS** | 20:06:21 patch pods/ci-runner-7d9f8-xk2lq 200; 20:06:25 create ciliumnetworkpolicies/zt-quarantine-ci-runner-88213 201 |
+| A.6 | 20:09:49 | Enforcement audit trail (Mode A) | **PASS** | requested 20:05:52, approved 20:06:16, applied 20:06:27, verified 20:07:00; executed_by soar, playbook run 597, j.chen (SOC tier 2), ES-00020, ZTR-20260924-0036, 'CNP zt-quarantine-ci-runner-88213' |
+| A.7 | 20:09:51 | ES investigation of this run after the playbook | **PASS** | ES-00020 status 4, True Positive - Suspicious Activity |
+| A.8 | 20:09:52 | Runner retries and CI job outcome (Mode A) | **PASS** | 6 DROPPED; job failed at 20:09:23 with script_failure |
+| A.9 | 20:10:45 | Live generator page: Reset (two clicks); \| ztdemo action=status | **PASS** | released zt-quarantine-ci-runner-88213 by k.osei (platform) ('merge request reverted'); plan idle, quarantine none |
+
+### Live generator triggers
+
+| Step | Time (UTC) | Action | Result | Observed |
+|---|---|---|---|---|
+| T.1 | 20:11:36 | Triggers › Audit-mode flow: data-eng/spark-driver -> ai-train/checkpoint-store | **PASS** | page 'audit-mode connection sent (2 events)'; risk: 20:11:06 ZT - Audit-Mode Flow Into Protected AI Data Store +50.0 |
+| T.2 | 20:11:36 | Triggers › Unapproved program: observability/log-shipper, /usr/bin/curl | **PASS** | page 'unapproved program connect sent (2 events)'; risk: 20:11:06 ZT - Unapproved Program Connected to Protected AI Data Store +40.0 |
+| T.4 | 20:11:38 | Triggers › Nexus Live Protect | **PASS** | page 'Live Protect event sent (1 events)'; indexed {"t": "20:11:03", "sourcetype": "cisco:nexus:liveprotect", "switch": "dc2-leaf-201", "advisory_id": "cisco-sa-nxos-bgp-dos-3fzrsx", "status": "protected"} |
+| T.5 | 20:11:38 | Triggers › Nexus configuration change | **PASS** | page 'Nexus config change sent (1 events)'; indexed {"t": "20:11:07", "sourcetype": "cisco:nexus:config", "device": "dc2-leaf-201", "status": "success", "user": "netops-cli", "change": "interface Eth1/12 description zt-live"} |
+| T.6 | 20:11:40 | Triggers › Enforcement action (kernel, platform/jump-host, j.chen) | **PASS** | ZTR-20260924-0037 ['applied', 'approved', 'requested', 'verified'] 20:08:43-20:11:03 platform/jump-host j.chen (SOC tier 2) |
+| T.3a | 20:11:40 | Triggers › Path attack: ml-notebooks/jupyter -> ai-train/checkpoint-store | **PASS** | page 'attack started (4 events) · attempts every 30s'; attack jupyter-1790280675 started 20:11:15 |
+| T.3b | 20:13:29 | Path attack detected | **PASS** | risk 20:12:06 +40.0; 20:12:06 +50.0; finding 20:13:12 risk 90 from 2 sources |
+| T.3c | 20:15:23 | Agent brief for the attack | **PASS** | brief 20:14:43, ES-00021, job_id '', true_positive (high), recommends zt-quarantine-jupyter-75e4a-11141 at the kernel, approver 'SOC tier 2' |
+| T.3d | 20:16:12 | Quarantine request for the attack (scheduled search) | **PASS** | ZTR-20260924-0038 pending 20:16:01, ES-00021, action 'CNP zt-quarantine-jupyter-75e4a-11141' |
+| T.3e | 20:16:18 | Approve the attack's request as j.chen (POST /services/zt_incident_demo/approvals) | **PASS** | HTTP 200 in 5.7 s: {"message": "request ZTR-20260924-0038 approved by j.chen (SOC tier 2)", "request_id": "ZTR-20260924-0038", "s |
+| T.3f | 20:17:14 | Attack retries after the approval | **PASS** | kube: 20:16:15 create ciliumnetworkpolicies/zt-quarantine-jupyter-75e4a-11141 201; 20:16:13 patch pods/jupyter-75e4a-11141 200; drops from 20:16:45 by zt-quarantine-jupyter-75e4a-11141, identity 25317; verified 45 s after apply |
+| T.3g | 20:17:15 | ES investigation of the attack | **PASS** | ES-00021 'Unprotected path: ml-notebooks/jupyter reached a protected AI data store' status 4, True Positive - Suspicious Activity |
+| T.7 | 20:18:04 | Live generator page: Reset (two clicks) after the triggers | **PASS** | reset stamped 20:17:34; released zt-quarantine-jupyter-75e4a-11141 by k.osei (platform); attack jupyter-1790280675 stopped (12 attempts, 2 dropped); no quarantine left in zt_policy_state |
 
 ## Defects found and fixed
 
@@ -265,4 +660,7 @@ The one step not performed by hand is signing in to Splunk Web or SOAR as `j.che
 | run 2: 1.6b, 1.5b | Posture audit trail titled '(SOAR)' though it lists local approvals; routine rows read 'playbook (policy) (policy)'; home label 'Findings, last 24h' counted finding groups | Panel and description reworded; approver label adds the role only once (search time, fixes existing events); 'Finding groups, last 24h', 'incidents fired, last 24h' | dashboards and props (pushed), 1.0.5 |
 | run 2: 4.6 | Request history showed 1970-01-01 for times not reached yet | Blank until applied or verified | Enforcement Approvals (pushed) |
 | run 2: A.11, restart | Live generator logged client disconnects as tracebacks; a restart left the old process's lease in place for up to 45 s | Disconnects are quiet; the lease is handed back first on shutdown and a dead local holder is cleared at start | live generator |
+| run 3: 3.4, 5.4b | The brief returned the approver as a slug (soc-tier-2), so the Incident Timeline's Decide card read 'approver soc-tier-2'; the request itself took its approvers from the approval matrix and was right | Agent prompt asks for the matrix labels verbatim; the Decide card maps slugs to the matrix label; ztbrief normalizes labels when it stores a brief | agent prompt and Incident Timeline (pushed), 1.0.6 |
+| run 4: 1.0 | The live generator page showed the stack app version read at its start (1.0.4) after 1.0.5 had been installed | The engine reads the version again every five minutes and resumes the search head input if an upgrade makes it lease-aware | live generator |
+| run 4: A.2 | Mode A stopped: the agent's brief was never captured, because a long agent run puts the type field of its _audit event past the 10,240 characters Splunk extracts at search time, so 'type=run_finished' matched nothing; the playbook waited six minutes and stopped without a request | ZT Agent - Capture Brief matches the raw terms ZTFlowInvestigator and run_finished; ztbrief reads the type and agent from the whole event and skips anything else; smoke does the same | saved search (pushed), 1.0.6 |
 

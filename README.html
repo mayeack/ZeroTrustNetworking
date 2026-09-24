@@ -338,6 +338,14 @@ make verify-views       # every Dashboard Studio data source runs on the stack w
 <td>Agent errors: <code>index=_internal sourcetype=mltk* OR source=*aiagent*</code> and <code>index=_audit sourcetype=ai_agent:response</code>; the Run AI Agent action must be on (<code>make agent-mcp</code>); the <code>zt-agent</code> MCP token must exist (<code>make mcp-tools</code>); the LLM connection must be set. The capture search reports what it stored: run <code>\| savedsearch "ZT Agent - Capture Brief"</code> and read the <code>result</code> column</td>
 </tr>
 <tr>
+<td>Agent run finished but no brief (Mode A: the playbook notes "no agent brief within 6 minutes")</td>
+<td>Splunk extracts search-time fields from the first 10,240 characters of an event only, and a long agent run pushes the <code>type</code> field of its <code>_audit</code> event past that point. <code>ZT Agent - Capture Brief</code> therefore matches the raw terms <code>"ZTFlowInvestigator" "run_finished"</code> and <code>ztbrief</code> reads the type from the whole event (1.0.6); keep it that way when editing the search</td>
+</tr>
+<tr>
+<td>An old note, such as "Quarantine not requested", in every new investigation</td>
+<td>ES reuses one finding group for every run on the same workload, and a note written on the group itself is copied into each investigation opened from it. The playbook writes notes only on the run's investigation (a SOAR comment otherwise). Remove a stale note on the finding group in Enterprise Security; the group's notes list through <code>GET /servicesNS/nobody/missioncontrol/public/v2/investigations/&lt;finding event_id&gt;/notes</code></td>
+</tr>
+<tr>
 <td>No request or SOAR prompt</td>
 <td>Mode B: <code>\| ztsoar action=status</code> and <code>\| inputlookup zt_enforcement_requests_lookup</code>; the brief must have <code>disposition=true_positive</code>. Mode A: the ES automation rule (<code>make es-automation-rule</code>), the SOAR container for the finding, the playbook run log; <code>response_mode</code> must be <code>soar</code> or <code>ZT Response - Request Enforcement</code> will also open a local request; in Mode B keep the automation rule off (<code>make es-automation-rule RULE=off</code>) or the playbook acts too</td>
 </tr>
