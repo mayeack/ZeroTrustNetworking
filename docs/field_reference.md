@@ -223,3 +223,9 @@ Defined in `collections.conf`; each has a `_lookup` definition in `transforms.co
 | `zt_last_reset` | The epoch of the last reset (0 if never), for use inside `eval` |
 | `zt_not_already_risked(rule, object_field, threat_field)` | Excludes object/threat pairs that the named rule has already risked since the last reset, so each detection adds risk once per path or program |
 | `zt_incident_since_reset` | The incident's own events since the last reset (the pod, job 88213, the enforcement and Kubernetes audit records) |
+
+## Live generator records
+
+`zt_demo_state` holds, next to the `global` record, one record per path attack started from the live generator (`_key = attack:<workload>-<epoch>`, `rec_kind = attack`): `src_workload`, `src_pod`, `dest_workload`, `dest_pod`, `port`, `program`, `t0`, `attempt`, `max_attempts`, `status` (running, completed, stopped), `dropped_attempts`, `identity_quarantined`, `job_id` (the quarantine label value), `started_by`. The global record carries the streaming lease: `stream_owner` (`splunk` or `live:<host>:<pid>`) and `stream_owner_epoch`.
+
+Risk detections add `zt_run` (the reset epoch) to every result and throttle on it, so a reset starts a new run for the two risk rules as well as for the finding rule.

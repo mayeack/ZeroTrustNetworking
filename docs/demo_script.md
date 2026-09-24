@@ -21,6 +21,8 @@ About ten minutes from fire to the final posture. If you need to talk longer, th
 
 ## 1. Before the call
 
+- Start the live generator on the presenter Mac (`make live-run`, then open `http://127.0.0.1:8890`). It takes over the streaming from the search head while it runs, shows every event on a ten-minute timeline, and has the Fire and Reset buttons plus triggers for single events (audit-mode flow, unapproved program, a path attack for any workload, Live Protect, a Nexus change, an enforcement action). Stop it after the call (`make live-stop`) so the search head streams again.
+
 1. `make status` (or `| ztdemo action=status` in the Zero Trust Incident app): `backfill_done` true, checkpoint age under a minute, `plan_status` idle, no quarantine, `speed` fast, `response_mode` and `agent_mode` as you want them. If a practice run is on file, `| ztdemo action=reset` was run and the before-state of the posture shows that run for 24 hours (say "up from 87.7%" becomes the previous run's number).
 2. `make emulator-status`: the emulator answers `/version` locally and at `https://zt-k8s.yeackbot.com`.
 3. `make fast` if unsure of the cadence; `make mode-soar` or `make mode-local`; `make agent-mcp`.
@@ -30,6 +32,8 @@ About ten minutes from fire to the final posture. If you need to talk longer, th
 7. Have the two searches ready in the search bar (they are also in the deck).
 
 ## 2. Step 2: two signals in Splunk (slide "Step 2 in Splunk")
+
+Fire from the live generator page (the CI runner incident dots turn red on the timeline and the "incident in Splunk" panel fills in step by step) or from Search with `| ztdemo action=fire`. The Incident Timeline dashboard selects the newest incident by default; older runs stay selectable.
 
 1. Run `| ztdemo action=fire`. Say: "The build job just ran its post-build script; here is what landed in Splunk in the same second."
 2. Run the first search:

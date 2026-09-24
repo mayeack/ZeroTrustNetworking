@@ -92,6 +92,7 @@ class Engine:
         self.seq = 0
         self.subscribers = []
         self.lock = threading.Lock()
+        self.state_lock = threading.Lock()  # a tick loads the state at its start and saves it at its end
         self.last_tick = {}
         self.last_error = ""
         self.tick_count = 0
@@ -147,7 +148,8 @@ class Engine:
         while not self.stop_flag.is_set():
             t = time.time()
             try:
-                self.last_tick = self.streamer.tick(owner=self.owner)
+                with self.state_lock:
+                    self.last_tick = self.streamer.tick(owner=self.owner)
                 self.tick_count += 1
                 self.last_error = ""
             except Exception as e:  # noqa: BLE001
@@ -202,7 +204,8 @@ class Engine:
     def _run(self, kind, fn, *args, **kw):
         threading.current_thread().zt_kind = kind
         try:
-            return fn(*args, **kw)
+            with self.state_lock:
+                return fn(*args, **kw)
         finally:
             threading.current_thread().zt_kind = None
 
@@ -219,12 +222,13 @@ class Engine:
 
     def set_config(self, **values):
         allowed = {"response_mode": ("local", "soar"), "agent_mode": ("mcp", "inline")}
-        st = ST.load(self.sd)
         for k, v in values.items():
             if k not in allowed or v not in allowed[k]:
                 raise ValueError("%s must be one of %s" % (k, ", ".join(allowed.get(k, ()))))
-            st[k] = v
-        ST.save(self.sd, st)
+        with self.state_lock:
+            st = ST.load(self.sd)
+            st.update(values)
+            ST.save(self.sd, st)
         self.sd.conf_set("zt_demo", "modes", {k: v for k, v in values.items()})
         return {k: st[k] for k in allowed}
 
@@ -262,7 +266,8 @@ class Engine:
         return recs
 
     def stop_attack(self, key):
-        return A.stop(self.sd, key)
+        with self.state_lock:
+            return A.stop(self.sd, key)
 
     # ---- catalog / status / pipeline ---------------------------------------------------
     def catalog(self):

@@ -57,6 +57,9 @@ table{border-collapse:collapse;margin:1rem 0;width:100%}th,td{border:1px solid #
 </table>
 <p>About ten minutes from fire to the final posture. If you need to talk longer, the runner keeps trying every 30 seconds until a quarantine arrives (45 minutes at most).</p>
 <h2 id="1-before-the-call">1. Before the call</h2>
+<ul>
+<li>Start the live generator on the presenter Mac (<code>make live-run</code>, then open <code>http://127.0.0.1:8890</code>). It takes over the streaming from the search head while it runs, shows every event on a ten-minute timeline, and has the Fire and Reset buttons plus triggers for single events (audit-mode flow, unapproved program, a path attack for any workload, Live Protect, a Nexus change, an enforcement action). Stop it after the call (<code>make live-stop</code>) so the search head streams again.</li>
+</ul>
 <ol>
 <li><code>make status</code> (or <code>| ztdemo action=status</code> in the Zero Trust Incident app): <code>backfill_done</code> true, checkpoint age under a minute, <code>plan_status</code> idle, no quarantine, <code>speed</code> fast, <code>response_mode</code> and <code>agent_mode</code> as you want them. If a practice run is on file, <code>| ztdemo action=reset</code> was run and the before-state of the posture shows that run for 24 hours (say "up from 87.7%" becomes the previous run's number).</li>
 <li><code>make emulator-status</code>: the emulator answers <code>/version</code> locally and at <code>https://zt-k8s.yeackbot.com</code>.</li>
@@ -67,6 +70,7 @@ table{border-collapse:collapse;margin:1rem 0;width:100%}th,td{border:1px solid #
 <li>Have the two searches ready in the search bar (they are also in the deck).</li>
 </ol>
 <h2 id="2-step-2-two-signals-in-splunk-slide-step-2-in-splunk">2. Step 2: two signals in Splunk (slide "Step 2 in Splunk")</h2>
+<p>Fire from the live generator page (the CI runner incident dots turn red on the timeline and the "incident in Splunk" panel fills in step by step) or from Search with <code>| ztdemo action=fire</code>. The Incident Timeline dashboard selects the newest incident by default; older runs stay selectable.</p>
 <ol>
 <li>Run <code>| ztdemo action=fire</code>. Say: "The build job just ran its post-build script; here is what landed in Splunk in the same second."</li>
 <li>Run the first search:</li>

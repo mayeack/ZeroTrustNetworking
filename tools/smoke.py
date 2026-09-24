@@ -2,6 +2,7 @@
 """make smoke: the acceptance criteria (design document section 15, items 2-8) through REST, with a pass/fail table.
 FRESH=1 checks the absolute posture numbers right after a fresh install; otherwise relative changes.
 --attach verifies the incident already running instead of firing a new one (t0 = last fire); --no-fire stops after the pre-fire checks.
+--soar (Mode A) waits for the playbook's prompt in SOAR and answers it as the approver; checks executed_by=soar.
 Runs a full incident: fire -> finding -> brief -> request -> approve as j.chen -> verified -> posture. Use --no-fire to
 only check the current state, --skip-agent to not wait for the brief, --approve-as USER to override the approver."""
 import json
@@ -45,6 +46,7 @@ def main(argv):
     fresh = any(a.startswith("--fresh=1") or a == "--fresh" for a in argv)
     no_fire = "--no-fire" in argv
     attach = "--attach" in argv  # verify the incident already running (no new fire); t0 = last fire
+    soar_mode = "--soar" in argv  # Mode A: the playbook asks in SOAR; approve the prompt there as the approver (criterion 9)
     skip_agent = "--skip-agent" in argv
     approver = next((a.split("=", 1)[1] for a in argv if a.startswith("--approve-as=")), "j.chen")
     inject = "--inject-brief" in argv
@@ -151,8 +153,45 @@ def main(argv):
         r = s.kv_list("zt_enforcement_requests", {"status": {"$in": ["pending", "approved", "applied", "verified"]}})
         r = [x for x in r if float(x.get("requested_epoch") or 0) >= t0]
         return r or None
-    rq, dtq = wait_for(req, 180, 10)
-    check("pending request within 1 min of the brief", bool(rq), "%.0fs" % dtq)
+    if soar_mode:
+        import soar_prompt
+        soar = soar_prompt.client()
+        def prompt():
+            p = [a for a in soar_prompt.pending(soar) if a.get("name") in ("ask_approval", "ask_approval_netops")]
+            return p or None
+        pr, dtp = wait_for(prompt, 420, 15)
+        check("SOAR prompt (playbook ask_approval) within 7 min of the brief", bool(pr), "%.0fs %s" % (dtp, [(a["id"], a.get("name")) for a in (pr or [])]))
+        rq = []
+        if pr:
+            ans = soar_prompt.answer(soar_prompt.client(approver), pr[0]["id"], "Approve", "Contractor merge request; not approved for checkpoint access")
+            check("prompt answered as %s in SOAR" % approver, ans.get("ok"), json.dumps(ans)[:160])
+            t_apply = time.time()
+            k8s = s.search('search index=zero_trust sourcetype=kube:apiserver:audit k8s_user="%s" earliest=%d | stats values(k8s_verb) as verbs values(status_code) as codes count' % (canon.ENFORCER_USER, int(t0)), earliest=int(t0), latest="now")
+            def k8s_ok():
+                r = s.search('search index=zero_trust sourcetype=kube:apiserver:audit k8s_user="%s" earliest=%d | stats values(k8s_verb) as verbs values(status_code) as codes count' % (canon.ENFORCER_USER, int(t0)), earliest=int(t0), latest="now")
+                return r if r and int(r[0]["count"]) >= 2 else None
+            k8s, dtk = wait_for(k8s_ok, 180, 10)
+            check("two kube audit events from the playbook (patch 200, create 201)", k8s and set(k8s[0]["codes"]) >= {"200", "201"}, "%.0fs %s" % (dtk, k8s))
+            def dropped():
+                r = s.search('search index=zero_trust sourcetype=cilium:hubble:flow src_pod="%s" verdict=DROPPED earliest=%d | head 1 | table src_identity policy_denied drop_reason' % (canon.RUNNER_POD, int(t_apply) - 5), earliest=int(t_apply) - 5, latest="now")
+                return r or None
+            dr, dtd = wait_for(dropped, 240, 10)
+            d0 = dr[0] if dr else {}
+            check("next attempt DROPPED by the policy, identity 48291", d0.get("src_identity") == "48291" and d0.get("policy_denied") == canon.QUARANTINE_POLICY, "%.0fs %s" % (dtd, d0))
+            def verified_soar():
+                r = s.search('search index=zero_trust sourcetype=zt:enforcement:audit state=verified executed_by=soar earliest=%d | head 1 | table _time request_id approved_by_label playbook run_id' % int(t0), earliest=int(t0), latest="now")
+                return r or None
+            vr, dtv = wait_for(verified_soar, 300, 10)
+            check("verified by the playbook (executed_by=soar)", bool(vr), "%.0fs %s" % (dtv, vr[0] if vr else None))
+            def failed_job():
+                r = s.search('search index=zero_trust sourcetype=ci:job:event build_id=88213 build_status=failed earliest=%d | head 1 | table build_failure_reason build_finished_at' % int(t0), earliest=int(t0), latest="now")
+                return r or None
+            fj, dtj = wait_for(failed_job, 420, 15)
+            check("CI job fails (script_failure) after the 6th DROPPED", bool(fj) and fj[0]["build_failure_reason"] == "script_failure", "%.0fs %s" % (dtj, fj[0] if fj else None))
+            inv = s.search('search `notable` earliest=%d | search source="%s" | head 1 | table event_id' % (int(t0), canon.RULE_FBD), earliest=int(t0), latest="now")
+    else:
+        rq, dtq = wait_for(req, 180, 10)
+        check("pending request within 1 min of the brief", bool(rq), "%.0fs" % dtq)
     if rq:
         r0 = rq[0]
         pw = ztrest.env("ZT_PASS_" + approver.upper().replace(".", "_"))
@@ -215,6 +254,9 @@ def main(argv):
         check("posture during: coverage dipped and unprotected rose by one", dip and float(dip[0]["min_cov"]) < float(after["coverage_pct"]) and int(float(dip[0]["max_unp"])) == int(float(after["unprotected"])) + 1, dip)
     trail = s.search('search index=zero_trust sourcetype=zt:enforcement:audit state=verified earliest=%d | head 1 | table approved_by_label status policy_name' % int(t0), earliest=int(t0), latest="now")
     check("audit trail row: j.chen (SOC tier 2), verified", trail and trail[0]["approved_by_label"] == "j.chen (SOC tier 2)" and trail[0]["policy_name"] == canon.QUARANTINE_POLICY, trail)
+    if soar_mode:
+        ex = s.search('search index=zero_trust sourcetype=zt:enforcement:audit state=applied earliest=%d | head 1 | table executed_by playbook run_id approved_by_label' % int(t0), earliest=int(t0), latest="now")
+        check("criterion 9: applied with executed_by=soar", ex and ex[0].get("executed_by") == "soar", ex)
     return finish()
 
 

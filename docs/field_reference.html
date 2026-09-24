@@ -785,4 +785,7 @@ table{border-collapse:collapse;margin:1rem 0;width:100%}th,td{border:1px solid #
 <td>The incident's own events since the last reset (the pod, job 88213, the enforcement and Kubernetes audit records)</td>
 </tr>
 </tbody>
-</table></body></html>
+</table>
+<h2 id="live-generator-records">Live generator records</h2>
+<p><code>zt_demo_state</code> holds, next to the <code>global</code> record, one record per path attack started from the live generator (<code>_key = attack:&lt;workload&gt;-&lt;epoch&gt;</code>, <code>rec_kind = attack</code>): <code>src_workload</code>, <code>src_pod</code>, <code>dest_workload</code>, <code>dest_pod</code>, <code>port</code>, <code>program</code>, <code>t0</code>, <code>attempt</code>, <code>max_attempts</code>, <code>status</code> (running, completed, stopped), <code>dropped_attempts</code>, <code>identity_quarantined</code>, <code>job_id</code> (the quarantine label value), <code>started_by</code>. The global record carries the streaming lease: <code>stream_owner</code> (<code>splunk</code> or <code>live:&lt;host&gt;:&lt;pid&gt;</code>) and <code>stream_owner_epoch</code>.</p>
+<p>Risk detections add <code>zt_run</code> (the reset epoch) to every result and throttle on it, so a reset starts a new run for the two risk rules as well as for the finding rule.</p></body></html>
