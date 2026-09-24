@@ -1,41 +1,10 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Demo script: one incident, end to end</title>
-<style>
-:root { --bg: #ffffff; --fg: #1f2933; --muted: #52606d; --line: #d9e2ec; --code-bg: #f1f5f9; --accent: #0f1a2b; --link: #0b5fff; }
-@media (prefers-color-scheme: dark) {
-  :root { --bg: #0f1a2b; --fg: #e4e9f0; --muted: #a9b4c2; --line: #2b3a4f; --code-bg: #182538; --accent: #e4e9f0; --link: #7ab8ff; }
-}
-html { -webkit-text-size-adjust: 100%; }
-body { margin: 0; padding: 24px 16px 48px; background: var(--bg); color: var(--fg);
-       font: 15px/1.55 -apple-system, "Segoe UI", Helvetica, Arial, sans-serif; }
-main { max-width: 1080px; margin: 0 auto; }
-h1, h2, h3, h4 { color: var(--accent); line-height: 1.25; margin: 1.6em 0 0.5em; }
-h1 { font-size: 1.9em; margin-top: 0; border-bottom: 2px solid var(--line); padding-bottom: 0.3em; }
-h2 { font-size: 1.45em; border-bottom: 1px solid var(--line); padding-bottom: 0.2em; }
-h3 { font-size: 1.15em; }
-h4 { font-size: 1em; }
-p, ul, ol, table, pre { margin: 0 0 1em; }
-a { color: var(--link); }
-code { font: 0.9em/1.4 "SFMono-Regular", Menlo, Consolas, monospace; background: var(--code-bg); padding: 0.1em 0.3em; border-radius: 3px; }
-pre { background: var(--code-bg); padding: 12px 14px; border-radius: 6px; overflow-x: auto; border: 1px solid var(--line); }
-pre code { background: none; padding: 0; font-size: 0.88em; }
-table { border-collapse: collapse; width: 100%; font-size: 0.93em; display: block; overflow-x: auto; }
-th, td { border: 1px solid var(--line); padding: 6px 9px; vertical-align: top; text-align: left; }
-th { background: var(--code-bg); }
-li { margin: 0.2em 0; }
-blockquote { border-left: 3px solid var(--line); margin: 0 0 1em; padding: 0 0 0 14px; color: var(--muted); }
-hr { border: 0; border-top: 1px solid var(--line); margin: 2em 0; }
-</style>
-</head>
-<body>
-<main>
-<h1>Demo script: one incident, end to end</h1>
-<p>The live section of the deck, in six parts, at fast cadence (every ZT scheduled search runs every minute). One line to say per click. Dashboard and panel names follow the design; check them against the installed dashboards before the first call (verify).</p>
-<h2>Timings at fast cadence</h2>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>demo script</title><style>body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;max-width:960px;margin:2rem auto;padding:0 1rem;line-height:1.5;color:#1f2937;background:#fff}
+code,pre{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:.92em}pre{background:#f3f4f6;padding:.75rem;overflow-x:auto;border-radius:6px}code{background:#f3f4f6;padding:.1em .3em;border-radius:4px}pre code{background:none;padding:0}
+table{border-collapse:collapse;margin:1rem 0;width:100%}th,td{border:1px solid #d1d5db;padding:.4rem .6rem;text-align:left;vertical-align:top}th{background:#f9fafb}h1,h2,h3{line-height:1.25}a{color:#0b5cad}
+@media (prefers-color-scheme: dark){body{background:#0f172a;color:#e5e7eb}pre,code{background:#1e293b}th{background:#1e293b}th,td{border-color:#334155}a{color:#7dd3fc}}</style></head><body><h1 id="demo-script-one-incident-end-to-end">Demo script: one incident, end to end</h1>
+<p>The live section of the deck, in six parts, at fast cadence (every ZT scheduled search runs every minute). One line to say per click. Dashboard and panel names match the installed dashboards (Zero Trust Fabric Posture, Incident Timeline, Enforcement Approvals).</p>
+<h2 id="timings-at-fast-cadence">Timings at fast cadence</h2>
 <table>
 <thead>
 <tr>
@@ -46,7 +15,7 @@ hr { border: 0; border-top: 1px solid var(--line); margin: 2em 0; }
 <tbody>
 <tr>
 <td>T0</td>
-<td><code>| ztdemo action=fire</code>; the deck's two searches return the canonical events within 10 seconds</td>
+<td><code>\| ztdemo action=fire</code>; the deck's two searches return the canonical events within 10 seconds</td>
 </tr>
 <tr>
 <td>T0 + 30 s, 60 s, …</td>
@@ -87,7 +56,7 @@ hr { border: 0; border-top: 1px solid var(--line); margin: 2em 0; }
 </tbody>
 </table>
 <p>About ten minutes from fire to the final posture. If you need to talk longer, the runner keeps trying every 30 seconds until a quarantine arrives (45 minutes at most).</p>
-<h2>1. Before the call</h2>
+<h2 id="1-before-the-call">1. Before the call</h2>
 <ol>
 <li><code>make status</code> (or <code>| ztdemo action=status</code> in the Zero Trust Incident app): <code>backfill_done</code> true, checkpoint age under a minute, <code>plan_status</code> idle, no quarantine, <code>speed</code> fast, <code>response_mode</code> and <code>agent_mode</code> as you want them. If a practice run is on file, <code>| ztdemo action=reset</code> was run and the before-state of the posture shows that run for 24 hours (say "up from 87.7%" becomes the previous run's number).</li>
 <li><code>make emulator-status</code>: the emulator answers <code>/version</code> locally and at <code>https://zt-k8s.yeackbot.com</code>.</li>
@@ -97,7 +66,7 @@ hr { border: 0; border-top: 1px solid var(--line); margin: 2em 0; }
 <li>Open the agent's page in the AI Toolkit (Agent Launchpad › <code>ZTFlowInvestigator</code>) and the ES Analyst Queue.</li>
 <li>Have the two searches ready in the search bar (they are also in the deck).</li>
 </ol>
-<h2>2. Step 2: two signals in Splunk (slide "Step 2 in Splunk")</h2>
+<h2 id="2-step-2-two-signals-in-splunk-slide-step-2-in-splunk">2. Step 2: two signals in Splunk (slide "Step 2 in Splunk")</h2>
 <ol>
 <li>Run <code>| ztdemo action=fire</code>. Say: "The build job just ran its post-build script; here is what landed in Splunk in the same second."</li>
 <li>Run the first search:</li>
@@ -110,7 +79,7 @@ hr { border: 0; border-top: 1px solid var(--line); margin: 2em 0; }
 4. Expand one event of each and compare <code>_time</code>: same pod, same destination, same second (14:52:07.402 and .431 in the story; live, T0 and T0 + 29 ms). Say: "Two sensors, one connection, two independent proofs."
 5. Then the context, one click each: <code>src_owner</code> <code>platform-build</code> on the flow; <code>index=zero_trust sourcetype=ci:job:event pod="ci-runner-7d9f8-xk2lq"</code> for job 88213 (<code>package</code>, <code>post-build</code>, merge request <code>!4417</code> by <code>contractor-dev-17</code>, <code>running</code>); <code>| inputlookup zt_node_fabric where node="bf-node-03"</code> for <code>dc2-leaf-205 Eth1/12</code>. Say: "Owner, CI job, server: everything the analyst would otherwise ask three teams for."
 6. While talking, attempts keep arriving every 30 seconds (rerun the first search to show the count growing).</p>
-<h2>3. Step 3: one finding, one brief (slides "Two signals, one finding" and "The agent pulls the evidence together")</h2>
+<h2 id="3-step-3-one-finding-one-brief-slides-two-signals-one-finding-and-the-agent-pulls-the-evidence-together">3. Step 3: one finding, one brief (slides "Two signals, one finding" and "The agent pulls the evidence together")</h2>
 <ol>
 <li>Open Enterprise Security › Analyst Queue (about 2 to 3 minutes after the fire). Say: "Two detections added risk to the same workload; the third opened one finding when the total crossed 80."</li>
 <li>Open the finding group <code>Unprotected path: build-farm/ci-runner reached a protected AI data store</code>: risk 90, severity high, domain network. Point at the two contributing detections (<code>ZT - Audit-Mode Flow Into Protected AI Data Store</code>, +50, and <code>ZT - Unapproved Program Connected to Protected AI Data Store</code>, +40), the threat objects <code>ai-train/checkpoint-store</code> and <code>/usr/bin/curl</code>, MITRE ATT&amp;CK T1530 and T1059.004. Say: "One finding, not two alerts; the risk objects are the workload, not an IP."</li>
@@ -118,7 +87,7 @@ hr { border: 0; border-top: 1px solid var(--line); margin: 2em 0; }
 <li>Switch to the AI Toolkit, Agent Launchpad, <code>ZTFlowInvestigator</code>, run history: the five tool calls in order (<code>zt_finding_context</code>, then <code>zt_flow_evidence</code>, <code>zt_process_evidence</code>, <code>zt_ci_job_context</code>, <code>zt_workload_server_context</code>). Say: "The agent may only use these five read-only tools; every sentence of its brief comes from one of them."</li>
 <li>Back in ES, open the investigation's notes: "ZTFlowInvestigator brief" (AI-generated). Read the six lines: disposition true positive, high confidence; what happened (job 88213, <code>scripts/postbuild.sh</code>, <code>!4417</code>, <code>contractor-dev-17</code>, curl, training job 7712); why it matters (crown-jewel store, allowlist in audit mode); where (pod <code>ci-runner-7d9f8-xk2lq</code> on <code>bf-node-03</code>, <code>dc2-leaf-205 Eth1/12</code>); recommendation (quarantine at the kernel, <code>zt-quarantine-ci-runner-88213</code>, approver SOC tier 2); follow-up. Say: "The wording is the model's; the facts are the tools'. It recommends the narrowest action and names who must approve it. It never acts."</li>
 </ol>
-<h2>4. Step 4: approve the quarantine</h2>
+<h2 id="4-step-4-approve-the-quarantine">4. Step 4: approve the quarantine</h2>
 <p>Mode A (SOAR):</p>
 <ol>
 <li>In the private window, signed in to SOAR as <code>j.chen</code>, open the pending prompt from playbook <code>zt_quarantine_workload</code>. Say: "The playbook waited for the brief, built the policy and asked the SOC tier 2 role."</li>
@@ -132,7 +101,7 @@ hr { border: 0; border-top: 1px solid var(--line); margin: 2em 0; }
 <li>Type a comment and click Approve (it runs <code>| ztsoar action=approve request_id=… comment="…"</code>). Say: "The approval runs with system privileges after checking my role; an analyst without SOC tier 2 is refused and the refusal is audited."</li>
 </ol>
 <p>Either mode: <code>index=zero_trust sourcetype=kube:apiserver:audit</code> now shows the <code>patch</code> (200) and the <code>create</code> (201) by <code>system:serviceaccount:soar:zt-enforcer</code>.</p>
-<h2>5. Step 5: verify and prove it</h2>
+<h2 id="5-step-5-verify-and-prove-it">5. Step 5: verify and prove it</h2>
 <ol>
 <li>Open Zero Trust Incident › Incident Timeline. Walk the five step cards left to right: Connect (job start, first connection), Observe (first AUDIT flow and Tetragon event, both identities, the program), Decide (the two risk events, the finding ID and risk, the brief's time and recommendation), Enforce (who approved, when, the policy applied), Verify (the first DROPPED flow, <code>verified</code>, posture before and after). Say: "Every cell has a timestamp and drills to its evidence; this is the audit story for the incident review."</li>
 <li>Point at the journey grid (Workloads, Cisco Isovalent, Splunk platform, Enterprise Security, Agent Launchpad, SOAR and people × Connect, Observe, Decide, Enforce, Verify) and at the "Getting data in" tiles (Hubble, Tetragon, Nexus switch data, Live Protect: events in 24 hours and the age of the last event). Say: "Four data sources, all over HTTP Event Collector and the Cisco add-ons."</li>
@@ -142,13 +111,10 @@ hr { border: 0; border-top: 1px solid var(--line); margin: 2em 0; }
 <li>Point at the first row of the Enforcement Audit Trail: the finding, <code>CNP zt-quarantine-ci-runner-88213</code>, <code>kernel</code>, <code>j.chen (SOC tier 2)</code>, <code>verified</code> in green. Say: "Who approved what, when, and that it worked, in the same index as the flows."</li>
 <li>Close on the coverage line: 87.7% before, 86.4% during, 87.9% after, target 95%. Say: "Coverage is a number you can report, and every point of it is one closed path."</li>
 </ol>
-<h2>6. After the call</h2>
+<h2 id="6-after-the-call">6. After the call</h2>
 <ol>
 <li>Run <code>| ztdemo action=reset</code> (or <code>make reset</code>). It releases the quarantine through the emulator (audit user <code>k.osei</code>), writes a <code>released</code> audit event ("merge request reverted"), cancels open requests and sets the plan to idle. The next fire uses the same canonical IDs; the detections and searches ignore everything before the reset.</li>
 <li><code>| ztdemo action=status</code> to confirm <code>plan_status</code> idle and no quarantine.</li>
 <li>The posture's before-state will show this run for 24 hours; for the absolute numbers of a fresh install, <code>make reset-hard</code> (asks first, empties <code>zero_trust</code> and <code>zt_summary</code> and backfills).</li>
 <li><code>make normal</code> if the stack should not run every minute until the next call.</li>
-</ol>
-</main>
-</body>
-</html>
+</ol></body></html>

@@ -6,7 +6,7 @@ A Splunk demo for the deck "One incident, end to end" (zero trust networking). O
 |---|---|
 | `zt_incident_demo/` | Main app, display name *Zero Trust Incident*: the generator (`bin/zt_stream.py`, `bin/ztgen/`), the Kubernetes API emulator, the `ztdemo`, `ztsoar`, `ztbrief` and `ztevidence` commands, the approvals REST endpoint, lookups, KV collections, evidence searches, the posture rollup and the dashboards |
 | `DA-ESS-zt_incident_demo/` | Enterprise Security content: two risk detections, one finding-based detection, the asset registration |
-| `soar/zt_quarantine_workload/` | The SOAR playbook, its custom function `zt_build_cnp` and the build sheet (verify) |
+| `soar/zt_quarantine_workload/` | The SOAR playbook, its custom function `zt_build_cnp` and the build sheet |
 | `agent/` | `ZTFlowInvestigator`: system prompt, output schema, the five MCP tool definitions, `setup_agent.py` |
 | `tools/` | Idempotent setup scripts called by `make` (REST only; nothing is copied to a Splunk file system) |
 | `docs/` | [Field reference](docs/field_reference.md), [demo script](docs/demo_script.md) |
@@ -33,7 +33,7 @@ The background estate is generated too: one cluster `ai-platform-dc2`, 1,283 wor
 | Enterprise Security 8.7 | `DA-ESS-zt_incident_demo`: risk detections at 50 and 40, finding-based detection (risk ≥ 80 from ≥ 2 detections in the window), Run AI Agent action, asset source `zt_workload_assets`. ES is paired with SOAR; an ES automation rule ("Zero Trust Protected Paths", trigger `finding_created`) starts the playbook instead of label activation |
 | AI Toolkit 6.1, Agent Launchpad | Agent `ZTFlowInvestigator` with the LLM connection you configure and the MCP connection `SplunkMCP` |
 | Splunk MCP Server 2.0 | Five custom tools `zt_finding_context`, `zt_flow_evidence`, `zt_process_evidence`, `zt_ci_job_context`, `zt_workload_server_context`, each running one `ZT Agent - *` saved search; a bearer token minted for user `zt-agent`; role policy limiting `zt_agent_mcp` to those tools. `https://prd-shw-39d7bab80b2f9d.splunkcloud.com:8089/services/mcp` is reachable from the internet, so the agent needs no tunnel |
-| SOAR Cloud 8.7 | Paired with ES. Playbook `zt_quarantine_workload`; assets `zt_splunk` (Splunk app), the built-in ES connector, `zt_k8s_api` (HTTP app to the emulator), `zt_hec` (HTTP app to HEC), stubs `zt_hypershield` and `zt_nexus_nxapi`; roles `SOC tier 2` and `NetOps` (verify) |
+| SOAR Cloud 8.7 | Paired with ES. Playbook `zt_quarantine_workload`; assets `zt_splunk` (Splunk app), the built-in ES connector, `zt_k8s_api` (HTTP app to the emulator), `zt_hec` (HTTP app to HEC), stubs `zt_hypershield` and `zt_nexus_nxapi`; roles `SOC tier 2` and `NetOps` |
 | Kubernetes API emulator | `bin/zt_k8s_emulator.py` runs on the Mac (port 6443, TLS with a locally generated certificate). State lives in the stack's KV collection `zt_policy_state`, so the generator and the emulator agree. Every mutating call writes a `kube:apiserver:audit` event over HEC and returns an `Audit-Id` header. Published at `https://zt-k8s.yeackbot.com` through the dedicated Cloudflare tunnel `zt-k8s`; two launchd agents (`com.zt-incident-demo.emulator`, `com.zt-incident-demo.tunnel`) keep both up |
 
 Data flow: generator → HEC → `zero_trust` → ES detections → finding group → Run AI Agent → MCP tools → brief (`zt_agent_briefs`, ES note) → SOAR playbook or `ZT Response - Request Enforcement` → approval → emulator (`zt_policy_state`, `kube:apiserver:audit`) → generator emits DROPPED → `ZT Response - Verify Enforcement` or the playbook's verify loop → `zt:enforcement:audit` → `ZT Posture - Rollup` → `zt_summary` → dashboards.
@@ -69,7 +69,7 @@ make es-assets          # asset source zt_workload_assets, then a check that ass
 make mcp-tools          # the five zt_ tools, the zt-agent token, the role policy, one test call per tool
 make agent              # Agent Launchpad steps: LLM connection, MCP connection SplunkMCP, agent ZTFlowInvestigator
 make es-automation-rule # ES automation rule "Zero Trust Protected Paths" that starts the playbook (Mode A); RULE=off|on toggles it
-make soar-setup         # SOAR roles, users, assets, custom function and playbook (asks first) (verify)
+make soar-setup         # SOAR roles, users, assets, custom function and playbook (idempotent; --dry-run shows the plan)
 make smoke              # acceptance checks 2 to 8 with a pass/fail table; FRESH=1 right after a fresh install
 ```
 
@@ -110,7 +110,7 @@ The tunnel `zt-k8s` (`~/.cloudflared/zt-k8s.yml`) has one ingress rule, `zt-k8s.
 - After a practice run the posture before-state reflects it for 24 hours (for example coverage 87.9% and 17 enforcement actions before the next fire). Later runs show the same relative changes; the absolute numbers 1,283 / 87.7% / 8 / 2,306 / 16 only hold on a fresh install or after `make reset-hard`.
 - The Tetragon sourcetypes belong to the Cisco Security Cloud App. Their props are in a marked block of `default/props.conf`; remove that block if that app is installed later, so its own extractions take over.
 - The `cisco:nexus:*` sourcetype names may differ from the real Cisco data center networking add-on; rename them in `props.conf`, `eventtypes.conf`, the builders and the dashboards if you feed real data.
-- Timings at normal cadence: detections every 5 minutes, the finding-based detection and the response searches one minute later, so expect the finding 6 to 11 minutes after the fire and each later stage up to 5 minutes after the one before (verify).
+- Timings at normal cadence: detections every 5 minutes, the finding-based detection and the response searches one minute later, so expect the finding 6 to 11 minutes after the fire and each later stage up to 5 minutes after the one before.
 - HEC to searchable adds a few seconds on Splunk Cloud; the deck's two searches are expected within 10 seconds of `fire`.
 - SOAR picks up new findings from the automation rule about every 10 seconds; the playbook then waits for the brief (retrying every 30 s for up to 6 minutes) before it prompts.
 - Verification needs the next attempt (up to 30 s), the stream interval (15 s) and indexing: expect `verified` 20 to 90 seconds after `applied`; `failed` after 3 minutes without a DROPPED flow.

@@ -1,6 +1,6 @@
 # Demo script: one incident, end to end
 
-The live section of the deck, in six parts, at fast cadence (every ZT scheduled search runs every minute). One line to say per click. Dashboard and panel names follow the design; check them against the installed dashboards before the first call (verify).
+The live section of the deck, in six parts, at fast cadence (every ZT scheduled search runs every minute). One line to say per click. Dashboard and panel names match the installed dashboards (Zero Trust Fabric Posture, Incident Timeline, Enforcement Approvals).
 
 ## Timings at fast cadence
 

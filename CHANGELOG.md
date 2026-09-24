@@ -15,7 +15,7 @@ First release of the Zero Trust Incident demo for the deck "One incident, end to
 - REST endpoint `POST /services/zt_incident_demo/approvals` (persistent handler, system privileges, approval matrix, `refused` audit).
 - Kubernetes API emulator `bin/zt_k8s_emulator.py`: `/version`, pod label patch, CiliumNetworkPolicy create and delete, Hypershield and Nexus NX-API stubs, bearer tokens `k8s_enforcer` and `k8s_platform`, state in the stack's KV store, `kube:apiserver:audit` events over HEC, `Audit-Id` header; runs on the Mac behind the Cloudflare tunnel `zt-k8s` under launchd.
 - Saved searches: `ZT Posture - Rollup`, `ZT Lookup - Node Fabric`, the five evidence searches `ZT Agent - Finding Context`, `ZT Agent - Flow Evidence`, `ZT Agent - Process Evidence`, `ZT Agent - CI Job Context`, `ZT Agent - Workload and Server Context`, `ZT Agent - Capture Brief`, `ZT Agent - Inline Triage`, `ZT Response - Request Enforcement`, `ZT Response - Verify Enforcement`.
-- Dashboards (Dashboard Studio, absolute layout, dark): Zero Trust Fabric Posture, Incident Timeline with the one-pager journey grid, Enforcement Approvals (verify).
+- Dashboards (Dashboard Studio, absolute layout, dark): Zero Trust Fabric Posture, Incident Timeline with the one-pager journey grid, Enforcement Approvals.
 - Settings `zt_demo.conf` (`[hec]`, `[emulator]`, `[stream]`, `[modes]`) with spec; response mode local or soar, agent mode mcp or inline, cadence fast or normal.
 
 ### `DA-ESS-zt_incident_demo` 1.0.0 (Enterprise Security content)
@@ -30,11 +30,11 @@ First release of the Zero Trust Incident demo for the deck "One incident, end to
 
 ### SOAR (`soar/zt_quarantine_workload/`)
 
-- Playbook `zt_quarantine_workload`, custom function `zt_build_cnp` (identical logic to `ztgen/cnp.py`), build sheet and asset list; started by the ES automation rule "Zero Trust Protected Paths" (verify).
+- Playbook `zt_quarantine_workload`, custom function `zt_build_cnp` (identical logic to `ztgen/cnp.py`), build sheet and asset list; started by the ES automation rule "Zero Trust Protected Paths".
 
 ### Tooling (`tools/`, `Makefile`)
 
-- Idempotent REST setup: `check`, `indexes`, `hec`, `secrets`, `configure`, `users`, `lookups`, `package` (with AppInspect cloud and private_victoria tags), `sync-objects`, `backfill`, `fire`, `reset`, `status`, `fast`, `normal`, `mode-local`, `mode-soar`, `agent-mcp`, `agent-inline`, `mcp-tools`, `agent`, `es-assets`, `es-automation-rule`, `soar-setup` (verify), `soar-package` (verify), `emulator-start|stop|status|install`, `tunnel-install`, `smoke`, `reset-hard`, `collateral` (verify), `local-install`, `local-test` (verify), `test`, `clean`.
+- Idempotent REST setup: `check`, `indexes`, `hec`, `secrets`, `configure`, `users`, `lookups`, `package` (with AppInspect cloud and private_victoria tags), `sync-objects`, `backfill`, `fire`, `reset`, `status`, `fast`, `normal`, `mode-local`, `mode-soar`, `agent-mcp`, `agent-inline`, `mcp-tools`, `agent`, `es-assets`, `es-automation-rule`, `soar-setup`, `soar-package`, `emulator-start|stop|status|install`, `tunnel-install`, `smoke`, `reset-hard`, `collateral`, `local-install`, `local-test`, `test`, `clean`.
 - Unit tests `tests/test_ztgen.py`: estate, full-day counts, tick equivalence, plan, quarantine bodies.
 
 ### Documentation

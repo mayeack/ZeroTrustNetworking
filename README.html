@@ -22,7 +22,7 @@ table{border-collapse:collapse;margin:1rem 0;width:100%}th,td{border:1px solid #
 </tr>
 <tr>
 <td><code>soar/zt_quarantine_workload/</code></td>
-<td>The SOAR playbook, its custom function <code>zt_build_cnp</code> and the build sheet (verify)</td>
+<td>The SOAR playbook, its custom function <code>zt_build_cnp</code> and the build sheet</td>
 </tr>
 <tr>
 <td><code>agent/</code></td>
@@ -111,7 +111,7 @@ table{border-collapse:collapse;margin:1rem 0;width:100%}th,td{border:1px solid #
 </tr>
 <tr>
 <td>SOAR Cloud 8.7</td>
-<td>Paired with ES. Playbook <code>zt_quarantine_workload</code>; assets <code>zt_splunk</code> (Splunk app), the built-in ES connector, <code>zt_k8s_api</code> (HTTP app to the emulator), <code>zt_hec</code> (HTTP app to HEC), stubs <code>zt_hypershield</code> and <code>zt_nexus_nxapi</code>; roles <code>SOC tier 2</code> and <code>NetOps</code> (verify)</td>
+<td>Paired with ES. Playbook <code>zt_quarantine_workload</code>; assets <code>zt_splunk</code> (Splunk app), the built-in ES connector, <code>zt_k8s_api</code> (HTTP app to the emulator), <code>zt_hec</code> (HTTP app to HEC), stubs <code>zt_hypershield</code> and <code>zt_nexus_nxapi</code>; roles <code>SOC tier 2</code> and <code>NetOps</code></td>
 </tr>
 <tr>
 <td>Kubernetes API emulator</td>
@@ -143,7 +143,7 @@ make es-assets          # asset source zt_workload_assets, then a check that ass
 make mcp-tools          # the five zt_ tools, the zt-agent token, the role policy, one test call per tool
 make agent              # Agent Launchpad steps: LLM connection, MCP connection SplunkMCP, agent ZTFlowInvestigator
 make es-automation-rule # ES automation rule &quot;Zero Trust Protected Paths&quot; that starts the playbook (Mode A); RULE=off|on toggles it
-make soar-setup         # SOAR roles, users, assets, custom function and playbook (asks first) (verify)
+make soar-setup         # SOAR roles, users, assets, custom function and playbook (idempotent; --dry-run shows the plan)
 make smoke              # acceptance checks 2 to 8 with a pass/fail table; FRESH=1 right after a fresh install
 </code></pre>
 <p><code>make help</code> lists every target. <code>make local-install</code> copies both apps into the local Splunk Enterprise at <code>LOCAL_SPLUNK</code> (default <code>/opt/splunk104</code>) as a test bed for the Python code before an upload.</p>
@@ -229,7 +229,7 @@ make smoke              # acceptance checks 2 to 8 with a pass/fail table; FRESH
 <li>After a practice run the posture before-state reflects it for 24 hours (for example coverage 87.9% and 17 enforcement actions before the next fire). Later runs show the same relative changes; the absolute numbers 1,283 / 87.7% / 8 / 2,306 / 16 only hold on a fresh install or after <code>make reset-hard</code>.</li>
 <li>The Tetragon sourcetypes belong to the Cisco Security Cloud App. Their props are in a marked block of <code>default/props.conf</code>; remove that block if that app is installed later, so its own extractions take over.</li>
 <li>The <code>cisco:nexus:*</code> sourcetype names may differ from the real Cisco data center networking add-on; rename them in <code>props.conf</code>, <code>eventtypes.conf</code>, the builders and the dashboards if you feed real data.</li>
-<li>Timings at normal cadence: detections every 5 minutes, the finding-based detection and the response searches one minute later, so expect the finding 6 to 11 minutes after the fire and each later stage up to 5 minutes after the one before (verify).</li>
+<li>Timings at normal cadence: detections every 5 minutes, the finding-based detection and the response searches one minute later, so expect the finding 6 to 11 minutes after the fire and each later stage up to 5 minutes after the one before.</li>
 <li>HEC to searchable adds a few seconds on Splunk Cloud; the deck's two searches are expected within 10 seconds of <code>fire</code>.</li>
 <li>SOAR picks up new findings from the automation rule about every 10 seconds; the playbook then waits for the brief (retrying every 30 s for up to 6 minutes) before it prompts.</li>
 <li>Verification needs the next attempt (up to 30 s), the stream interval (15 s) and indexing: expect <code>verified</code> 20 to 90 seconds after <code>applied</code>; <code>failed</code> after 3 minutes without a DROPPED flow.</li>

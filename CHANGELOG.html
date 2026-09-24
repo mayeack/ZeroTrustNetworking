@@ -1,42 +1,11 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Changelog</title>
-<style>
-:root { --bg: #ffffff; --fg: #1f2933; --muted: #52606d; --line: #d9e2ec; --code-bg: #f1f5f9; --accent: #0f1a2b; --link: #0b5fff; }
-@media (prefers-color-scheme: dark) {
-  :root { --bg: #0f1a2b; --fg: #e4e9f0; --muted: #a9b4c2; --line: #2b3a4f; --code-bg: #182538; --accent: #e4e9f0; --link: #7ab8ff; }
-}
-html { -webkit-text-size-adjust: 100%; }
-body { margin: 0; padding: 24px 16px 48px; background: var(--bg); color: var(--fg);
-       font: 15px/1.55 -apple-system, "Segoe UI", Helvetica, Arial, sans-serif; }
-main { max-width: 1080px; margin: 0 auto; }
-h1, h2, h3, h4 { color: var(--accent); line-height: 1.25; margin: 1.6em 0 0.5em; }
-h1 { font-size: 1.9em; margin-top: 0; border-bottom: 2px solid var(--line); padding-bottom: 0.3em; }
-h2 { font-size: 1.45em; border-bottom: 1px solid var(--line); padding-bottom: 0.2em; }
-h3 { font-size: 1.15em; }
-h4 { font-size: 1em; }
-p, ul, ol, table, pre { margin: 0 0 1em; }
-a { color: var(--link); }
-code { font: 0.9em/1.4 "SFMono-Regular", Menlo, Consolas, monospace; background: var(--code-bg); padding: 0.1em 0.3em; border-radius: 3px; }
-pre { background: var(--code-bg); padding: 12px 14px; border-radius: 6px; overflow-x: auto; border: 1px solid var(--line); }
-pre code { background: none; padding: 0; font-size: 0.88em; }
-table { border-collapse: collapse; width: 100%; font-size: 0.93em; display: block; overflow-x: auto; }
-th, td { border: 1px solid var(--line); padding: 6px 9px; vertical-align: top; text-align: left; }
-th { background: var(--code-bg); }
-li { margin: 0.2em 0; }
-blockquote { border-left: 3px solid var(--line); margin: 0 0 1em; padding: 0 0 0 14px; color: var(--muted); }
-hr { border: 0; border-top: 1px solid var(--line); margin: 2em 0; }
-</style>
-</head>
-<body>
-<main>
-<h1>Changelog</h1>
-<h2>1.0.0 (2026-09-23)</h2>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>CHANGELOG</title><style>body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;max-width:960px;margin:2rem auto;padding:0 1rem;line-height:1.5;color:#1f2937;background:#fff}
+code,pre{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:.92em}pre{background:#f3f4f6;padding:.75rem;overflow-x:auto;border-radius:6px}code{background:#f3f4f6;padding:.1em .3em;border-radius:4px}pre code{background:none;padding:0}
+table{border-collapse:collapse;margin:1rem 0;width:100%}th,td{border:1px solid #d1d5db;padding:.4rem .6rem;text-align:left;vertical-align:top}th{background:#f9fafb}h1,h2,h3{line-height:1.25}a{color:#0b5cad}
+@media (prefers-color-scheme: dark){body{background:#0f172a;color:#e5e7eb}pre,code{background:#1e293b}th{background:#1e293b}th,td{border-color:#334155}a{color:#7dd3fc}}</style></head><body><h1 id="changelog">Changelog</h1>
+<h2 id="100-2026-09-23">1.0.0 (2026-09-23)</h2>
 <p>First release of the Zero Trust Incident demo for the deck "One incident, end to end", built for Splunk Cloud Platform (stack <code>prd-shw-39d7bab80b2f9d</code>) with Enterprise Security 8.7, AI Toolkit 6.1 (Agent Launchpad), MCP Server 2.0 and Splunk SOAR Cloud 8.7.</p>
-<h3><code>zt_incident_demo</code> 1.0.0 (main app, display name <em>Zero Trust Incident</em>)</h3>
+<h3 id="zt_incident_demo-100-main-app-display-name-zero-trust-incident"><code>zt_incident_demo</code> 1.0.0 (main app, display name <em>Zero Trust Incident</em>)</h3>
 <ul>
 <li>Generator: scripted input <code>bin/zt_stream.py</code> (every 15 seconds) and the <code>bin/ztgen/</code> package (standard library only): seeded estate model (<code>ai-platform-dc2</code>, 1,283 workloads, 92 nodes, four protected stores, eight known gaps, enforcement history), one event builder per sourcetype with the exact JSON of the design, daily schedules at exact counts (about 115,000 events a day), the incident plan (T0 batch, attempts every 30 seconds, AUDIT or DROPPED from the emulator's policy state by timestamp, CI job outcome), HEC client with batching and backoff, KV client, one-time backfill with a lock.</li>
 <li>Sourcetypes and knowledge: <code>cilium:hubble:flow</code>, <code>cisco:isovalent:processExec</code>, <code>cisco:isovalent:processConnect</code>, <code>cisco:isovalent</code>, <code>ci:job:event</code>, <code>cisco:nexus:endpoint</code>, <code>cisco:nexus:liveprotect</code>, <code>cisco:nexus:config</code>, <code>kube:apiserver:audit</code>, <code>zt:enforcement:audit</code>; normalized fields as calculated fields and automatic lookups; eventtypes and tags for CIM Network Traffic, Endpoint and Change.</li>
@@ -47,32 +16,29 @@ hr { border: 0; border-top: 1px solid var(--line); margin: 2em 0; }
 <li>REST endpoint <code>POST /services/zt_incident_demo/approvals</code> (persistent handler, system privileges, approval matrix, <code>refused</code> audit).</li>
 <li>Kubernetes API emulator <code>bin/zt_k8s_emulator.py</code>: <code>/version</code>, pod label patch, CiliumNetworkPolicy create and delete, Hypershield and Nexus NX-API stubs, bearer tokens <code>k8s_enforcer</code> and <code>k8s_platform</code>, state in the stack's KV store, <code>kube:apiserver:audit</code> events over HEC, <code>Audit-Id</code> header; runs on the Mac behind the Cloudflare tunnel <code>zt-k8s</code> under launchd.</li>
 <li>Saved searches: <code>ZT Posture - Rollup</code>, <code>ZT Lookup - Node Fabric</code>, the five evidence searches <code>ZT Agent - Finding Context</code>, <code>ZT Agent - Flow Evidence</code>, <code>ZT Agent - Process Evidence</code>, <code>ZT Agent - CI Job Context</code>, <code>ZT Agent - Workload and Server Context</code>, <code>ZT Agent - Capture Brief</code>, <code>ZT Agent - Inline Triage</code>, <code>ZT Response - Request Enforcement</code>, <code>ZT Response - Verify Enforcement</code>.</li>
-<li>Dashboards (Dashboard Studio, absolute layout, dark): Zero Trust Fabric Posture, Incident Timeline with the one-pager journey grid, Enforcement Approvals (verify).</li>
+<li>Dashboards (Dashboard Studio, absolute layout, dark): Zero Trust Fabric Posture, Incident Timeline with the one-pager journey grid, Enforcement Approvals.</li>
 <li>Settings <code>zt_demo.conf</code> (<code>[hec]</code>, <code>[emulator]</code>, <code>[stream]</code>, <code>[modes]</code>) with spec; response mode local or soar, agent mode mcp or inline, cadence fast or normal.</li>
 </ul>
-<h3><code>DA-ESS-zt_incident_demo</code> 1.0.0 (Enterprise Security content)</h3>
+<h3 id="da-ess-zt_incident_demo-100-enterprise-security-content"><code>DA-ESS-zt_incident_demo</code> 1.0.0 (Enterprise Security content)</h3>
 <ul>
 <li>Risk detections <code>ZT - Audit-Mode Flow Into Protected AI Data Store - Rule</code> (+50, MITRE ATT&amp;CK T1530) and <code>ZT - Unapproved Program Connected to Protected AI Data Store - Rule</code> (+40, T1059.004), once per path or program since the last reset.</li>
 <li>Finding-based detection <code>ZT - Workload Exceeded Risk Threshold on Protected-Path Signals - Rule</code> (risk ≥ 80 from ≥ 2 detections; finding title <code>Unprotected path: $normalized_risk_object$ reached a protected AI data store</code>; severity high; three drilldowns; Run AI Agent action for <code>ZTFlowInvestigator</code>), built on the ES 8.7 template.</li>
 <li>Asset source <code>zt_workload_assets</code> (<code>lookups/zt_es_assets.csv</code>).</li>
 </ul>
-<h3>Agent (<code>agent/</code>)</h3>
+<h3 id="agent-agent">Agent (<code>agent/</code>)</h3>
 <ul>
 <li><code>ZTFlowInvestigator</code>: system prompt, task prompt, structured output schema, LLM and MCP settings (<code>ZTFlowInvestigator.json</code>), the five MCP tool definitions under <code>mcp_tools/</code> (required arguments with patterns, <code>| savedsearch</code> templates), <code>setup_agent.py</code>.</li>
 </ul>
-<h3>SOAR (<code>soar/zt_quarantine_workload/</code>)</h3>
+<h3 id="soar-soarzt_quarantine_workload">SOAR (<code>soar/zt_quarantine_workload/</code>)</h3>
 <ul>
-<li>Playbook <code>zt_quarantine_workload</code>, custom function <code>zt_build_cnp</code> (identical logic to <code>ztgen/cnp.py</code>), build sheet and asset list; started by the ES automation rule "Zero Trust Protected Paths" (verify).</li>
+<li>Playbook <code>zt_quarantine_workload</code>, custom function <code>zt_build_cnp</code> (identical logic to <code>ztgen/cnp.py</code>), build sheet and asset list; started by the ES automation rule "Zero Trust Protected Paths".</li>
 </ul>
-<h3>Tooling (<code>tools/</code>, <code>Makefile</code>)</h3>
+<h3 id="tooling-tools-makefile">Tooling (<code>tools/</code>, <code>Makefile</code>)</h3>
 <ul>
-<li>Idempotent REST setup: <code>check</code>, <code>indexes</code>, <code>hec</code>, <code>secrets</code>, <code>configure</code>, <code>users</code>, <code>lookups</code>, <code>package</code> (with AppInspect cloud and private_victoria tags), <code>sync-objects</code>, <code>backfill</code>, <code>fire</code>, <code>reset</code>, <code>status</code>, <code>fast</code>, <code>normal</code>, <code>mode-local</code>, <code>mode-soar</code>, <code>agent-mcp</code>, <code>agent-inline</code>, <code>mcp-tools</code>, <code>agent</code>, <code>es-assets</code>, <code>es-automation-rule</code>, <code>soar-setup</code> (verify), <code>soar-package</code> (verify), <code>emulator-start|stop|status|install</code>, <code>tunnel-install</code>, <code>smoke</code>, <code>reset-hard</code>, <code>collateral</code> (verify), <code>local-install</code>, <code>local-test</code> (verify), <code>test</code>, <code>clean</code>.</li>
+<li>Idempotent REST setup: <code>check</code>, <code>indexes</code>, <code>hec</code>, <code>secrets</code>, <code>configure</code>, <code>users</code>, <code>lookups</code>, <code>package</code> (with AppInspect cloud and private_victoria tags), <code>sync-objects</code>, <code>backfill</code>, <code>fire</code>, <code>reset</code>, <code>status</code>, <code>fast</code>, <code>normal</code>, <code>mode-local</code>, <code>mode-soar</code>, <code>agent-mcp</code>, <code>agent-inline</code>, <code>mcp-tools</code>, <code>agent</code>, <code>es-assets</code>, <code>es-automation-rule</code>, <code>soar-setup</code>, <code>soar-package</code>, <code>emulator-start|stop|status|install</code>, <code>tunnel-install</code>, <code>smoke</code>, <code>reset-hard</code>, <code>collateral</code>, <code>local-install</code>, <code>local-test</code>, <code>test</code>, <code>clean</code>.</li>
 <li>Unit tests <code>tests/test_ztgen.py</code>: estate, full-day counts, tick equivalence, plan, quarantine bodies.</li>
 </ul>
-<h3>Documentation</h3>
+<h3 id="documentation">Documentation</h3>
 <ul>
 <li><code>README.md</code>, <code>docs/field_reference.md</code>, <code>docs/demo_script.md</code>, this changelog, each with an HTML rendering.</li>
-</ul>
-</main>
-</body>
-</html>
+</ul></body></html>

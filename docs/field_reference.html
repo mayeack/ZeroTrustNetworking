@@ -1,44 +1,13 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Field reference</title>
-<style>
-:root { --bg: #ffffff; --fg: #1f2933; --muted: #52606d; --line: #d9e2ec; --code-bg: #f1f5f9; --accent: #0f1a2b; --link: #0b5fff; }
-@media (prefers-color-scheme: dark) {
-  :root { --bg: #0f1a2b; --fg: #e4e9f0; --muted: #a9b4c2; --line: #2b3a4f; --code-bg: #182538; --accent: #e4e9f0; --link: #7ab8ff; }
-}
-html { -webkit-text-size-adjust: 100%; }
-body { margin: 0; padding: 24px 16px 48px; background: var(--bg); color: var(--fg);
-       font: 15px/1.55 -apple-system, "Segoe UI", Helvetica, Arial, sans-serif; }
-main { max-width: 1080px; margin: 0 auto; }
-h1, h2, h3, h4 { color: var(--accent); line-height: 1.25; margin: 1.6em 0 0.5em; }
-h1 { font-size: 1.9em; margin-top: 0; border-bottom: 2px solid var(--line); padding-bottom: 0.3em; }
-h2 { font-size: 1.45em; border-bottom: 1px solid var(--line); padding-bottom: 0.2em; }
-h3 { font-size: 1.15em; }
-h4 { font-size: 1em; }
-p, ul, ol, table, pre { margin: 0 0 1em; }
-a { color: var(--link); }
-code { font: 0.9em/1.4 "SFMono-Regular", Menlo, Consolas, monospace; background: var(--code-bg); padding: 0.1em 0.3em; border-radius: 3px; }
-pre { background: var(--code-bg); padding: 12px 14px; border-radius: 6px; overflow-x: auto; border: 1px solid var(--line); }
-pre code { background: none; padding: 0; font-size: 0.88em; }
-table { border-collapse: collapse; width: 100%; font-size: 0.93em; display: block; overflow-x: auto; }
-th, td { border: 1px solid var(--line); padding: 6px 9px; vertical-align: top; text-align: left; }
-th { background: var(--code-bg); }
-li { margin: 0.2em 0; }
-blockquote { border-left: 3px solid var(--line); margin: 0 0 1em; padding: 0 0 0 14px; color: var(--muted); }
-hr { border: 0; border-top: 1px solid var(--line); margin: 2em 0; }
-</style>
-</head>
-<body>
-<main>
-<h1>Field reference</h1>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>field reference</title><style>body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;max-width:960px;margin:2rem auto;padding:0 1rem;line-height:1.5;color:#1f2937;background:#fff}
+code,pre{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:.92em}pre{background:#f3f4f6;padding:.75rem;overflow-x:auto;border-radius:6px}code{background:#f3f4f6;padding:.1em .3em;border-radius:4px}pre code{background:none;padding:0}
+table{border-collapse:collapse;margin:1rem 0;width:100%}th,td{border:1px solid #d1d5db;padding:.4rem .6rem;text-align:left;vertical-align:top}th{background:#f9fafb}h1,h2,h3{line-height:1.25}a{color:#0b5cad}
+@media (prefers-color-scheme: dark){body{background:#0f172a;color:#e5e7eb}pre,code{background:#1e293b}th{background:#1e293b}th,td{border-color:#334155}a{color:#7dd3fc}}</style></head><body><h1 id="field-reference">Field reference</h1>
 <p>Every sourcetype, raw key, normalized field, CIM mapping, eventtype, tag, lookup and KV collection of the Zero Trust Incident demo, as defined in <code>zt_incident_demo/default/props.conf</code>, <code>transforms.conf</code>, <code>eventtypes.conf</code>, <code>tags.conf</code>, <code>collections.conf</code>, <code>macros.conf</code> and the lookups. Canonical values are those of the story (design document section 3).</p>
-<h2>Index and envelope</h2>
+<h2 id="index-and-envelope">Index and envelope</h2>
 <p>All events are JSON, sent to HTTP Event Collector's <code>/services/collector/event</code> endpoint by the generator (<code>bin/ztgen/builders.py</code>), the emulator and the response code. The envelope carries <code>time</code> (epoch seconds with milliseconds), <code>host</code>, <code>source</code>, <code>sourcetype</code> and <code>index</code>. The index is <code>zero_trust</code> for every event sourcetype; <code>zt_summary</code> receives the posture rollup (source <code>ZT Posture - Rollup</code>, <code>stash</code> sourcetype through <code>collect</code>). The scripted input's own sourcetype <code>zt:stream</code> (index <code>main</code>) never carries events: the input prints nothing to stdout.</p>
 <p>Props common to every sourcetype: <code>KV_MODE = json</code>, <code>TRUNCATE = 0</code>, <code>SHOULD_LINEMERGE = false</code>, <code>LINE_BREAKER = ([\r\n]+)</code>, and <code>TIME_PREFIX</code> / <code>TIME_FORMAT</code> as a fallback for raw ingestion of the same JSON (the HEC envelope time is authoritative). Hubble and Tetragon timestamps are nanoseconds (<code>%Y-%m-%dT%H:%M:%S.%9NZ</code>); Tetragon's <code>TIME_PREFIX</code> is anchored to <code>},\s*"time":\s*"</code> so the process <code>start_time</code> never matches.</p>
-<h2>Sourcetypes</h2>
+<h2 id="sourcetypes">Sourcetypes</h2>
 <table>
 <thead>
 <tr>
@@ -123,18 +92,18 @@ hr { border: 0; border-top: 1px solid var(--line); margin: 2em 0; }
 </tbody>
 </table>
 <p>The Tetragon sourcetype names are the Cisco Security Cloud App's; their props sit in a marked block of <code>props.conf</code> to be removed if that app is installed. The <code>cisco:nexus:*</code> names may differ from the real add-on.</p>
-<h2>Raw JSON keys, summarised</h2>
+<h2 id="raw-json-keys-summarised">Raw JSON keys, summarised</h2>
 <p><strong><code>cilium:hubble:flow</code></strong> — <code>{"flow": {...}, "node_name": "&lt;cluster&gt;/&lt;node&gt;", "time": "&lt;RFC 3339 ns&gt;"}</code>. Inside <code>flow</code>: <code>time</code>, <code>uuid</code>, <code>verdict</code> (<code>FORWARDED</code>, <code>AUDIT</code>, <code>DROPPED</code>), <code>IP.source</code>, <code>IP.destination</code>, <code>IP.ipVersion</code>, <code>l4.TCP.source_port</code>, <code>l4.TCP.destination_port</code>, <code>l4.TCP.flags</code> (or <code>l4.UDP.*</code>), <code>source</code> and <code>destination</code> objects (<code>ID</code> on the local endpoint only, <code>identity</code>, <code>cluster_name</code>, <code>namespace</code>, <code>labels[]</code> in <code>k8s:key=value</code> form, <code>pod_name</code>, <code>workloads[].name</code>, <code>workloads[].kind</code>), <code>Type</code> (<code>L3_L4</code>), <code>node_name</code>, <code>node_labels[]</code>, <code>event_type.type</code> (5 for policy verdicts, 1 for drops) and <code>event_type.sub_type</code>, <code>traffic_direction</code> (<code>INGRESS</code>, <code>EGRESS</code>), <code>policy_match_type</code>, <code>is_reply</code>, <code>Summary</code>, and, when present, <code>egress_allowed_by[]</code>, <code>ingress_allowed_by[]</code>, <code>egress_denied_by[]</code>, <code>ingress_denied_by[]</code> (each with <code>name</code>, <code>namespace</code>, <code>labels[]</code>, <code>revision</code>, <code>kind</code>), <code>drop_reason</code> (181) and <code>drop_reason_desc</code> (<code>POLICY_DENY</code>). The incident's ingress AUDIT flow at the store has identities 48213 → 30719; the DROPPED flows after the quarantine carry source identity 48291 and the label <code>k8s:zt-quarantine=88213</code>.</p>
 <p><strong><code>cisco:isovalent:processExec</code></strong>, <strong><code>cisco:isovalent:processConnect</code></strong>, <strong><code>cisco:isovalent</code></strong> — <code>{"process_exec" | "process_connect" | "process_kprobe": {...}, "node_name", "time", "cluster_name", "node_labels": {...}}</code>. The <code>process</code> and <code>parent</code> objects carry <code>exec_id</code>, <code>pid</code>, <code>uid</code>, <code>cwd</code>, <code>binary</code>, <code>arguments</code>, <code>flags</code>, <code>start_time</code>, <code>auid</code>, <code>pod</code> (<code>namespace</code>, <code>name</code>, <code>container.id</code>, <code>container.name</code>, <code>container.image.id</code>, <code>container.image.name</code>, <code>container.start_time</code>, <code>container.pid</code>, <code>pod_labels</code>, <code>workload</code>, <code>workload_kind</code>), <code>docker</code>, <code>parent_exec_id</code>, <code>tid</code>. <code>process_connect</code> adds <code>source_ip</code>, <code>source_port</code>, <code>destination_ip</code>, <code>destination_port</code>, <code>sock_cookie</code>, <code>protocol</code> and <code>destination_pod</code> (<code>namespace</code>, <code>name</code>, <code>pod_labels</code>, <code>workload</code>, <code>workload_kind</code>). <code>process_kprobe</code> adds <code>function_name</code> (<code>security_bprm_check</code>), <code>action</code> (<code>KPROBE_ACTION_SIGKILL</code>) and <code>policy_name</code>.</p>
 <p><strong><code>ci:job:event</code></strong> — <code>object_kind</code> (<code>build</code>), <code>ref</code>, <code>tag</code>, <code>sha</code>, <code>build_id</code>, <code>build_name</code>, <code>build_stage</code>, <code>build_status</code> (<code>running</code>, <code>success</code>, <code>failed</code>), <code>build_created_at</code>, <code>build_started_at</code>, <code>build_finished_at</code>, <code>build_duration</code>, <code>build_failure_reason</code> (<code>script_failure</code>), <code>pipeline_id</code>, <code>project_id</code>, <code>project_name</code>, <code>project.path_with_namespace</code>, <code>project.web_url</code>, <code>user.username</code>, <code>user.name</code>, <code>commit.sha</code>, <code>commit.message</code>, <code>commit.author_name</code>, <code>runner.id</code>, <code>runner.description</code> (the pod), <code>runner.runner_type</code>, <code>runner.tags[]</code>, <code>merge_request.iid</code>, <code>merge_request.title</code>, <code>merge_request.source_branch</code>, <code>merge_request.target_branch</code>, <code>merge_request.url</code>, <code>job_script</code>.</p>
 <p><strong><code>cisco:nexus:endpoint</code></strong> — <code>timestamp</code>, <code>source</code> (<code>nexus-dashboard</code>), <code>fabric</code>, <code>switch</code>, <code>interface</code>, <code>hostname</code>, <code>endpoint_ip</code>, <code>endpoint_mac</code>, <code>vlan</code>, <code>vrf</code>, <code>learned</code>, <code>state</code>.</p>
 <p><strong><code>cisco:nexus:liveprotect</code></strong> — <code>timestamp</code>, <code>source</code>, <code>fabric</code>, <code>switch</code>, <code>feature</code> (<code>live_protect</code>), <code>advisory_id</code> (<code>NX-LP-00nn</code>), <code>component</code>, <code>shield</code>, <code>status</code>.</p>
-<p><strong><code>cisco:nexus:config</code></strong> — <code>timestamp</code>, <code>device</code>, <code>user</code>, <code>change</code>, <code>diff_summary</code>, <code>source</code> (<code>nexus</code>), plus <code>change_type</code> and <code>ticket</code> on enforcement changes (verify).</p>
+<p><strong><code>cisco:nexus:config</code></strong> — <code>timestamp</code>, <code>device</code>, <code>user</code>, <code>change</code>, <code>diff_summary</code>, <code>source</code> (<code>nexus</code>), plus <code>change_type</code> and <code>ticket</code> on every change (<code>ticket</code> is the finding id for enforcement changes, a change number otherwise).</p>
 <p><strong><code>kube:apiserver:audit</code></strong> — <code>kind</code> (<code>Event</code>), <code>apiVersion</code> (<code>audit.k8s.io/v1</code>), <code>level</code>, <code>auditID</code>, <code>stage</code> (<code>ResponseComplete</code>), <code>requestURI</code>, <code>verb</code> (<code>create</code>, <code>patch</code>, <code>delete</code>), <code>user.username</code>, <code>user.groups[]</code>, <code>sourceIPs[]</code>, <code>userAgent</code>, <code>objectRef</code> (<code>resource</code>, <code>namespace</code>, <code>name</code>, <code>apiGroup</code>, <code>apiVersion</code>), <code>responseStatus.code</code>, <code>requestReceivedTimestamp</code>, <code>stageTimestamp</code>, <code>annotations</code> (<code>authorization.k8s.io/decision</code>, <code>authorization.k8s.io/reason</code>). The quarantine produces a <code>patch</code> on <code>pods/ci-runner-7d9f8-xk2lq</code> (200) and a <code>create</code> of <code>ciliumnetworkpolicies/zt-quarantine-ci-runner-88213</code> (201) by <code>system:serviceaccount:soar:zt-enforcer</code>; the reset produces a <code>delete</code> and a <code>patch</code> by <code>k.osei</code>.</p>
 <p><strong><code>zt:enforcement:audit</code></strong> — <code>time</code>, <code>request_id</code> (<code>ZTR-&lt;yyyymmdd&gt;-&lt;nnnn&gt;</code>), <code>finding_id</code>, <code>investigation_id</code>, <code>state</code> (<code>requested</code>, <code>approved</code>, <code>rejected</code>, <code>refused</code>, <code>applied</code>, <code>verified</code>, <code>failed</code>, <code>released</code>), <code>enforcement_point</code> (<code>kernel</code>, <code>dpu</code>, <code>switch</code>), <code>action</code>, <code>target</code> (<code>namespace/pod</code>), <code>workload</code> (<code>namespace/workload</code>), <code>policy_name</code>, <code>approved_by</code>, <code>approver_role</code>, <code>approved_at</code>, <code>executed_by</code> (<code>soar</code> or <code>splunk</code>), <code>playbook</code>, <code>run_id</code>, <code>k8s_audit_ids[]</code>, <code>comment</code>, <code>status</code>.</p>
-<h2>Normalized fields per sourcetype</h2>
+<h2 id="normalized-fields-per-sourcetype">Normalized fields per sourcetype</h2>
 <p>All are <code>EVAL-</code> calculated fields or automatic lookups in <code>props.conf</code>. Lookups run after the evals, so they can use them.</p>
-<h3><code>cilium:hubble:flow</code></h3>
+<h3 id="ciliumhubbleflow"><code>cilium:hubble:flow</code></h3>
 <table>
 <thead>
 <tr>
@@ -261,7 +230,7 @@ hr { border: 0; border-top: 1px solid var(--line); margin: 2em 0; }
 </tr>
 </tbody>
 </table>
-<h3><code>cisco:isovalent:processExec</code></h3>
+<h3 id="ciscoisovalentprocessexec"><code>cisco:isovalent:processExec</code></h3>
 <table>
 <thead>
 <tr>
@@ -338,7 +307,7 @@ hr { border: 0; border-top: 1px solid var(--line); margin: 2em 0; }
 </tr>
 </tbody>
 </table>
-<h3><code>cisco:isovalent:processConnect</code></h3>
+<h3 id="ciscoisovalentprocessconnect"><code>cisco:isovalent:processConnect</code></h3>
 <p>All the <code>processExec</code> fields, read from <code>process_connect.*</code>, plus:</p>
 <table>
 <thead>
@@ -386,7 +355,7 @@ hr { border: 0; border-top: 1px solid var(--line); margin: 2em 0; }
 </tr>
 </tbody>
 </table>
-<h3><code>cisco:isovalent</code> (kprobe)</h3>
+<h3 id="ciscoisovalent-kprobe"><code>cisco:isovalent</code> (kprobe)</h3>
 <table>
 <thead>
 <tr>
@@ -428,7 +397,7 @@ hr { border: 0; border-top: 1px solid var(--line); margin: 2em 0; }
 </tr>
 </tbody>
 </table>
-<h3><code>ci:job:event</code></h3>
+<h3 id="cijobevent"><code>ci:job:event</code></h3>
 <table>
 <thead>
 <tr>
@@ -480,7 +449,7 @@ hr { border: 0; border-top: 1px solid var(--line); margin: 2em 0; }
 </tr>
 </tbody>
 </table>
-<h3><code>cisco:nexus:endpoint</code>, <code>cisco:nexus:liveprotect</code>, <code>cisco:nexus:config</code></h3>
+<h3 id="cisconexusendpoint-cisconexusliveprotect-cisconexusconfig"><code>cisco:nexus:endpoint</code>, <code>cisco:nexus:liveprotect</code>, <code>cisco:nexus:config</code></h3>
 <table>
 <thead>
 <tr>
@@ -523,7 +492,7 @@ hr { border: 0; border-top: 1px solid var(--line); margin: 2em 0; }
 </tr>
 </tbody>
 </table>
-<h3><code>kube:apiserver:audit</code></h3>
+<h3 id="kubeapiserveraudit"><code>kube:apiserver:audit</code></h3>
 <table>
 <thead>
 <tr>
@@ -575,7 +544,7 @@ hr { border: 0; border-top: 1px solid var(--line); margin: 2em 0; }
 </tr>
 </tbody>
 </table>
-<h3><code>zt:enforcement:audit</code></h3>
+<h3 id="ztenforcementaudit"><code>zt:enforcement:audit</code></h3>
 <table>
 <thead>
 <tr>
@@ -617,7 +586,7 @@ hr { border: 0; border-top: 1px solid var(--line); margin: 2em 0; }
 </tr>
 </tbody>
 </table>
-<h2>CIM mapping</h2>
+<h2 id="cim-mapping">CIM mapping</h2>
 <table>
 <thead>
 <tr>
@@ -649,7 +618,7 @@ hr { border: 0; border-top: 1px solid var(--line); margin: 2em 0; }
 </tbody>
 </table>
 <p><code>cisco:isovalent:processConnect</code> also carries the Network Traffic fields (<code>src</code>, <code>dest</code>, ports, <code>transport</code>, <code>action=allowed</code>) although it is tagged as a process event. <code>zt_ci</code> (tag <code>ci</code>) and <code>zt_fabric</code> (tags <code>network</code>, <code>inventory</code>) group the CI and Nexus data for searches; they do not feed a CIM data model.</p>
-<h2>Eventtypes and tags</h2>
+<h2 id="eventtypes-and-tags">Eventtypes and tags</h2>
 <table>
 <thead>
 <tr>
@@ -686,7 +655,7 @@ hr { border: 0; border-top: 1px solid var(--line); margin: 2em 0; }
 </tr>
 </tbody>
 </table>
-<h2>Lookups</h2>
+<h2 id="lookups">Lookups</h2>
 <p>CSV lookups in <code>zt_incident_demo/lookups/</code>, generated from the estate model by <code>make lookups</code> (<code>tools/gen_lookups.py</code>), except <code>zt_node_fabric</code>, which <code>ZT Lookup - Node Fabric</code> rebuilds hourly from <code>cisco:nexus:endpoint</code>.</p>
 <table>
 <thead>
@@ -745,11 +714,11 @@ hr { border: 0; border-top: 1px solid var(--line); margin: 2em 0; }
 <tr>
 <td><code>zt_es_assets</code> (7 rows, in <code>DA-ESS-zt_incident_demo</code>)</td>
 <td>ES asset header <code>ip, mac, nt_host, dns, owner, priority, lat, long, city, country, bunit, category, pci_domain, is_expected, should_timesync, should_update, requires_av</code></td>
-<td>Asset source <code>zt_workload_assets</code>: the four stores (<code>ai-train/checkpoint-store</code> critical, category <code>k8s_workload|ai_data_store|crown_jewel</code>), <code>build-farm/ci-runner</code> (medium, <code>k8s_workload|ci_runner</code>) and the servers <code>bf-node-03</code> (10.40.12.33) and <code>ai-train-stor-02</code> (10.40.17.52)</td>
+<td>Asset source <code>zt_workload_assets</code>: the four stores (<code>ai-train/checkpoint-store</code> critical, category <code>k8s_workload\|ai_data_store\|crown_jewel</code>), <code>build-farm/ci-runner</code> (medium, <code>k8s_workload\|ci_runner</code>) and the servers <code>bf-node-03</code> (10.40.12.33) and <code>ai-train-stor-02</code> (10.40.17.52)</td>
 </tr>
 </tbody>
 </table>
-<h2>KV store collections</h2>
+<h2 id="kv-store-collections">KV store collections</h2>
 <p>Defined in <code>collections.conf</code>; each has a <code>_lookup</code> definition in <code>transforms.conf</code> for <code>inputlookup</code>.</p>
 <table>
 <thead>
@@ -782,7 +751,7 @@ hr { border: 0; border-top: 1px solid var(--line); margin: 2em 0; }
 </tr>
 </tbody>
 </table>
-<h2>Macros</h2>
+<h2 id="macros">Macros</h2>
 <table>
 <thead>
 <tr>
@@ -816,7 +785,4 @@ hr { border: 0; border-top: 1px solid var(--line); margin: 2em 0; }
 <td>The incident's own events since the last reset (the pod, job 88213, the enforcement and Kubernetes audit records)</td>
 </tr>
 </tbody>
-</table>
-</main>
-</body>
-</html>
+</table></body></html>

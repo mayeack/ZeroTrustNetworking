@@ -37,7 +37,7 @@ The Tetragon sourcetype names are the Cisco Security Cloud App's; their props si
 
 **`cisco:nexus:liveprotect`** — `timestamp`, `source`, `fabric`, `switch`, `feature` (`live_protect`), `advisory_id` (`NX-LP-00nn`), `component`, `shield`, `status`.
 
-**`cisco:nexus:config`** — `timestamp`, `device`, `user`, `change`, `diff_summary`, `source` (`nexus`), plus `change_type` and `ticket` on enforcement changes (verify).
+**`cisco:nexus:config`** — `timestamp`, `device`, `user`, `change`, `diff_summary`, `source` (`nexus`), plus `change_type` and `ticket` on every change (`ticket` is the finding id for enforcement changes, a change number otherwise).
 
 **`kube:apiserver:audit`** — `kind` (`Event`), `apiVersion` (`audit.k8s.io/v1`), `level`, `auditID`, `stage` (`ResponseComplete`), `requestURI`, `verb` (`create`, `patch`, `delete`), `user.username`, `user.groups[]`, `sourceIPs[]`, `userAgent`, `objectRef` (`resource`, `namespace`, `name`, `apiGroup`, `apiVersion`), `responseStatus.code`, `requestReceivedTimestamp`, `stageTimestamp`, `annotations` (`authorization.k8s.io/decision`, `authorization.k8s.io/reason`). The quarantine produces a `patch` on `pods/ci-runner-7d9f8-xk2lq` (200) and a `create` of `ciliumnetworkpolicies/zt-quarantine-ci-runner-88213` (201) by `system:serviceaccount:soar:zt-enforcer`; the reset produces a `delete` and a `patch` by `k.osei`.
 
