@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Zero Trust Networking - Customer Leave-Behind</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=Inter:ital,wght@0,400;0,700;0,800;1,400&display=block" rel="stylesheet">
+<style>
+  /* Letter landscape: 11in x 8.5in = 1056 x 816 CSS px. All sizes below are CSS px. */
+  @page { size: letter landscape; margin: 0; }
+  :root {
+    --bg: #0a0e1a;      /* page */
+    --card: #131a2b;    /* stat cards */
+    --ink: #f4f6fa;     /* headings, bold */
+    --body: #c7cfde;    /* body copy */
+    --muted: #8b95aa;   /* captions, footer */
+    --magenta: #ed0080; /* accent */
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { background: var(--bg); -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  .page {
+    position: relative; width: 1056px; height: 816px; overflow: hidden;
+    padding: 49px 0.6in 0; background: var(--bg); color: var(--body);
+    font-family: Inter, sans-serif; font-size: 12px;
+  }
+  b { font-weight: 700; color: var(--ink); }
+
+  .kicker { font: 600 9.5px/12px "IBM Plex Mono", monospace; letter-spacing: .3em; color: var(--magenta); }
+  h1 { margin-top: 10.6px; font: 800 34px/40px Inter, sans-serif; letter-spacing: -.02em; color: var(--ink); }
+  .sub { margin-top: 11.3px; font: italic 400 14px/20px Inter, sans-serif; }
+
+  .main { display: grid; grid-template-columns: 1fr 355.2px; column-gap: 30px; margin-top: 30.1px; }
+
+  /* left: three points with circular line icons */
+  .points { display: flex; flex-direction: column; gap: 25.15px; }
+  .point { display: grid; grid-template-columns: 40px 1fr; column-gap: 16px; }
+  .icon { width: 40px; height: 40px; border: 1px solid var(--magenta); border-radius: 50%; display: grid; place-items: center; }
+  .icon svg { width: 20px; height: 20px; fill: none; stroke: var(--magenta); stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round; }
+  .point h2 { font: 700 16.5px/20px Inter, sans-serif; color: var(--ink); margin-bottom: 5.1px; }
+  .point p { font-size: 12px; line-height: 18.75px; }
+
+  /* right: 2 x 2 stat cards */
+  .stats { display: grid; grid-template-columns: 1fr 1fr; grid-auto-rows: 200px; gap: 14px; }
+  .stat { background: var(--card); border-radius: 8px; padding: 16px 16px 13.9px; display: flex; flex-direction: column; justify-content: space-between; }
+  .stat .num { font: 600 40px/40px "IBM Plex Mono", monospace; color: var(--magenta); }
+  .stat h3 { font: 700 12.5px/15px Inter, sans-serif; color: var(--ink); margin-bottom: 4px; }
+  .stat p { font-size: 10.2px; line-height: 14.5px; color: var(--muted); }
+
+  .built { margin-top: 10.1px; font-size: 10.6px; line-height: 13.25px; }
+
+  .cta { margin-top: 21.4px; height: 69px; display: flex; align-items: center; gap: 16px; padding: 0 20px; background: var(--magenta); border-radius: 10px; color: #fff; }
+  .cta i { flex: none; width: 26px; height: 22px; border-radius: 5px; background: #fff; opacity: .92; }
+  .cta p { font-size: 12.8px; line-height: 18px; position: relative; top: -.4px; }
+  .cta b { font-weight: 800; color: #fff; }
+
+  .foot { position: absolute; left: 0; right: 0; top: 773.6px; text-align: center; font-size: 9.2px; line-height: 12px; color: var(--muted); }
+</style>
+</head>
+<body>
+<div class="page">
+  <div class="kicker">ZERO TRUST NETWORKING · CISCO + SPLUNK</div>
+  <h1>Splunk as the Control Plane for Zero Trust Networking</h1>
+  <p class="sub">Cisco enforces at the kernel, the NIC and the switch. Splunk sees every flow and every policy decision, and closes the loop.</p>
+
+  <div class="main">
+    <div class="points">
+      <div class="point">
+        <div class="icon"><!-- eye -->
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2 12s3.5-6 10-6 10 6 10 6-3.5 6-10 6-10-6-10-6Z"/><circle cx="12" cy="12" r="3"/></svg>
+        </div>
+        <div>
+          <h2>The blind spot</h2>
+          <p>Zero trust is written as policy and enforced in three places: the Linux kernel, the NIC or DPU, and the switch. Each keeps its own verdicts in its own console, and none of it sits next to the identity, scheduler and security data your teams already investigate with. <b>Nobody can say whether the policy is enforced everywhere, or which job is paying for a congested link.</b></p>
+        </div>
+      </div>
+      <div class="point">
+        <div class="icon"><!-- shield-check -->
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6l8-3z"/><path d="M9 12l2 2 4-4"/></svg>
+        </div>
+        <div>
+          <h2>What you get</h2>
+          <p>Every flow with its workload identity and verdict, the process behind every connection, fabric-level enforcement events and BGP and EVPN state, joined in Splunk with job and identity context. <b>Enterprise Security turns them into findings; SOAR and Agent Launchpad push the decision back to the nearest enforcement point</b>, with approval and an audit trail.</p>
+        </div>
+      </div>
+      <div class="point">
+        <div class="icon"><!-- bar chart -->
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 19V9M10 19V5M16 19v-8M22 19H2"/></svg>
+        </div>
+        <div>
+          <h2>The business impact</h2>
+          <p>Zero trust becomes a number your teams can move: <b>policy coverage, audit-to-enforce conversion, time to contain, and GPU-hours recovered from the fabric.</b> New sites come up on the same design and are provable on day one, and the SOC and the network team work from the same evidence.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="stats">
+      <div class="stat">
+        <div class="num">3</div>
+        <div><h3>enforcement points</h3><p>kernel · DPU · switch, enforcing one policy</p></div>
+      </div>
+      <div class="stat">
+        <div class="num">0</div>
+        <div><h3>sidecars or per-app agents</h3><p>eBPF attaches at the Linux kernel; nothing to install per application</p></div>
+      </div>
+      <div class="stat">
+        <div class="num">L3–L7</div>
+        <div><h3>identity-aware policy</h3><p>workload identity, not IP, from the container to the VM to the process</p></div>
+      </div>
+      <div class="stat">
+        <div class="num">1</div>
+        <div><h3>control plane</h3><p>flows, decisions and actions in the Splunk you already run</p></div>
+      </div>
+    </div>
+  </div>
+
+  <p class="built"><b>Built on:</b> Isovalent (Cilium, Tetragon, Hubble) · Cisco Hypershield and Cisco N9300 Smart Switches · Cisco Live Protect for Nexus · Splunk Enterprise Security with Splunk Security Content, Splunk SOAR and Agent Launchpad</p>
+
+  <div class="cta">
+    <i aria-hidden="true"></i>
+    <p><b>GET STARTED:</b> A conceptual demo of the loop, then a lab validation on one cluster, one protected store in audit mode and one Nexus leaf pair, with your Splunk. Four to six weeks to a proven segment, with success criteria agreed up front.</p>
+  </div>
+
+  <div class="foot">Cisco | Splunk · Zero Trust Networking</div>
+</div>
+</body>
+</html>

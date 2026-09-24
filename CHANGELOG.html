@@ -3,7 +3,43 @@
 code,pre{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:.92em}pre{background:#f3f4f6;padding:.75rem;overflow-x:auto;border-radius:6px}code{background:#f3f4f6;padding:.1em .3em;border-radius:4px}pre code{background:none;padding:0}
 table{border-collapse:collapse;margin:1rem 0;width:100%}th,td{border:1px solid #d1d5db;padding:.4rem .6rem;text-align:left;vertical-align:top}th{background:#f9fafb}h1,h2,h3{line-height:1.25}a{color:#0b5cad}
 @media (prefers-color-scheme: dark){body{background:#0f172a;color:#e5e7eb}pre,code{background:#1e293b}th{background:#1e293b}th,td{border-color:#334155}a{color:#7dd3fc}}</style></head><body><h1 id="changelog">Changelog</h1>
-<h2 id="103-unreleased">1.0.3 (unreleased)</h2>
+<h2 id="docs-and-collateral-2026-09-24-no-app-change">Docs and collateral (2026-09-24, no app change)</h2>
+<ul>
+<li><code>docs/collateral/collateral.yaml</code> follows the 22-slide One Incident deck (initiatives slide at 3, "What ships, and what we build for you" at 13, live steps at 14 to 19) and the ten-beat talk track (beats 5 to 8 kept here, §3 "Before the lab phase" column added).</li>
+<li><code>sync_collateral.py</code> keeps the bold lead-in on Who and Say lines and plain bullets, adds table rows as copies of a styled row, and can add missing §3 items.</li>
+<li><code>docs/demo_script.md</code>: Secure Networking Essentials pre-call item and a "Before the fire: what ships" section; the data-sources line no longer claims the Cisco add-ons are installed.</li>
+<li><code>docs/collateral/pdf/</code>: HTML sources and <code>render_pdfs.py</code> for the three collateral PDFs.</li>
+<li>Stack: Splunk Secure Networking Essentials setup completed (Searchbase installed; only <code>index_security</code> changed, to <code>zero_trust</code>).</li>
+</ul>
+<h2 id="106-2026-09-24">1.0.6 (2026-09-24)</h2>
+<ul>
+<li>Agent brief capture: <code>ZT Agent - Capture Brief</code> matches the raw terms <code>ZTFlowInvestigator</code> and <code>run_finished</code>, and <code>ztbrief</code> reads the run type and agent from the whole event. A long agent run put the <code>type</code> field past the 10,240 characters Splunk extracts at search time, so the brief was never stored and Mode A stopped before the approval.</li>
+<li><code>ztbrief</code> writes the approval matrix labels as the matrix does (<code>SOC tier 2</code>, <code>NetOps</code>) when the agent returns them as slugs (<code>soc-tier-2</code>), for the flat and the nested brief shapes. The agent prompt now asks for the labels verbatim, and the Incident Timeline maps any slug already stored.</li>
+<li><code>DA-ESS-zt_incident_demo</code> is unchanged and stays at 1.0.5.</li>
+</ul>
+<h2 id="105-2026-09-24">1.0.5 (2026-09-24)</h2>
+<ul>
+<li>Incident Timeline: the incident selector declares its option context, so it lists every incident and opens on the newest; the journey grid runs as seven appended searches instead of thirteen (about 15 s to 8 s); cards stay hidden until their data arrives; the incident table lists the newest first and dropped rows name the denying policy.</li>
+<li><code>ztbrief</code> skips agent runs older than the reset stamp and matches each brief to the newest finding for its own workload.</li>
+<li>ES asset list: workload rows carry no DNS name, so the Analyst Queue names the entity by the workload (DA-ESS 1.0.5).</li>
+<li>Posture and home wording: the audit trail panel is no longer titled for SOAR only, the approver label adds the role once, and the home card counts finding groups.</li>
+<li>Enforcement Approvals: request history leaves applied and verified times blank until they happen.</li>
+<li>Live generator: client disconnects are quiet; on shutdown the streaming lease is handed back first, and a dead local holder is cleared at start.</li>
+</ul>
+<h2 id="104-2026-09-24">1.0.4 (2026-09-24)</h2>
+<ul>
+<li>State writers save only the fields they changed, on top of the current record, so a tick can no longer undo a fire, reset or mode change.</li>
+<li>Background CI jobs, flows and processes run on the other ci-runner replicas; the story's runner pod carries only job 88213.</li>
+<li>The finding rule sets <code>zt_workload</code> to the raw risk object; the title, description and drilldowns use it.</li>
+<li>Agent tools: the server-context search returns one row per dataset, an explicit naming row and 40 rows, so the approval matrix and the policy naming reach the agent.</li>
+<li>Kernel requests carry the action <code>CNP &lt;policy name&gt;</code>; the agent's sentence is kept as <code>agent_action</code>.</li>
+<li>Request ids number one above the highest id of the day across the request store and the audit trail, in the app and in the playbook.</li>
+<li>Without a CI job the pod names the policy and the label (<code>zt-quarantine-&lt;pod&gt;</code>); job 88213 applies only to the story's pod; same rule in the SOAR custom function.</li>
+<li>Reset releases only pods that still carry a quarantine label, plus running attacks (from over 20 s to a few seconds).</li>
+<li>The playbook reads only a brief of the current run, captured after the finding, and resolves that run's investigation; its prompt names the request, the ES investigation and <code>CNP &lt;policy&gt;</code>.</li>
+<li>Mode switch (<code>make mode-soar</code>, <code>make mode-local</code>, the live generator's settings) also switches the ES automation rule on or off.</li>
+</ul>
+<h2 id="103-2026-09-24">1.0.3 (2026-09-24)</h2>
 <ul>
 <li>Live generator on the workstation (<code>live/</code>): browser page with a ten-minute timeline, live tail, counts, the incident's progress in Splunk and triggers (fire, reset, path attack for any workload, audit-mode flow, unapproved program, Live Protect, Nexus configuration change, enforcement action). Streams through the same <code>ztgen</code> code; a streaming lease in <code>zt_demo_state</code> keeps the search head input quiet while it runs.</li>
 <li><code>ztgen.attacks</code>: generic path attacks (any workload to any protected store) advanced by whichever streamer holds the lease; the reset releases their quarantines.</li>

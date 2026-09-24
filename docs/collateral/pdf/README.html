@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Collateral PDFs: HTML sources</title>
+<style>
+  :root { --fg: #1c2230; --muted: #5a6478; --line: #d9dee8; --code-bg: #f3f5f9; --accent: #c2006a; }
+  html { background: #fff; }
+  body { max-width: 860px; margin: 0 auto; padding: 32px 20px 56px; color: var(--fg); background: #fff;
+         font: 15px/1.6 -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif; }
+  h1 { font-size: 26px; line-height: 1.25; margin: 0 0 12px; }
+  h2 { font-size: 19px; margin: 32px 0 10px; padding-bottom: 6px; border-bottom: 1px solid var(--line); }
+  p, ul, ol { margin: 0 0 12px; }
+  li { margin: 4px 0; }
+  code { font: 13px/1.4 "SF Mono", Menlo, Consolas, monospace; background: var(--code-bg); padding: 1px 5px; border-radius: 4px; }
+  pre { background: var(--code-bg); padding: 12px 14px; border-radius: 6px; overflow-x: auto; margin: 0 0 14px; }
+  pre code { background: none; padding: 0; font-size: 12.5px; white-space: pre; }
+  table { border-collapse: collapse; width: 100%; margin: 0 0 14px; font-size: 14px; }
+  th, td { text-align: left; border: 1px solid var(--line); padding: 7px 10px; vertical-align: top; }
+  th { background: var(--code-bg); }
+  strong { color: #000; }
+  @media (prefers-color-scheme: dark) {
+    :root { --fg: #e6e9f0; --muted: #a3acbf; --line: #2e3647; --code-bg: #1a2030; }
+    html, body { background: #0f131c; }
+    strong { color: #fff; }
+  }
+</style>
+</head>
+<body>
+<h1>Collateral PDFs: HTML sources</h1>
+<p>HTML sources for the three one-page PDFs in the Zero Trust Networking sales-play folder. Each page is edited as HTML and printed to PDF with headless Google Chrome.</p>
+
+<table>
+  <thead><tr><th>Source</th><th>Prints to <code>out/</code></th><th>Page</th></tr></thead>
+  <tbody>
+    <tr><td><code>leave_behind.html</code></td><td><code>Zero Trust Networking - Customer Leave-Behind.pdf</code></td><td>Letter landscape, customer-facing</td></tr>
+    <tr><td><code>one_incident_one_pager.html</code></td><td><code>Zero Trust Networking - One Incident End to End - One-Pager.pdf</code></td><td>Letter landscape, customer-facing</td></tr>
+    <tr><td><code>cosell_one_pager.html</code></td><td><code>Zero Trust Networking - Internal Co-Sell One-Pager.pdf</code></td><td>Letter portrait, internal</td></tr>
+  </tbody>
+</table>
+
+<p>Other files:</p>
+<ul>
+  <li><code>render_pdfs.py</code>: prints the HTML to <code>out/</code> (standard library only).</li>
+  <li><code>make_compare.py</code>: writes old | new side-by-side PNGs to <code>compare/</code> (needs Pillow and poppler).</li>
+  <li><code>ref/</code>: 110 dpi renders and <code>pdftotext -layout</code> text of the original PDFs, kept for reference.</li>
+  <li><code>compare/</code>: side-by-side PNGs and <code>text_diffs.txt</code>, the word-level text diff against the originals.</li>
+</ul>
+
+<h2>Edit</h2>
+<ol>
+  <li>Open the HTML file and change the text in place. Bold runs are <code>&lt;b&gt;</code>. On the co-sell page the cyan closing sentence is <code>&lt;span class="gap"&gt;</code>.</li>
+  <li>Colours are CSS variables at the top of each file (<code>--magenta</code>, <code>--cyan</code>, <code>--ink</code>, <code>--body</code>, <code>--muted</code>, <code>--card</code>, <code>--line</code>). All sizes are CSS px; 96 px = 1 inch, so a landscape page is 1056 × 816 and a portrait page is 816 × 1056.</li>
+  <li>The <code>splunk&gt;</code> wordmarks and the leave-behind icons (eye, shield-check, bar chart) are inline SVG. The wordmark is SVG <code>&lt;text&gt;</code>, so it stays selectable text in the PDF.</li>
+  <li><strong>Journey grid</strong> (One Incident page): cards sit in a CSS grid, with <code>grid-row</code> for the lane (1 to 6) and <code>grid-column</code> for the step plus one (2 to 6). Connectors are SVG paths in the journey's own coordinates: lanes start at y = 28 and are 55 px tall, step columns are 162 px wide from x = 160, and a card is 143 × 46 px, inset 9.67 px from its column and 4 px from its lane. If you move a card, move its connector paths too.</li>
+  <li>Keep <code>24x7</code> with a plain <code>x</code>. Inter's contextual alternates draw it as <code>24×7</code>, as in the original, and text extraction stays <code>24x7</code>, the same as the original PDF.</li>
+</ol>
+
+<h2>Render</h2>
+<pre><code>cd ~/zt-incident-demo/docs/collateral/pdf
+python3 render_pdfs.py              # all three
+python3 render_pdfs.py cosell       # only files whose name contains "cosell"</code></pre>
+<p>Chrome loads Inter and IBM Plex Mono from Google Fonts, so rendering needs internet access. The default Google Fonts subsets leave out the <code>→</code> arrow, so pages that use it load a second Google Fonts stylesheet with <code>&amp;text=%E2%86%92</code>, which adds the arrow from the same families. Without that stylesheet, Chrome falls back to Lucida Grande or Menlo for the arrow.</p>
+
+<h2>Check</h2>
+<pre><code>cd out
+for f in *.pdf; do pdfinfo "$f" | grep -E 'Pages|Page size'; pdffonts "$f"; done   # Pages: 1, letter; only Inter and IBM Plex Mono
+diff &lt;(pdftotext -raw "&lt;original&gt;.pdf" - | tr -s ' \n' '\n') &lt;(pdftotext -raw "&lt;new&gt;.pdf" - | tr -s ' \n' '\n')
+cd .. &amp;&amp; python3 make_compare.py "/Users/myeack/Library/CloudStorage/OneDrive-Cisco/Projects/Sales Plays/Zero Trust Networking"</code></pre>
+<p>Every page must print to exactly one page. The co-sell page has no spare room. If a longer edit pushes the four moves into the footer, tighten in this order: section gaps (<code>.sec.*</code>, <code>.para + .para</code>), then <code>.para</code> line-height, and last the body font size, by no more than 0.5 pt.</p>
+<p>After you review the PDFs, copy <code>out/*.pdf</code> into the OneDrive sales-play folder yourself. Nothing in this folder writes there.</p>
+
+<h2>Changes from the originals</h2>
+<ul>
+  <li><strong>Leave-behind:</strong> new "Built on" line and new GET STARTED text.</li>
+  <li><strong>One Incident:</strong> new third line in GETTING DATA IN and a new Splunk Security Content line in DETECT · INVESTIGATE · ENFORCE. Both bottom boxes are the same height, 92 px. To make room, the gaps above and below the WHAT IT'S WORTH row went from 10 to 8 px, and the box line pitch went from about 13.3 to 12.8 px. Font sizes are unchanged.</li>
+  <li><strong>Co-sell:</strong> new integration paragraph, new co-sell roles wording, a new closing sentence in the competitive frame, and new 03 PROVE IT text. To keep one page, section and paragraph gaps are 0.5 to 3 px smaller, the question cards are 2 px shorter, the case card is 2 px shorter, and the paragraph line-height went from 14.22 to 13.7 px. Font sizes are unchanged.</li>
+</ul>
+</body>
+</html>

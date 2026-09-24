@@ -1,7 +1,16 @@
 # Changelog
 
+## Docs and collateral (2026-09-24, no app change)
+
+- `docs/collateral/collateral.yaml` follows the 22-slide One Incident deck (initiatives slide at 3, "What ships, and what we build for you" at 13, live steps at 14 to 19) and the ten-beat talk track (beats 5 to 8 kept here, §3 "Before the lab phase" column added).
+- `sync_collateral.py` keeps the bold lead-in on Who and Say lines and plain bullets, adds table rows as copies of a styled row, and can add missing §3 items.
+- `docs/demo_script.md`: Secure Networking Essentials pre-call item and a "Before the fire: what ships" section; the data-sources line no longer claims the Cisco add-ons are installed.
+- `docs/collateral/pdf/`: HTML sources and `render_pdfs.py` for the three collateral PDFs.
+- Stack: Splunk Secure Networking Essentials setup completed (Searchbase installed; only `index_security` changed, to `zero_trust`).
+
 ## 1.0.6 (2026-09-24)
 
+- Agent brief capture: `ZT Agent - Capture Brief` matches the raw terms `ZTFlowInvestigator` and `run_finished`, and `ztbrief` reads the run type and agent from the whole event. A long agent run put the `type` field past the 10,240 characters Splunk extracts at search time, so the brief was never stored and Mode A stopped before the approval.
 - `ztbrief` writes the approval matrix labels as the matrix does (`SOC tier 2`, `NetOps`) when the agent returns them as slugs (`soc-tier-2`), for the flat and the nested brief shapes. The agent prompt now asks for the labels verbatim, and the Incident Timeline maps any slug already stored.
 - `DA-ESS-zt_incident_demo` is unchanged and stays at 1.0.5.
 

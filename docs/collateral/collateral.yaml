@@ -1,97 +1,212 @@
 # Canonical values plus the live facts of this build. `make collateral` applies them to the deck and the talk track.
 # Wording rule: nothing customer-visible may say sample, mock, mockup, fake, synthetic, illustrative or demo.
+# Deck slide numbers are for the 22-slide One Incident deck (24 Sep 2026: initiatives slide at 3, 'what ships' at 13).
+# If slides are inserted or moved, renumber deck.notes, text_replacements and picture_replacements, and the beat titles.
 files:
-  deck: "/Users/myeack/Library/CloudStorage/OneDrive-Cisco/Projects/Sales Plays/Zero Trust Networking/Zero Trust Networking - First-Call Deck (One Incident, End to End).pptx"
-  talk_track: "/Users/myeack/Library/CloudStorage/OneDrive-Cisco/Projects/Sales Plays/Zero Trust Networking/Zero Trust Networking - Demo Talk Track.docx"
+  deck: /Users/myeack/Library/CloudStorage/OneDrive-Cisco/Projects/Sales Plays/Zero Trust Networking/Zero Trust Networking - First-Call Deck (One Incident, End to End).pptx
+  talk_track: /Users/myeack/Library/CloudStorage/OneDrive-Cisco/Projects/Sales Plays/Zero Trust Networking/Zero Trust Networking - Demo Talk Track.docx
 environment:
   stack_web: https://prd-shw-39d7bab80b2f9d.splunkcloud.com
   stack_rest: https://prd-shw-39d7bab80b2f9d.splunkcloud.com:8089
   hec: https://http-inputs-prd-shw-39d7bab80b2f9d.splunkcloud.com:443
   soar: https://prd-shw-f27616d6bc4346.soar.splunkcloud.com
   emulator: https://zt-k8s.yeackbot.com
-  versions: "Splunk Cloud 10.4, Enterprise Security 8.7, AI Toolkit 6.1 (Agent Launchpad), Splunk MCP Server 2.0, SOAR Cloud 8.7"
+  versions: Splunk Cloud 10.4, Enterprise Security 8.7, AI Toolkit 6.1 (Agent Launchpad), Splunk MCP Server 2.0, SOAR Cloud 8.7
   app: zt_incident_demo (Zero Trust Incident)
   es_app: DA-ESS-zt_incident_demo
   cadence: fast (every minute)
   response_mode: local
   agent_mode: mcp
   live_generator: http://127.0.0.1:8890 (make live-run on the presenter Mac; timeline, live tail, triggers, the incident's progress in Splunk)
-  dashboards: "Zero Trust Incident (home), Zero Trust Fabric Posture, Incident Timeline (incident selector), Enforcement Approvals"
-screenshots:            # PNG paths, filled after a run; missing files are skipped
+  dashboards: Zero Trust Incident (home), Zero Trust Fabric Posture, Incident Timeline (incident selector), Enforcement Approvals
+screenshots:
   posture: screenshots/posture.png
   timeline: screenshots/timeline.png
   finding: screenshots/finding.png
   agent: screenshots/agent.png
   approval: screenshots/approval.png
-live:                   # filled by `make collateral LIVE=1` from the stack's last run
-  finding_display_id: ""
-  investigation_id: ""
-  t0: ""
-  finding_at: ""
-  brief_at: ""
-  approved_at: ""
-  applied_at: ""
-  verified_at: ""
-  posture_before: ""
-  posture_after: ""
+live:
+  finding_display_id: ''
+  investigation_id: ''
+  t0: ''
+  finding_at: ''
+  brief_at: ''
+  approved_at: ''
+  applied_at: ''
+  verified_at: ''
+  posture_before: ''
+  posture_after: ''
 deck:
   text_replacements:
-    - slide: 14
-      match: "Detections run every 5 minutes; the finding opens at 14:55"
-      replace: "Detections run every minute in the live demo; the finding opens two to three minutes after the fire"
-    - slide: 16
-      match: "1  Start from the finding | ES investigation ES-1842"
-      replace: "1  Start from the finding | ES finding group, investigation opened from it"
+  - slide: 16
+    match: Detections run every 5 minutes; the finding opens at 14:55
+    replace: Detections run every minute in the live demo; the finding opens two to three minutes after the fire
+  - slide: 18
+    match: 1  Start from the finding | ES investigation ES-1842
+    replace: 1  Start from the finding | ES finding group, investigation opened from it
   notes:
-    12: "Section two: switch to the live run. Fire the incident from the live generator page (or in Search with | ztdemo action=fire) and follow steps two to five live. Fast cadence: every scheduled search runs each minute, so the finding opens two to three minutes after the fire, the brief a minute or two later, and verification twenty to ninety seconds after the approval."
-    13: "Live. Fire the incident from the live generator page (it shows the events leaving the machine on a timeline), then show the two events in Splunk. Hubble: index=zero_trust sourcetype=cilium:hubble:flow verdict=AUDIT src_workload=\"build-farm/ci-runner\". Tetragon: index=zero_trust sourcetype=cisco:isovalent:processConnect process_name=curl. Point at the same pod, the same destination and the same second, then at the context Splunk adds: owner platform-build, CI job 88213 from merge request !4417 by contractor-dev-17, server bf-node-03 on dc2-leaf-205 Eth1/12. The events arrive over the HTTP Event Collector of the Splunk Cloud stack exactly as production data would."
-    14: "Live, in Enterprise Security 8.7. Two detections run every minute at fast cadence. The first, on Hubble flows, adds risk 50 to the runner workload for an audit-mode flow into a protected AI data store (MITRE ATT&CK T1530). The second, on Tetragon events, adds risk 40 for a program not on the approved list (T1059.004). The finding-based detection opens one finding group when the total reaches 80 from two detections: risk 90, threat objects ai-train/checkpoint-store and /usr/bin/curl, three drilldowns, and the Run AI Agent action. Show the Analyst Queue, open the finding, walk the risk timeline and the drilldowns."
-    15: "Live, in the AI Toolkit's Agent Launchpad. The agent ZTFlowInvestigator is started by the Run AI Agent action on the finding-based detection; you can also run it from Search with the aiagent command. It only has the five zero trust tools exposed through the Splunk MCP Server on this stack: finding context, flow evidence, process evidence, CI job context, workload and server context. Open Agent run history, show the tool calls in order, then the brief: disposition, what happened, why it matters, where, recommendation, follow-up. The same brief is a note on the investigation."
-    16: "Live, in SOAR (Mode A) or in the app's Enforcement Approvals page (Mode B). The playbook zt_quarantine_workload starts from the finding through an Enterprise Security automation rule, reads the brief, picks the nearest enforcement point, the kernel, builds the CiliumNetworkPolicy zt-quarantine-ci-runner-88213 and asks SOC tier 2. Approve as j.chen in a private window: the pod is labeled and the policy created through the Kubernetes API (an emulated endpoint reached through a tunnel, the same call as production), both recorded in the Kubernetes audit log with the approver on the audit trail."
-    17: "Live: open the Zero Trust Fabric Posture dashboard in the app. Coverage of paths into protected stores went from 87.7% before the incident to 86.4% when the runner's path appeared, and to 87.9% after the quarantine; unprotected paths 8 to 9 to 8; workload identities 1,283 to 1,284 because the quarantine label creates a new Cilium identity; enforcement actions 16 to 17. The verdict chart shows AUDIT then DROPPED for the runner's attempts, and the first row of the audit trail is this incident: j.chen (SOC tier 2), verified. Then open the Incident Timeline: the five steps with their live timestamps, the journey grid from the one-pager, and every event of the incident."
+    3: 'Play these back in the customer''s own words, before any product. Zero trust everything: identity, not IP, as the unit of policy, for every workload, VM and service. Creative segmentation: segments
+      that follow the workload across the kernel, the NIC and the switch, because firewalls in the east-west path cannot keep up with AI traffic and VLAN-era segmentation cannot express a job or a tenant.
+      Routing on the edge: hosts and clusters join the fabric directly and advertise their own routes, so a new site comes up with the same design in days. Pause on the ''where it breaks at AI scale'' lines
+      and ask which one hurts most today. The bottom band is the common requirement, and it is a data requirement: see every workload, every flow and every policy decision in one place. That is the Splunk
+      role, and the rest of the deck is one incident that shows it.'
+    5: 'Set expectations before the demo. Everything on the left is the real Splunk product, running live: the events in the index, the Enterprise Security finding, the Agent Launchpad agent, the SOAR playbook
+      with its approval, and the posture dashboard. Everything on the right runs in your environment, not in Splunk, so we explain it rather than demo it: the build farm and CI runner, the checkpoint store,
+      Cilium''s identity and audit mode, the Hubble and Tetragon sensors, and the enforcement points. In the demo, a generator plays the role of the cluster: it sends the same Hubble and Tetragon events
+      a real cluster sends, with the same field names, and it honours the policy SOAR applies, so the verdict really flips from AUDIT to DROPPED on screen. Slides are tagged the same way: ''Live in Splunk''
+      or ''Explained''. One more live screen comes before the incident: Splunk Secure Networking Essentials, the product view of the same Tetragon data, so the audience sees what ships before what we built.'
+    6: 'How the pieces connect. Left, getting data in: Hubble flow logs arrive over the HTTP Event Collector; Tetragon events arrive through the Cisco Security Cloud App for Splunk, which lists Cisco Isovalent
+      Runtime Security as a supported product and parses process execution and connection events; Nexus switch data comes through Cisco''s data center networking add-on; Live Protect exports switch telemetry
+      and syslog from NX-OS, orchestrated through Nexus Dashboard. Splunk Security Content ships Cisco Isovalent detections on the Tetragon data. Middle, the Splunk platform: one index, lookups that add
+      the workload owner, the CI job and the server, Enterprise Security for detection, Agent Launchpad for the investigation, SOAR for the response. Right, the enforcement points, each with its approver:
+      a Cilium policy on the server needs one approver; a Hypershield rule on a DPU or smart switch, or a Nexus port or route change, touches the network, so SOC and NetOps both approve. The loop closes
+      when the next flow from the same workload shows the new verdict.'
+    13: 'What ships, and what we build for you. Left, product: Splunk Secure Networking Essentials, in beta, already reads Tetragon runtime data. In the app: Secure Infrastructure, Secure Data Center Operations,
+      Runtime Security tab, time range 24h: active Isovalent nodes, observed namespaces, process executions and telemetry age; the Runtime Investigation tab ranks workloads by process executions, and the
+      build-farm CI runner is at the top. Splunk Security Content ships ten Cisco Isovalent detections for Enterprise Security, which turns risk on a workload into one finding; Agent Launchpad in the AI
+      Toolkit runs the agent with tools published through the Splunk MCP Server; SOAR prompts a named approver and calls the Kubernetes API through its HTTP app. Data comes in through the Cisco add-ons
+      for Tetragon and Nexus, and over the HTTP Event Collector for Hubble flows. Right, what we build with you, and it is small: workload owners and CI context, your protected stores and their allowlists,
+      two detections on your paths, five evidence searches for the agent, the quarantine playbook, and the posture and timeline views. Then switch to Splunk and show the Secure Networking view for a minute
+      before firing the incident. If asked why Runtime Detections reads 0: this lab sends no Tetragon policy alerts; the detections in this story run in Enterprise Security. Say beta; give no availability
+      date.'
+    14: 'Section two: switch to the live run. Fire the incident from the live generator page (or in Search with | ztdemo action=fire) and follow steps two to five live. Fast cadence: every scheduled search
+      runs each minute, so the finding opens two to three minutes after the fire, the brief a minute or two later, and verification twenty to ninety seconds after the approval.'
+    15: 'Live. Fire the incident from the live generator page (it shows the events leaving the machine on a timeline), then show the two events in Splunk. Hubble: index=zero_trust sourcetype=cilium:hubble:flow
+      verdict=AUDIT src_workload="build-farm/ci-runner". Tetragon: index=zero_trust sourcetype=cisco:isovalent:processConnect process_name=curl. Point at the same pod, the same destination and the same
+      second, then at the context Splunk adds: owner platform-build, CI job 88213 from merge request !4417 by contractor-dev-17, server bf-node-03 on dc2-leaf-205 Eth1/12. The events arrive over the HTTP
+      Event Collector of the Splunk Cloud stack exactly as production data would.'
+    16: 'Live, in Enterprise Security 8.7. Two detections run every minute at fast cadence. The first, on Hubble flows, adds risk 50 to the runner workload for an audit-mode flow into a protected AI data
+      store (MITRE ATT&CK T1530). The second, on Tetragon events, adds risk 40 for a program not on the approved list (T1059.004). The finding-based detection opens one finding group when the total reaches
+      80 from two detections: risk 90, threat objects ai-train/checkpoint-store and /usr/bin/curl, three drilldowns, and the Run AI Agent action. Show the Analyst Queue, open the finding, walk the risk
+      timeline and the drilldowns.'
+    17: 'Live, in the AI Toolkit''s Agent Launchpad. The agent ZTFlowInvestigator is started by the Run AI Agent action on the finding-based detection; you can also run it from Search with the aiagent command.
+      It only has the five zero trust tools exposed through the Splunk MCP Server on this stack: finding context, flow evidence, process evidence, CI job context, workload and server context. Open Agent
+      run history, show the tool calls in order, then the brief: disposition, what happened, why it matters, where, recommendation, follow-up. The same brief is a note on the investigation.'
+    18: 'Live, in SOAR (Mode A) or in the app''s Enforcement Approvals page (Mode B). The playbook zt_quarantine_workload starts from the finding through an Enterprise Security automation rule, reads the
+      brief, picks the nearest enforcement point, the kernel, builds the CiliumNetworkPolicy zt-quarantine-ci-runner-88213 and asks SOC tier 2. Approve as j.chen in a private window: the pod is labeled
+      and the policy created through the Kubernetes API (an emulated endpoint reached through a tunnel, the same call as production), both recorded in the Kubernetes audit log with the approver on the audit
+      trail.'
+    19: 'Live: open the Zero Trust Fabric Posture dashboard in the app. Coverage of paths into protected stores went from 87.7% before the incident to 86.4% when the runner''s path appeared, and to 87.9%
+      after the quarantine; unprotected paths 8 to 9 to 8; workload identities 1,283 to 1,284 because the quarantine label creates a new Cilium identity; enforcement actions 16 to 17. The verdict chart
+      shows AUDIT then DROPPED for the runner''s attempts, and the first row of the audit trail is this incident: j.chen (SOC tier 2), verified. Then open the Incident Timeline: the five steps with their
+      live timestamps, the journey grid from the one-pager, and every event of the incident.'
+    21: 'The ask. Phase one is this conversation: the five steps end to end on our lab data. Phase two is a lab validation in your environment: one cluster with Isovalent, one protected store with its allowlist
+      in audit mode, one Nexus leaf pair, your Splunk with Enterprise Security, and one SOAR playbook with an approval gate. Phase three is the first protected store in enforce mode, the posture dashboard
+      for its owners, and the detections and playbook in production. Success criteria agreed up front: protected-path coverage, unprotected paths, time from finding to enforced policy, and a complete audit
+      trail for every enforcement.'
+    22: 'Close. Restate the ask: a lab validation on one cluster, one protected store in audit mode and one Nexus leaf pair, with success criteria agreed up front.'
   picture_replacements:
-    - slide: 17
-      shape_prefix: "Dashboard: Zero Trust Fabric"
-      screenshot: posture
+  - slide: 19
+    shape_prefix: 'Dashboard: Zero Trust Fabric'
+    screenshot: posture
 talk_track:
-  section3_rows:          # column "Today" for each Item row of the table in section 3
-    Deck: "Zero Trust Networking - First-Call Deck (One Incident, End to End), 20 slides, account-neutral. Slides 13 to 17 carry the live steps; speaker notes carry the click path at fast cadence."
-    Dashboards: "Built in the Splunk Cloud stack (app Zero Trust Incident): a home page with one card per dashboard and live numbers, Zero Trust Fabric Posture, Incident Timeline (an incident selector, five step cards and the one-pager's journey grid), Enforcement Approvals. Every row drills down to the raw event."
-    Live demo instance: "Splunk Cloud stack prd-shw-39d7bab80b2f9d (Enterprise Security 8.7, AI Toolkit 6.1 Agent Launchpad, Splunk MCP Server 2.0) paired with SOAR Cloud. Flows, process events, CI jobs, switch data and the audit trail arrive over the HTTP Event Collector into the zero_trust index; the incident is fired from the live generator page on the presenter Mac (a browser app that streams the data and shows every event as it leaves, with triggers for single events) or from Search with | ztdemo action=fire."
-    Enforcement: "SOAR playbook zt_quarantine_workload with an approval prompt to SOC tier 2 (Mode A), or the app's Enforcement Approvals page (Mode B). Both label the pod and create the CiliumNetworkPolicy through the Kubernetes API; in this build that endpoint is emulated and reached through a tunnel, so the call is the one production makes."
-    Leave-behinds: "Customer leave-behind PDF; internal co-sell one-pager; the one-incident one-pager. Add the lab-phase scope document."
+  section3_rows:
+    Deck: Zero Trust Networking - First-Call Deck (One Incident, End to End), 22 slides, account-neutral, the master deck. Slide 3 plays back the three initiatives, slide 13 is what ships and what we build,
+      slides 15 to 19 carry the live steps; speaker notes carry the click path at fast cadence. The original 17-slide First-Call Deck is the longer version for other audiences.
+    Dashboards: 'Built in the Splunk Cloud stack (app Zero Trust Incident): a home page with one card per dashboard and live numbers, Zero Trust Fabric Posture, Incident Timeline (an incident selector,
+      five step cards and the one-pager''s journey grid), Enforcement Approvals. Every row drills down to the raw event.'
+    Live demo instance: Splunk Cloud stack prd-shw-39d7bab80b2f9d (Enterprise Security 8.7, AI Toolkit 6.1 Agent Launchpad, Splunk MCP Server 2.0) paired with SOAR Cloud. Flows, process events, CI jobs,
+      switch data and the audit trail arrive over the HTTP Event Collector into the zero_trust index; the incident is fired from the live generator page on the presenter Mac (a browser app that streams
+      the data and shows every event as it leaves, with triggers for single events) or from Search with | ztdemo action=fire.
+    Secure Networking Essentials: 'Splunk Secure Networking Essentials (Beta; app splunk-cisco-dashboards 1.0.52) on the same stack. Setup completed 24 September 2026 with the Searchbase app 1.1.8: only
+      index_security changed (to zero_trust); the CIM allowlists are untouched. Show Secure Infrastructure › Secure Data Center Operations, 24h: Runtime Security (87 nodes, 129 namespaces, about 12,000
+      process executions, telemetry age 0) and Runtime Investigation (build-farm / ci-runner tops the workloads). Stay off Fabric Operations and Data Center Security: without the Cisco DC Networking app
+      they show no data or data-model errors.'
+    Enforcement: 'SOAR playbook zt_quarantine_workload with an approval prompt to SOC tier 2 (Mode A), or the app''s Enforcement Approvals page (Mode B). Both label the pod and create the CiliumNetworkPolicy
+      through the Kubernetes API; in this build that endpoint is emulated and reached through a tunnel, so the call is the one production makes. SOAR uses its HTTP app, the supported path: there is no packaged
+      Kubernetes connector.'
+    Leave-behinds: Customer leave-behind PDF; internal co-sell one-pager; the one-incident one-pager. Their HTML sources are in the demo repo under docs/collateral/pdf (render_pdfs.py prints them). Add
+      the lab-phase scope document.
   beats:
-    - title: "Beat 5: Live: fire the incident, Step 2 in Splunk"
-      who: "Who:  Splunk SE   ·   Time: 4 min   ·   Screen: Slides 12 and 13, then Search in the app"
-      say: "Say: Here is one connection, end to end. A contractor's merge request added a post-build script to a training repository; the CI job that runs it uses curl to copy checkpoint files from the protected store. Nothing was hacked: the runner had reach it should not have, and the store's allowlist is still in audit mode. I fire it now. Within seconds two events land in the zero_trust index: Hubble records the flow as AUDIT, would deny, with both workload identities; Tetragon names the program, curl, and its parent, the post-build script. Same pod, same destination, same second. And Splunk already adds the context: the owner, the CI job and merge request, the server and its switch port."
-      show:
-        - "Live generator page: Fire the incident (or Search: | ztdemo action=fire). Then the two searches from slide 13: index=zero_trust sourcetype=cilium:hubble:flow verdict=AUDIT src_workload=\"build-farm/ci-runner\" and index=zero_trust sourcetype=cisco:isovalent:processConnect process_name=curl."
-        - "Open one event of each and point at pod ci-runner-7d9f8-xk2lq, identities 48213 and 30719, destination checkpoint-store-1 on 9000, and the timestamps 29 milliseconds apart."
-        - "Fields on the left: src_owner platform-build, dest_data_class crown-jewel, allowlist_policy in audit mode; the CI job 88213 from merge request !4417 by contractor-dev-17 on bf-node-03."
-      point:
-        - "Identity, not IP: the flow carries both workload identities and the policy verdict."
-        - "Seen at the source: the program behind the connection, with no sidecar and no agent per application."
-    - title: "Beat 6: Live: Step 3, two signals, one finding, one brief"
-      who: "Who:  Splunk SE   ·   Time: 4 min   ·   Screen: Slides 14 and 15, Enterprise Security Analyst Queue, AI Toolkit Agent run history"
-      say: "Say: Two detections turn those events into risk on the workload: fifty for the audit-mode flow into a protected store, forty for a program that is not approved for it. When the total crosses eighty from two sources, one finding group opens: risk ninety, threat objects the checkpoint store and curl, the MITRE techniques, and drilldowns to the raw flows, the process events and the CI job. The finding starts an agent. It can only use five approved evidence tools through the Splunk MCP Server, it keeps the data in Splunk, and it recommends; a person decides. Here is its brief: true positive, quarantine the pod at the kernel, approver SOC tier 2, and three follow-ups."
-      show:
-        - "Analyst Queue: the finding group titled Unprotected path: build-farm/ci-runner reached a protected AI data store; open it, show risk 90 from two intermediate findings, the threat objects and the three drilldowns."
-        - "AI Toolkit: Agent run history for ZTFlowInvestigator; open the run, show the five tool calls in order, then the structured brief."
-        - "Back on the investigation: the same brief as a note, marked AI-generated."
-      point:
-        - "Evidence joined: workload, CI job, server and switch port are already correlated before anyone opens a ticket."
-        - "The agent never acts; every statement cites a tool result."
-    - title: "Beat 7: Live: Steps 4 and 5, approve, enforce, prove"
-      who: "Who:  Splunk SE   ·   Time: 4 min   ·   Screen: Slides 16 and 17, SOAR prompt (Mode A) or Enforcement Approvals (Mode B), Incident Timeline, Zero Trust Fabric Posture"
-      say: "Say: The playbook starts from the finding, reads the brief, picks the nearest enforcement point and builds the policy; then it asks a named person. I approve as j.chen, SOC tier 2, in the other window. Two seconds later the pod is labeled and the CiliumNetworkPolicy exists, both recorded by the Kubernetes API audit log. The runner's next attempt is DROPPED by that policy, with a new identity because the label changed. The playbook confirms it in Splunk, writes the audit trail and resolves the investigation. And the posture dashboard proves it: coverage up, one fewer unprotected path, one more enforcement action, with the approver on record."
-      show:
-        - "Approve: read the policy YAML in the prompt, approve with a comment. Then the Incident Timeline: the five step cards fill in, the journey grid checks every cell, the raw events appear at the bottom."
-        - "Zero Trust Fabric Posture: coverage 87.9% up from 86.4%, unprotected paths 8 down from 9, identities 1,284, enforcement actions 17; the verdict chart flips from AUDIT to DROPPED; the first audit trail row is j.chen (SOC tier 2), verified."
-        - "After the call: | ztdemo action=reset releases the quarantine and stamps the reset so the next fire starts clean."
-      point:
-        - "Contained in minutes at the narrowest point, with a named approver."
-        - "Proof, not assumption: the same data that raised the finding shows the new verdict."
-  section7_rows:          # appended to the facts table (Claim / Status and source) if not present
-    - ["Enterprise Security 8.7 on the Splunk Cloud stack starts SOAR playbooks through automation rules", "Verified on the stack (missioncontrol 6.7): rules trigger on finding_created for a named detection; label activation is not used."]
-    - ["Agent Launchpad (AI Toolkit 6.1) runs agents in Splunk Cloud Services and reaches the Splunk MCP Server 2.0 on the stack", "Verified: MCP endpoint https://<stack>:8089/services/mcp, bearer token per user, tools restricted by role."]
-    - ["ES and SOAR Cloud are paired", "Verified: pairing_status Pairing Success; findings arrive in SOAR with the label es_soar_integration."]
+  - title: 'Beat 5: Out of the box first: what ships'
+    who: 'Who:  Splunk SE   ·   Time: 2 min   ·   Screen: Slide 13, then Splunk Secure Networking Essentials'
+    say: 'Say: Before I show you what we built, here is what ships. Most of this loop is product: Splunk Secure Networking Essentials, in beta, already reads your Tetragon data; Splunk Security Content
+      ships ten Cisco Isovalent detections; Enterprise Security, Agent Launchpad and SOAR do the rest. What we build with you is small and specific to you: which stores are protected, who may reach them,
+      two detections on those paths, five evidence searches for the agent, and the playbook. Here is the product view: every node and namespace Tetragon sees, the process executions, and how fresh the telemetry
+      is. Notice the busiest workload: the build farm''s CI runner. Hold that thought.'
+    show:
+    - 'Slide 13: the left side is product, the right side is built for you.'
+    - 'Splunk Web: Splunk Secure Networking Essentials › Secure Infrastructure › Secure Data Center Operations, time range 24h, tab Runtime Security: Active Isovalent Nodes 87, Observed Namespaces 129,
+      Process Executions Observed about 12,000, Telemetry Age 0 minutes.'
+    - 'Tab Runtime Investigation: Top workloads by process execution volume, with build-farm / ci-runner first.'
+    point:
+    - The day-to-day view needs no custom dashboard; the custom part is your policy and the loop.
+    - 'Runtime Detections reads 0 because this lab sends no Tetragon policy alerts; the detections in this story run in Enterprise Security. Stay off the Fabric Operations and Data Center Security tabs:
+      without the Cisco DC Networking app they show no data.'
+    - Say beta; give no availability date.
+  - title: 'Beat 6: Live: fire the incident, Step 2 in Splunk'
+    who: 'Who:  Splunk SE   ·   Time: 4 min   ·   Screen: Slides 14 and 15, then Search in the app'
+    say: 'Say: Here is one connection, end to end. A contractor''s merge request added a post-build script to a training repository; the CI job that runs it uses curl to copy checkpoint files from the protected
+      store. Nothing was hacked: the runner had reach it should not have, and the store''s allowlist is still in audit mode. I fire it now. Within seconds two events land in the zero_trust index: Hubble
+      records the flow as AUDIT, would deny, with both workload identities; Tetragon names the program, curl, and its parent, the post-build script. Same pod, same destination, same second. And Splunk already
+      adds the context: the owner, the CI job and merge request, the server and its switch port.'
+    show:
+    - 'Live generator page: Fire the incident (or Search: | ztdemo action=fire). Then the two searches from slide 15: index=zero_trust sourcetype=cilium:hubble:flow verdict=AUDIT src_workload="build-farm/ci-runner"
+      and index=zero_trust sourcetype=cisco:isovalent:processConnect process_name=curl.'
+    - Open one event of each and point at pod ci-runner-7d9f8-xk2lq, identities 48213 and 30719, destination checkpoint-store-1 on 9000, and the timestamps 29 milliseconds apart.
+    - 'Fields on the left: src_owner platform-build, dest_data_class crown-jewel, allowlist_policy in audit mode; the CI job 88213 from merge request !4417 by contractor-dev-17 on bf-node-03.'
+    point:
+    - 'Identity, not IP: the flow carries both workload identities and the policy verdict.'
+    - 'Seen at the source: the program behind the connection, with no sidecar and no agent per application.'
+  - title: 'Beat 7: Live: Step 3, two signals, one finding, one brief'
+    who: 'Who:  Splunk SE   ·   Time: 4 min   ·   Screen: Slides 16 and 17, Enterprise Security Analyst Queue, AI Toolkit Agent run history'
+    say: 'Say: Two detections turn those events into risk on the workload: fifty for the audit-mode flow into a protected store, forty for a program that is not approved for it. When the total crosses eighty
+      from two sources, one finding group opens: risk ninety, threat objects the checkpoint store and curl, the MITRE techniques, and drilldowns to the raw flows, the process events and the CI job. The
+      finding starts an agent. It can only use five approved evidence tools through the Splunk MCP Server, it keeps the data in Splunk, and it recommends; a person decides. Here is its brief: true positive,
+      quarantine the pod at the kernel, approver SOC tier 2, and three follow-ups.'
+    show:
+    - 'Analyst Queue: the finding group titled Unprotected path: build-farm/ci-runner reached a protected AI data store; open it, show risk 90 from two intermediate findings, the threat objects and the
+      three drilldowns.'
+    - 'AI Toolkit: Agent run history for ZTFlowInvestigator; open the run, show the five tool calls in order, then the structured brief.'
+    - 'Back on the investigation: the same brief as a note, marked AI-generated.'
+    point:
+    - 'Evidence joined: workload, CI job, server and switch port are already correlated before anyone opens a ticket.'
+    - The agent never acts; every statement cites a tool result.
+  - title: 'Beat 8: Live: Steps 4 and 5, approve, enforce, prove'
+    who: 'Who:  Splunk SE   ·   Time: 4 min   ·   Screen: Slides 18 and 19, SOAR prompt (Mode A) or Enforcement Approvals (Mode B), Incident Timeline, Zero Trust Fabric Posture'
+    say: 'Say: The playbook starts from the finding, reads the brief, picks the nearest enforcement point and builds the policy; then it asks a named person. I approve as j.chen, SOC tier 2, in the other
+      window. Two seconds later the pod is labeled and the CiliumNetworkPolicy exists, both recorded by the Kubernetes API audit log. The runner''s next attempt is DROPPED by that policy, with a new identity
+      because the label changed. The playbook confirms it in Splunk, writes the audit trail and resolves the investigation. And the posture dashboard proves it: coverage up, one fewer unprotected path,
+      one more enforcement action, with the approver on record.'
+    show:
+    - 'Approve: read the policy YAML in the prompt, approve with a comment. Then the Incident Timeline: the five step cards fill in, the journey grid checks every cell, the raw events appear at the bottom.'
+    - 'Zero Trust Fabric Posture: coverage 87.9% up from 86.4%, unprotected paths 8 down from 9, identities 1,284, enforcement actions 17; the verdict chart flips from AUDIT to DROPPED; the first audit
+      trail row is j.chen (SOC tier 2), verified.'
+    - 'After the call: | ztdemo action=reset releases the quarantine and stamps the reset so the next fire starts clean.'
+    point:
+    - Contained in minutes at the narrowest point, with a named approver.
+    - 'Proof, not assumption: the same data that raised the finding shows the new verdict.'
+  section7_rows:
+  - - Enterprise Security 8.7 on the Splunk Cloud stack starts SOAR playbooks through automation rules
+    - 'Verified on the stack (missioncontrol 6.7): rules trigger on finding_created for a named detection; label activation is not used.'
+  - - Agent Launchpad (AI Toolkit 6.1) runs agents in Splunk Cloud Services and reaches the Splunk MCP Server 2.0 on the stack
+    - 'Verified: MCP endpoint https://<stack>:8089/services/mcp, bearer token per user, tools restricted by role.'
+  - - ES and SOAR Cloud are paired
+    - 'Verified: pairing_status Pairing Success; findings arrive in SOAR with the label es_soar_integration.'
+  - - 'Splunk Security Content: Cisco Isovalent detections'
+    - 'Ten detections, analytic story Cisco Isovalent Suspicious Activity (ESCU 5.20, 20 January 2026; updated 13 May 2026; ESCU is at 6.7.0 and the stack runs 6.5.0 with them disabled). All anomaly type,
+      risk 20 on pod_name: shell execution, curl with insecure flags, cloud metadata access, cron job creation, late process execution, non-allowlisted image, nsenter, offensive tools, escape to host; plus
+      a kprobe-spike hunting search. They expect pod_name, pod_namespace and pod_image_name; this build emits src_pod, src_namespace and container_image, so they need field aliases before they fire here.'
+  - - Splunk Secure Networking Essentials (Beta)
+    - 'Splunkbase 9257, 1.0.52 (22 September 2026), Splunk Field Solutions; invitation-only beta, general availability targeted for fall 2026 (internal only: say beta, no date). Collects no data; reads
+      the Cisco add-ons. Its Secure Data Center Operations dashboard has a Cisco Isovalent runtime section that reads Tetragon JSON directly; setup needs the Searchbase app (7188). Verified on the stack
+      24 September 2026: 87 nodes, 129 namespaces, 12,289 process executions in 24 hours.'
+  - - Cisco Enterprise Networking app and add-on
+    - 'App 7539 (4.0.10, 4 September 2026) and add-on 7538 (4.0.35, 8 September 2026): Catalyst Center, SD-WAN, ISE (including Security Group Tags and IP-SGT bindings), Cyber Vision, IOS and NetFlow. Campus
+      and branch scope: no data-center, Nexus or Isovalent content, and no ISE ANC action. Installed on the stack without the add-on; not used in this demo.'
+  - - Cisco DC Networking app
+    - 'Splunkbase 7777, 1.2.2 (24 July 2026), Cisco-supported: Nexus 9000, ACI and Nexus Dashboard anomalies, advisories, flows, congestion and endpoints (cisco:dc:nd:anomalies, cisco:dc:nd:advisories).
+      Not installed on the stack; this build''s cisco:nexus:* sourcetypes are its own.'
+  - - Enterprise Security 8.7 tools in the Splunk MCP Server
+    - Read-only es_ tools (es_get_finding and others) register automatically with Splunk MCP Server 1.3 or later; enforcement still goes through SOAR (Enterprise Security 8.7 documentation, September 2026).
+  - - dCloud Cisco Secure Networking demo
+    - 'Instant demo, shared and read-only: Cloud Control, Meraki, ISE, Security Cloud Control, Secure Access, Secure Firewall, SD-WAN, ThousandEyes, Secure Workload and Splunk Cloud. Two of its use cases
+      walk through the Splunk App for Secure Networking (the same beta app). No Isovalent, Nexus Dashboard or Hypershield. Reviewed 24 September 2026; see the demo review.'
+  section3_before:
+    Deck: Same deck; add screenshots of the Secure Networking view and the posture dashboard to slides 13 and 19 once captured.
+    Dashboards: Enable the Splunk Security Content Cisco Isovalent detections with field aliases (pod_name, pod_namespace, pod_image_name) so product detections add risk next to the two protected-path detections.
+    Live demo instance: Install the Cisco Security Cloud App (or the dedicated Isovalent add-on once released) and the Cisco DC Networking app, retire the demo app's own Tetragon parsing, and align the
+      Nexus sourcetypes with cisco:dc:*.
+    Secure Networking Essentials: Install the Cisco DC Networking app and feed Nexus Dashboard data so the fabric cards fill; add a Tetragon alert event so Runtime Detections is not zero.
+    Enforcement: The same playbook against a lab Kubernetes cluster (CiliumNetworkPolicy) with an approval gate; an NX-API or Hypershield action as a second step, also through the HTTP app.
+    Leave-behinds: Add the lab-phase scope document.

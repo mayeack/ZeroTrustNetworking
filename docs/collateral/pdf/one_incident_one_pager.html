@@ -1,0 +1,203 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>One Incident, End to End</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=Inter:wght@400;700;800&display=block" rel="stylesheet">
+<!-- The default Google Fonts subsets do not include U+2192; this adds the arrow glyph from the same families. -->
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400&text=%E2%86%92&display=block" rel="stylesheet">
+<style>
+  /* Letter landscape: 11in x 8.5in = 1056 x 816 CSS px. All sizes below are CSS px. */
+  @page { size: letter landscape; margin: 0; }
+  :root {
+    --bg: #0a0e1a; --card: #0d1424; --line: #223050; --dash: #1a2640;
+    --ink: #f4f6fa; --body: #c7cfde; --muted: #8b95aa;
+    --magenta: #ed0080; --cyan: #02c8ff;
+    --mono: "IBM Plex Mono", monospace;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { background: var(--bg); -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  .page {
+    position: relative; width: 1056px; height: 816px; overflow: hidden;
+    padding: 0 0.43in; background: var(--bg); color: var(--body);
+    font-family: Inter, sans-serif;
+  }
+  b { font-weight: 700; color: var(--ink); }
+  .dot { color: var(--muted); }
+
+  /* header */
+  .top { display: flex; justify-content: space-between; align-items: flex-start; height: 80px; border-bottom: 1px solid var(--line); }
+  .wordmark { flex: none; margin-top: 36px; overflow: visible; }
+  .tag { margin-top: 44.8px; border-left: 2px solid var(--magenta); padding-left: 12px;
+         font: 400 8px/13px var(--mono); letter-spacing: .28em; color: var(--muted); }
+
+  .kicker { margin-top: 9px; font: 600 8px/12px var(--mono); letter-spacing: .26em; color: var(--magenta); }
+  .kicker .dot { margin: 0 1.13px; }
+  h1 { margin-top: 4px; font: 800 23px/28px Inter, sans-serif; letter-spacing: -.02em; color: var(--ink); }
+
+  .example { margin-top: 7px; height: 56px; padding: 6px 12px 7.5px; background: var(--card);
+             border-left: 2px solid var(--magenta); border-radius: 0 6px 6px 0; }
+  .example h2 { font: 600 7.6px/10px var(--mono); letter-spacing: .22em; color: var(--magenta); margin-bottom: 2.5px; }
+  .example p { font-size: 10.2px; line-height: 15px; color: var(--ink); }
+  .example code { font: 400 9.6px var(--mono); }
+
+  .summary { margin-top: 6px; font-size: 10.4px; line-height: 15px; }
+
+  /* journey grid: label column + five step columns, six lanes */
+  .journey { position: relative; margin-top: 9px; width: 970px; height: 358px; display: grid; grid-template-rows: 28px 330px; }
+  .steps { grid-row: 1; display: grid; grid-template-columns: 160px repeat(5, 162px); height: 28px; align-items: center; }
+  .step { display: flex; align-items: center; justify-content: center; gap: 7px; font: 800 12px/15px Inter, sans-serif; color: var(--ink); }
+  .step span { padding-bottom: 1.2px; }
+  .step i { width: 19px; height: 19px; border-radius: 50%; background: var(--magenta); color: #fff; flex: none; font: normal 800 10px/19px Inter, sans-serif; text-align: center; }
+  .lanes { grid-row: 2; display: grid; grid-template-columns: 160px repeat(5, 162px); grid-template-rows: repeat(6, 55px); }
+  .band { grid-column: 1 / -1; border-top: 1px solid var(--line); }
+  .band.alt { background: rgba(255, 255, 255, .0275); }
+  .vline { grid-row: 1 / -1; border-left: 1px dashed var(--dash); }
+  .lane { grid-column: 1; padding: 14.6px 0 0 10px; }
+  .lane h3 { font: 700 10.5px/13px Inter, sans-serif; }
+  .lane p { margin-top: 1px; font: 400 8px/12px var(--mono); letter-spacing: .02em; color: var(--muted); }
+  .c-grey { color: var(--body); } .c-cyan { color: var(--cyan); } .c-mag { color: var(--magenta); }
+  .card { position: relative; width: 143px; height: 46px; margin: 4px 0 0 9.67px; padding: 0 7px 2px;
+          display: flex; flex-direction: column; justify-content: center;
+          background: var(--card); border: 1px solid var(--magenta); border-radius: 6px; }
+  .card.grey { border-color: var(--body); } .card.cyan { border-color: var(--cyan); }
+  .card h4 { font: 700 9.6px/13px Inter, sans-serif; color: var(--ink); margin-bottom: 2px; }
+  .card p { font-size: 8.3px; line-height: 10px; }
+  .arrows { position: absolute; left: 0; top: 0; overflow: visible; }
+  .arrows > path { fill: none; stroke: var(--body); stroke-width: 1.3; }
+  .arrows > path.enforce { stroke: var(--magenta); stroke-width: 2.2; }
+  .enforce-label { position: absolute; left: 735px; top: 202px; font: 700 8.4px/10px Inter, sans-serif; color: var(--magenta); }
+
+  /* what it's worth */
+  .worth { margin-top: 8px; display: grid; grid-template-columns: 160px repeat(5, 162px); height: 63px; }
+  .worth h3 { align-self: center; padding-left: 10px; font: 600 8px/12px var(--mono); letter-spacing: .22em; color: var(--magenta); }
+  .worth div { width: 154px; margin-left: 4px; padding: 7px 8px; background: var(--card); border: 1px solid var(--line); border-radius: 6px; }
+  .worth h4 { font: 700 9.6px/11px Inter, sans-serif; color: var(--ink); margin-bottom: 2.5px; }
+  .worth p { font-size: 8.3px; line-height: 11px; }
+
+  /* data in / detect boxes: same height, side by side */
+  .boxes { margin-top: 8px; display: grid; grid-template-columns: 1fr 1fr; gap: 10px; height: 92px; }
+  .box { padding: 7px 12px 0; background: var(--card); border: 1px solid var(--line); border-radius: 7px; }
+  .box h3 { font: 600 8px/12px var(--mono); letter-spacing: .22em; margin-bottom: 2.5px; }
+  .box p { font-size: 8.8px; line-height: 12.8px; }
+
+  .foot { margin-top: 5px; border-top: 1px solid var(--line); padding-top: 5.5px;
+          display: flex; justify-content: space-between; font: 400 7.2px/10px var(--mono); letter-spacing: .24em; color: var(--muted); }
+  .foot .dot { margin: 0 1.95px; }
+</style>
+</head>
+<body>
+<div class="page">
+  <header class="top">
+    <svg class="wordmark" width="140" height="40" viewBox="0 0 140 40" aria-label="splunk&gt; A Cisco company">
+      <text x="0.28" y="18" font-family="Inter" font-weight="800" font-size="22" letter-spacing="-0.44" fill="#f4f6fa">splunk<tspan fill="#ed0080">&gt;</tspan></text>
+      <text x="0.28" y="33" font-family="IBM Plex Mono" font-weight="400" font-size="7" letter-spacing="2.24" fill="#8b95aa">A CISCO COMPANY</text>
+    </svg>
+    <div class="tag">ZERO TRUST NETWORKING<br>CISCO + SPLUNK</div>
+  </header>
+
+  <div class="kicker">ONE INCIDENT, END TO END <span class="dot">·</span> BUSINESS VALUE AND SOLUTION ARCHITECTURE</div>
+  <h1>From one risky connection to an enforced policy, and proof, in minutes</h1>
+
+  <section class="example">
+    <h2>THE RISKY CONNECTION, IN THIS EXAMPLE</h2>
+    <p>A contractor's merge request adds a post-build script to a machine-learning repository. When the CI job runs, the build runner uses <code>curl</code> to copy model checkpoint files, the weights of a 512-GPU training run, from the protected training store. Nothing was hacked: the runner simply had network reach it shouldn't, and the store's new allowlist was still in audit mode, so the copy went through.</p>
+  </section>
+
+  <p class="summary"><b>Cisco Isovalent observes it</b>: Hubble records the connection with both workload identities and its policy verdict; Tetragon names the program that opened it. <b>Splunk correlates it</b> with the workload, the CI job and the server, raises one finding, and an agent gathers the evidence. <b>A SOAR playbook enforces</b> at the nearest point once a person approves; the posture dashboard proves it.</p>
+
+  <section class="journey">
+    <!-- Paint order mirrors the original: lanes, step headers, connectors, label, then cards on top. -->
+    <!-- connectors, in the journey's own coordinates (970 x 358; lanes start at y=28, lane height 55, steps 162 wide from x=160) -->
+    <svg class="arrows" width="970" height="358" viewBox="0 0 970 358" aria-hidden="true">
+      <defs>
+        <marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 L0,0 Z" fill="#c7cfde" stroke="none"/></marker>
+        <marker id="ah-mag" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 L0,0 Z" fill="#ed0080" stroke="none"/></marker>
+      </defs>
+      <path d="M312.3 55.5 H403 V87.4" marker-end="url(#ah)"/>      <!-- CI runner -> Isovalent observes -->
+      <path d="M403 133.6 V142.4" marker-end="url(#ah)"/>           <!-- Isovalent observes -> Events land -->
+      <path d="M474.3 165.5 H493.7" marker-end="url(#ah)"/>         <!-- Events land -> Splunk correlates -->
+      <path d="M565 188.6 V197.4" marker-end="url(#ah)"/>           <!-- Splunk correlates -> Finding group -->
+      <path d="M565 243.6 V252.4" marker-end="url(#ah)"/>           <!-- Finding group -> Agent brief -->
+      <path d="M565 298.6 V330.5 H655.7" marker-end="url(#ah)"/>    <!-- Agent brief -> Approve and apply -->
+      <path class="enforce" d="M727 307.4 V133.6" marker-end="url(#ah-mag)"/> <!-- Approve and apply -> Cilium enforces -->
+      <path d="M727 87.4 V78.6" marker-end="url(#ah)"/>             <!-- Cilium enforces -> Runner isolated -->
+      <path d="M798.3 110.5 H817.7" marker-end="url(#ah)"/>         <!-- Cilium enforces -> Retries dropped -->
+      <path d="M889 133.6 V142.4" marker-end="url(#ah)"/>           <!-- Retries dropped -> Posture improves -->
+      <path d="M798.3 330.5 H817.7" marker-end="url(#ah)"/>         <!-- Approve and apply -> Audit trail -->
+    </svg>
+    <div class="enforce-label">Enforce at the<br>nearest point</div>
+    <div class="lanes">
+      <!-- lane bands (every other lane lightly shaded) and dashed step dividers -->
+      <div class="band alt" style="grid-row:1"></div><div class="band" style="grid-row:2"></div>
+      <div class="band alt" style="grid-row:3"></div><div class="band" style="grid-row:4"></div>
+      <div class="band alt" style="grid-row:5"></div><div class="band" style="grid-row:6"></div>
+      <div class="vline" style="grid-column:3"></div><div class="vline" style="grid-column:4"></div>
+      <div class="vline" style="grid-column:5"></div><div class="vline" style="grid-column:6"></div>
+
+      <div class="lane" style="grid-row:1"><h3 class="c-grey">Workloads</h3><p>Build farm, AI training</p></div>
+      <div class="lane" style="grid-row:2"><h3 class="c-cyan">Cisco Isovalent</h3><p>Cilium · Hubble · Tetragon</p></div>
+      <div class="lane" style="grid-row:3"><h3 class="c-mag">Splunk platform</h3><p>Ingest · correlate · posture</p></div>
+      <div class="lane" style="grid-row:4"><h3 class="c-mag">Enterprise Security</h3><p>Risk-based alerting</p></div>
+      <div class="lane" style="grid-row:5"><h3 class="c-mag">Agent Launchpad</h3><p>No-code agent</p></div>
+      <div class="lane" style="grid-row:6"><h3 class="c-mag">SOAR and people</h3><p>Playbook · approval</p></div>
+
+      <!-- cards: grid-row = lane, grid-column = step + 1 -->
+      <div class="card grey" style="grid-row:1;grid-column:2"><h4>CI runner connects</h4><p>Job 88213 → checkpoint store :9000</p></div>
+      <div class="card cyan" style="grid-row:2;grid-column:3"><h4>Isovalent observes</h4><p>Hubble: AUDIT (would deny) · Tetragon: curl from postbuild.sh</p></div>
+      <div class="card" style="grid-row:3;grid-column:3"><h4>Events land</h4><p>zero_trust index, in seconds</p></div>
+      <div class="card" style="grid-row:3;grid-column:4"><h4>Splunk correlates</h4><p>Workload, CI job 88213, server bf-node-03</p></div>
+      <div class="card" style="grid-row:4;grid-column:4"><h4>Finding group ES-1842</h4><p>Two signals, 50 + 40 = risk 90, over the threshold of 80</p></div>
+      <div class="card" style="grid-row:5;grid-column:4"><h4>Agent brief</h4><p>True positive · recommends quarantine</p></div>
+      <div class="card" style="grid-row:6;grid-column:5"><h4>Approve and apply</h4><p>j.chen approves · Cilium policy applied</p></div>
+      <div class="card cyan" style="grid-row:2;grid-column:5"><h4>Cilium enforces</h4><p>Quarantine policy isolates the pod in the kernel</p></div>
+      <div class="card grey" style="grid-row:1;grid-column:5"><h4>Runner isolated</h4><p>Rest of the build farm keeps running</p></div>
+      <div class="card cyan" style="grid-row:2;grid-column:6"><h4>Retries dropped</h4><p>DROPPED by the quarantine policy</p></div>
+      <div class="card" style="grid-row:3;grid-column:6"><h4>Posture improves</h4><p>Coverage 86.4% → 87.9% · paths 9 → 8</p></div>
+      <div class="card" style="grid-row:6;grid-column:6"><h4>Audit trail</h4><p>Who approved, what changed, when</p></div>
+    </div>
+
+    <div class="steps">
+      <span></span>
+      <div class="step"><i>1</i><span>Connect</span></div>
+      <div class="step"><i>2</i><span>Observe</span></div>
+      <div class="step"><i>3</i><span>Decide</span></div>
+      <div class="step"><i>4</i><span>Enforce</span></div>
+      <div class="step"><i>5</i><span>Verify</span></div>
+    </div>
+  </section>
+
+  <section class="worth">
+    <h3>WHAT IT'S WORTH</h3>
+    <div><h4>Attributable</h4><p>Every connection carries a workload identity, not just an IP.</p></div>
+    <div><h4>Seen at the source</h4><p>Hubble records the flow and Tetragon the program behind it. No sidecars.</p></div>
+    <div><h4>One finding, evidence joined</h4><p>Workload, job and server already correlated; the agent writes the brief.</p></div>
+    <div><h4>Contained in minutes</h4><p>Nearest enforcement point, with a named approver on record.</p></div>
+    <div><h4>Proof, not assumption</h4><p>Coverage up, one fewer unprotected path, a complete audit trail.</p></div>
+  </section>
+
+  <section class="boxes">
+    <div class="box">
+      <h3 class="c-cyan">GETTING DATA IN</h3>
+      <p><b>Hubble flow logs</b> over HTTP Event Collector: every connection with both identities and its policy verdict</p>
+      <p><b>Tetragon events</b> through the Cisco Security Cloud App: the program, its arguments and parent, per pod</p>
+      <p><b>Nexus data</b> through Cisco's data center networking add-on · <b>Live Protect</b> telemetry and syslog from NX-OS</p>
+    </div>
+    <div class="box">
+      <h3 class="c-mag">DETECT · INVESTIGATE · ENFORCE</h3>
+      <p><b>Enterprise Security</b> risk-based alerting turns flow and process signals into one finding</p>
+      <p><b>Splunk Security Content</b> ships Cisco Isovalent runtime detections into the same risk-based alerting</p>
+      <p><b>Agent Launchpad</b> agent uses approved tools, keeps data in Splunk, leaves the decision to a person</p>
+      <p><b>SOAR</b> enforces at the nearest point: Cilium policy on the server, Hypershield rule on the DPU or switch, Nexus port or route change. Network changes need NetOps approval</p>
+    </div>
+  </section>
+
+  <footer class="foot">
+    <span>SPLUNK, A CISCO COMPANY <span class="dot">·</span> ZERO TRUST NETWORKING</span>
+    <span>ONE INCIDENT, END TO END</span>
+  </footer>
+</div>
+</body>
+</html>

@@ -7,3 +7,5 @@ __pycache__/
 .pytest_cache/
 docs/collateral/backup/
 docs/collateral/screenshots/*.png
+docs/collateral/pdf/out/
+docs/collateral/pdf/compare/

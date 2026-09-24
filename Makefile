@@ -11,7 +11,7 @@ PACKAGE_DIR ?= /Users/myeack/Library/CloudStorage/OneDrive-Cisco/Projects/Sales 
 
 .PHONY: help check indexes hec secrets configure users lookups package appinspect sync-objects backfill fire reset status fast normal \
         mode-local mode-soar agent-mcp agent-inline mcp-tools agent es-assets es-automation-rule soar-setup soar-package \
-        emulator-start emulator-stop emulator-status emulator-install tunnel-install smoke reset-hard collateral local-install local-test test clean
+        emulator-start emulator-stop emulator-status emulator-install tunnel-install smoke reset-hard collateral pdfs local-install local-test test clean
 
 help:
 	@grep -E '^[a-z-]+:.*## ' $(MAKEFILE_LIST) | sed 's/:.*## /  /' | column -t -s'  '
@@ -111,6 +111,8 @@ reset-hard: ## Empty zero_trust and zt_summary on the stack and backfill again (
 	$(PY) tools/reset_hard.py
 collateral: ## Update the deck and the talk track from docs/collateral/collateral.yaml
 	$(PY) docs/collateral/sync_collateral.py
+pdfs: ## Print the three collateral PDFs from docs/collateral/pdf/*.html into docs/collateral/pdf/out (copy them to OneDrive after review)
+	$(PY) docs/collateral/pdf/render_pdfs.py
 local-install: lookups ## Copy both apps into the local Splunk (test bed) and restart it
 	rsync -a --delete --exclude local/ $(APP)/ $(LOCAL_SPLUNK)/etc/apps/$(APP)/
 	rsync -a --delete --exclude local/ $(DA)/ $(LOCAL_SPLUNK)/etc/apps/$(DA)/

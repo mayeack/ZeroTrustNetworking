@@ -1,6 +1,6 @@
 # Demo script: one incident, end to end
 
-The live section of the deck, in six parts, at fast cadence (every ZT scheduled search runs every minute). One line to say per click. Dashboard and panel names match the installed dashboards (Zero Trust Fabric Posture, Incident Timeline, Enforcement Approvals).
+The live section of the deck, in six parts plus the product view before the fire, at fast cadence (every ZT scheduled search runs every minute). Slide numbers follow the 22-slide One Incident deck: the product view is slide 13, the live steps are slides 14 to 19. One line to say per click. Dashboard and panel names match the installed dashboards (Zero Trust Fabric Posture, Incident Timeline, Enforcement Approvals).
 
 ## Timings at fast cadence
 
@@ -30,6 +30,14 @@ About ten minutes from fire to the final posture. If you need to talk longer, th
 5. Sign in as `j.chen` in a private browser window (Mode A: SOAR; Mode B: Splunk Web, Enforcement Approvals).
 6. Open the agent's page in the AI Toolkit (Agent Launchpad › `ZTFlowInvestigator`) and the ES Analyst Queue.
 7. Have the two searches ready in the search bar (they are also in the deck).
+8. Open Splunk Secure Networking Essentials › Secure Infrastructure › Secure Data Center Operations, set the time range to 24h and select the Runtime Security tab. Setup was completed on 24 September 2026 (Searchbase app installed, `index_security` = `zero_trust`); if a page redirects to Setup, the Searchbase app is missing or disabled.
+
+## Before the fire: what ships (slide "What ships, and what we build for you")
+
+1. On slide 13, walk left then right. Say: "Most of the loop ships as product. What we build with you is your policy and its proof."
+2. Switch to Splunk Secure Networking Essentials (beta), Secure Data Center Operations, Runtime Security tab, 24h: Active Isovalent Nodes 87, Observed Namespaces 129, Process Executions Observed about 12,000, Telemetry Age 0. Say: "Every node and namespace Tetragon sees, in a product view nobody had to build."
+3. Runtime Investigation tab: Top workloads by process execution volume, `build-farm / ci-runner` first. Say: "Notice the busiest workload: the build farm's CI runner. Hold that thought." Then fire.
+4. If asked: Runtime Detections reads 0 because this build sends no Tetragon policy alerts; the story's detections run in Enterprise Security. Do not open Fabric Operations or Data Center Security: without the Cisco DC Networking app they show no data. Say beta; give no availability date.
 
 ## 2. Step 2: two signals in Splunk (slide "Step 2 in Splunk")
 
@@ -77,7 +85,7 @@ Either mode: `index=zero_trust sourcetype=kube:apiserver:audit` now shows the `p
 ## 5. Step 5: verify and prove it
 
 1. Open Zero Trust Incident › Incident Timeline (it opens on the newest incident; the cards appear within about 15 seconds). Walk the five step cards left to right: Connect (job start, first connection), Observe (first AUDIT flow and Tetragon event, both identities, the program), Decide (the two risk events, the finding ID and risk, the brief's time and recommendation), Enforce (who approved, when, the policy applied), Verify (the first DROPPED flow, `verified`, posture before and after). Say: "Every cell has a timestamp and drills to its evidence; this is the audit story for the incident review."
-2. Point at the journey grid (Workloads, Cisco Isovalent, Splunk platform, Enterprise Security, Agent Launchpad, SOAR and people × Connect, Observe, Decide, Enforce, Verify) and at the "Getting data in" tiles (Hubble, Tetragon, Nexus switch data, Live Protect: events in 24 hours and the age of the last event). Say: "Four data sources, all over HTTP Event Collector and the Cisco add-ons."
+2. Point at the journey grid (Workloads, Cisco Isovalent, Splunk platform, Enterprise Security, Agent Launchpad, SOAR and people × Connect, Observe, Decide, Enforce, Verify) and at the "Getting data in" tiles (Hubble, Tetragon, Nexus switch data, Live Protect: events in 24 hours and the age of the last event). Say: "Four data sources over the HTTP Event Collector; in production, Tetragon and the Nexus data come through the Cisco add-ons."
 3. Scroll to the incident event table (newest first): the DROPPED attempts with `egress_denied_by` `zt-quarantine-ci-runner-88213` and source identity 48291; the `verified` audit row; a little later the CI job `failed` with `script_failure`. Say: "The runner tried six more times and got nothing; the job failed in the pipeline, which is where the developer finds out."
 4. Open Zero Trust Incident › Zero Trust Fabric Posture. Read the KPIs: Protected-Path Coverage 87.9%, "up from 86.4%"; Unprotected Paths 8, "down from 9"; Workload Identities 1,284; Enforcement Actions (24h) 17 (kernel 11 · DPU 2 · switch 4). Say: "During the incident the fabric had one more unprotected path; now it has one more enforced path and one more kernel action."
 5. Point at the verdict chart "build-farm/ci-runner → ai-train/checkpoint-store:9000, flows by verdict": AUDIT columns, then DROPPED. Say: "This is the verdict flip: the same path, the same program, now denied at the source node."

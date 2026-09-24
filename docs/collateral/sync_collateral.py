@@ -98,23 +98,29 @@ def sync_talk_track(cfg, dry):
     doc = docx.Document(path)
     tt = cfg["talk_track"]
     changed = 0
-    # section 3 table: column "Today"
+    # section 3 table: columns "Today" and "Before the lab phase"; missing items are added as styled rows
     for table in doc.tables:
         header = [c.text.strip() for c in table.rows[0].cells]
         if header[:2] == ["Item", "Today"]:
+            present = {r.cells[0].text.strip() for r in table.rows[1:]}
+            for item in tt["section3_rows"]:
+                if item not in present:
+                    add_styled_row(table, [item, tt["section3_rows"][item], tt.get("section3_before", {}).get(item, "")])
+                    changed += 1
+                    print("talk track section 3: row %s added" % item)
             for row in table.rows[1:]:
                 item = row.cells[0].text.strip()
-                if item in tt["section3_rows"] and row.cells[1].text.strip() != tt["section3_rows"][item]:
-                    set_cell(row.cells[1], tt["section3_rows"][item])
-                    changed += 1
-                    print("talk track section 3: row %s updated" % item)
+                for col, key in ((1, "section3_rows"), (2, "section3_before")):
+                    want = tt.get(key, {}).get(item)
+                    if want is not None and row.cells[col].text.strip() != want:
+                        set_cell(row.cells[col], want)
+                        changed += 1
+                        print("talk track section 3: row %s column %d updated" % (item, col + 1))
         if header[:2] == ["Claim", "Status and source"]:
             existing = {r.cells[0].text.strip() for r in table.rows[1:]}
             for claim, status in tt.get("section7_rows", []):
                 if claim not in existing:
-                    cells = table.add_row().cells
-                    set_cell(cells[0], claim)
-                    set_cell(cells[1], status)
+                    add_styled_row(table, [claim, status])
                     changed += 1
                     print("talk track section 7: row added: %s" % claim[:60])
     # beats 5-7: replace heading text and body until the next Heading2
@@ -137,7 +143,10 @@ def sync_talk_track(cfg, dry):
                         newp = copy.deepcopy(templates[kind]._element)
                         anchor.addnext(newp)
                         anchor = newp
-                        set_element_text(newp, text)
+                        if kind in ("who", "say"):
+                            set_lead_text(newp, text)
+                        else:
+                            set_element_text(newp, text)
                     changed += 1
                     print("talk track: %s rewritten" % beat["title"])
                     paras = doc.paragraphs
@@ -153,23 +162,55 @@ def sync_talk_track(cfg, dry):
 def beat_paragraphs(beat):
     out = [("who", beat["who"]), ("say", beat["say"]), ("label", "SHOW")]
     out += [("bullet", b) for b in beat.get("show", [])]
-    out.append(("label", "POINT AT"))
-    out += [("bullet", b) for b in beat.get("point", [])]
+    if beat.get("point"):
+        out.append(("label", "POINT AT"))
+        out += [("bullet", b) for b in beat["point"]]
     return out
 
 
 def find_templates(paras):
+    """Who/Say lines with a bold lead-in run plus a normal run; a bullet whose first run is not bold."""
     t = {}
     for p in paras:
-        if "who" not in t and p.text.startswith("Who:"):
+        if "who" not in t and p.text.startswith("Who:") and len(p.runs) >= 2:
             t["who"] = p
-        elif "say" not in t and p.text.startswith("Say:"):
+        elif "say" not in t and p.text.startswith("Say:") and len(p.runs) >= 2:
             t["say"] = p
         elif "label" not in t and p.text.strip() == "SHOW":
             t["label"] = p
-        elif "bullet" not in t and p.style is not None and p.style.name == "List Paragraph":
+        elif ("bullet" not in t and p.style is not None and p.style.name == "List Paragraph" and p.runs
+              and not p.runs[0].bold):
             t["bullet"] = p
     return t
+
+
+def set_lead_text(p_el, text):
+    """'Who:  rest' or 'Say: rest': the lead-in goes in the first (bold) run, the rest in the second run."""
+    lead, rest = text.split(":", 1)
+    pad = rest[:len(rest) - len(rest.lstrip(" "))]
+    runs = p_el.findall(W + "r")
+    if len(runs) < 2:
+        set_element_text(p_el, text)
+        return
+    for r in runs[2:]:
+        p_el.remove(r)
+    for run, value in ((runs[0], lead + ":" + pad), (runs[1], rest.lstrip(" "))):
+        ts = run.findall(W + "t")
+        for t in ts[1:]:
+            run.remove(t)
+        ts[0].text = value
+        ts[0].set("{http://www.w3.org/XML/1998/namespace}space", "preserve")
+
+
+def add_styled_row(table, texts):
+    """Append a copy of the table's first body row that carries the document's cell borders, so new rows match."""
+    styled = next(r for r in table.rows[1:] if r._tr.xpath("./w:tc[1]/w:tcPr/w:tcBorders"))
+    new = copy.deepcopy(styled._tr)
+    table._tbl.append(new)
+    row = table.rows[-1]
+    for cell, text in zip(row.cells, texts):
+        set_cell(cell, text)
+    return row
 
 
 W = "{http://schemas.openxmlformats.org/wordprocessingml/2006/main}"
