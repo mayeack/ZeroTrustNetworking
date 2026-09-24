@@ -6,7 +6,7 @@ KEY = "global"
 DEFAULTS = {"_key": KEY, "stream_checkpoint": 0.0, "backfill_done": 0, "backfill_lock_epoch": 0.0, "backfill_lock_owner": "", "last_reset_epoch": 0.0,
             "speed": "fast", "response_mode": "local", "agent_mode": "mcp", "plan_t0": 0.0, "plan_attempt": -1, "plan_status": "idle",
             "plan_dropped_attempts": 0, "plan_fail_at": 0.0, "plan_completed_epoch": 0.0, "last_fire_epoch": 0.0, "last_tick_epoch": 0.0,
-            "last_tick_events": 0, "last_error": ""}
+            "last_tick_events": 0, "last_error": "", "stream_owner": "", "stream_owner_epoch": 0.0}
 
 
 def load(splunkd):

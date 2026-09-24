@@ -3,6 +3,19 @@
 code,pre{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:.92em}pre{background:#f3f4f6;padding:.75rem;overflow-x:auto;border-radius:6px}code{background:#f3f4f6;padding:.1em .3em;border-radius:4px}pre code{background:none;padding:0}
 table{border-collapse:collapse;margin:1rem 0;width:100%}th,td{border:1px solid #d1d5db;padding:.4rem .6rem;text-align:left;vertical-align:top}th{background:#f9fafb}h1,h2,h3{line-height:1.25}a{color:#0b5cad}
 @media (prefers-color-scheme: dark){body{background:#0f172a;color:#e5e7eb}pre,code{background:#1e293b}th{background:#1e293b}th,td{border-color:#334155}a{color:#7dd3fc}}</style></head><body><h1 id="changelog">Changelog</h1>
+<h2 id="103-unreleased">1.0.3 (unreleased)</h2>
+<ul>
+<li>Live generator on the workstation (<code>live/</code>): browser page with a ten-minute timeline, live tail, counts, the incident's progress in Splunk and triggers (fire, reset, path attack for any workload, audit-mode flow, unapproved program, Live Protect, Nexus configuration change, enforcement action). Streams through the same <code>ztgen</code> code; a streaming lease in <code>zt_demo_state</code> keeps the search head input quiet while it runs.</li>
+<li><code>ztgen.attacks</code>: generic path attacks (any workload to any protected store) advanced by whichever streamer holds the lease; the reset releases their quarantines.</li>
+<li><code>ztgen.actions</code>: fire, reset and status shared by <code>ztdemo</code> and the live generator.</li>
+<li>Incident Timeline: incident selector (newest first), every panel scoped to the chosen incident, pending wording per step, rebuilt evidence links; new macro <code>zt_incident_window(1)</code>.</li>
+<li>Homepage <code>zt_home</code> (default view): one card per dashboard with a live number, scoreboard row.</li>
+<li>Enforcement Approvals: the comment box sits with Approve and Reject in the decision row.</li>
+<li><code>ztbrief</code> runs on the search head (<code>distributed=False</code>, <code>local = true</code>, <code>| localop</code> in the capture search): Splunk Cloud sends streaming commands to the indexers, where the KV store is off.</li>
+<li>Risk detections throttle per run (<code>zt_run</code>), so a reset and a new fire within the hour produce new risk events; finding title from <code>risk_object</code> (ES normalised the entity through the asset lookup).</li>
+<li>Agent output schema: switch and interface are required fields.</li>
+<li>Tools: <code>verify_views.py</code>, <code>wording.py</code>, <code>live.py</code>; named User-Agent for the emulator probe (Cloudflare 1010).</li>
+</ul>
 <h2 id="100-2026-09-23">1.0.0 (2026-09-23)</h2>
 <p>First release of the Zero Trust Incident demo for the deck "One incident, end to end", built for Splunk Cloud Platform (stack <code>prd-shw-39d7bab80b2f9d</code>) with Enterprise Security 8.7, AI Toolkit 6.1 (Agent Launchpad), MCP Server 2.0 and Splunk SOAR Cloud 8.7.</p>
 <h3 id="zt_incident_demo-100-main-app-display-name-zero-trust-incident"><code>zt_incident_demo</code> 1.0.0 (main app, display name <em>Zero Trust Incident</em>)</h3>

@@ -5,12 +5,15 @@ import os
 import socket
 import time
 
-from . import canon, plan as P, schedule as S, state as ST
+from . import attacks as A, canon, plan as P, schedule as S, state as ST
 from .estate import get_estate
 from .restclient import Hec, RestError
 
 log = logging.getLogger("ztgen.stream")
 LOCK_TTL = 900
+
+
+LEASE_TTL = 45  # seconds a streaming lease stays valid without a heartbeat
 
 
 class Streamer:
@@ -77,12 +80,22 @@ class Streamer:
         return sent
 
     # ---- tick -----------------------------------------------------------------
-    def tick(self, now=None, force_backfill=False, backfill_hours=None):
+    def tick(self, now=None, force_backfill=False, backfill_hours=None, owner=None):
+        """One streaming step. `owner` names the streamer ("splunk" for the search head input, "live:<host>:<pid>" for the
+        live generator on a workstation): a fresh lease held by another owner makes this tick a no-op, and a live
+        generator always takes the lease over from the search head, so only one side streams at a time."""
         now = now or time.time()
         st = ST.load(self.splunkd)
-        owner = "%s:%d" % (socket.gethostname(), os.getpid())
+        lock_owner = "%s:%d" % (socket.gethostname(), os.getpid())
         sent = 0
-        summary = {"backfill": "done" if st["backfill_done"] else "pending", "background_events": 0, "plan_events": 0, "checkpoint": st["stream_checkpoint"]}
+        summary = {"backfill": "done" if st["backfill_done"] else "pending", "background_events": 0, "plan_events": 0, "attack_events": 0, "checkpoint": st["stream_checkpoint"]}
+        if owner:
+            holder, held_at = st.get("stream_owner") or "", float(st.get("stream_owner_epoch") or 0)
+            live_takes_over = owner.startswith("live:") and not holder.startswith("live:")
+            if holder and holder != owner and now - held_at < LEASE_TTL and not live_takes_over:
+                summary["skipped"] = "streaming is owned by %s (lease %.0fs old)" % (holder, now - held_at)
+                return summary
+            st["stream_owner"], st["stream_owner_epoch"] = owner, now
         try:
             if not st["backfill_done"] or force_backfill:
                 if st["backfill_lock_epoch"] and now - float(st["backfill_lock_epoch"]) < LOCK_TTL and st["backfill_lock_owner"] != owner and not force_backfill:
@@ -104,6 +117,8 @@ class Streamer:
                     summary["background_events"] = n
             summary["plan_events"] = self._advance_plan(st, now)
             sent += summary["plan_events"]
+            summary["attack_events"] = A.advance(self.splunkd, self.hec, self.estate, now)
+            sent += summary["attack_events"]
             st["last_error"] = ""
         except RestError as e:
             st["last_error"] = str(e)[:400]
@@ -135,7 +150,15 @@ class Streamer:
         st = ST.load(self.splunkd)
         st.update({"plan_status": "idle", "plan_attempt": -1, "plan_dropped_attempts": 0, "plan_fail_at": 0.0, "last_reset_epoch": now})
         ST.save(self.splunkd, st)
+        for rec in A.running(self.splunkd):
+            A.stop(self.splunkd, rec["_key"], now)
         return st
+
+    def release_lease(self, owner):
+        st = ST.load(self.splunkd)
+        if st.get("stream_owner") == owner:
+            st["stream_owner"], st["stream_owner_epoch"] = "", 0.0
+            ST.save(self.splunkd, st)
 
 
 def make_hec(splunkd, cfg):

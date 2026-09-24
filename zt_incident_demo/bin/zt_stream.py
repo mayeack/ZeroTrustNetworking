@@ -23,7 +23,7 @@ def main():
     try:
         cfg = ST.config(sd)
         hec = make_hec(sd, cfg)
-        summary = Streamer(sd, hec, cfg).tick()
+        summary = Streamer(sd, hec, cfg).tick(owner="splunk")
         log.info("tick %s", summary)
     except Exception as e:  # noqa: BLE001
         log.exception("stream tick failed: %s", e)

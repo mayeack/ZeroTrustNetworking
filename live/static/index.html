@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Zero Trust Live</title>
+  <link rel="stylesheet" href="/css/style.css?v=1">
+</head>
+<body>
+  <div class="layout">
+    <aside class="sidebar">
+      <div class="sidebar-brand"><span class="brand-icon">&#9673;</span><span class="brand-text">Zero Trust Live</span></div>
+      <nav class="sidebar-nav">
+        <a href="#" class="nav-link active" data-page="dashboard"><span class="nav-icon">&#9678;</span> Dashboard</a>
+        <a href="#" class="nav-link" data-page="events"><span class="nav-icon">&#9776;</span> Events</a>
+        <a href="#" class="nav-link" data-page="triggers"><span class="nav-icon">&#9889;</span> Triggers</a>
+        <a href="#" class="nav-link" data-page="settings"><span class="nav-icon">&#9881;</span> Settings</a>
+      </nav>
+      <div class="sidebar-footer">
+        <div class="engine-status"><span class="status-dot idle" id="dot"></span><span class="status-text" id="dot-text">Connecting</span></div>
+        <div class="footer-links"><a id="link-splunk" href="#" target="_blank">Splunk</a> · <a id="link-timeline" href="#" target="_blank">Timeline</a> · <a id="link-approvals" href="#" target="_blank">Approvals</a></div>
+      </div>
+    </aside>
+    <main class="content">
+      <!-- Dashboard -->
+      <section class="page active" id="page-dashboard">
+        <header class="page-head"><h1>Live stream</h1><p>Every event this machine sends to Splunk, as it is sent, and where the incident stands in Splunk.</p></header>
+        <div class="stat-row">
+          <div class="stat"><div class="stat-v" id="s-total">0</div><div class="stat-l">events since start</div></div>
+          <div class="stat"><div class="stat-v" id="s-rate">0</div><div class="stat-l">events, last minute</div></div>
+          <div class="stat"><div class="stat-v" id="s-plan">idle</div><div class="stat-l" id="s-plan-l">incident</div></div>
+          <div class="stat"><div class="stat-v" id="s-owner">–</div><div class="stat-l">streaming from</div></div>
+          <div class="stat"><div class="stat-v" id="s-cp">–</div><div class="stat-l">checkpoint age</div></div>
+        </div>
+        <div class="panel">
+          <div class="panel-head"><h2>Timeline, last 10 minutes</h2><div class="legend"><span><i class="k background"></i>background</span><span><i class="k incident"></i>CI runner incident</span><span><i class="k attack"></i>path attack</span><span><i class="k trigger"></i>trigger</span></div></div>
+          <canvas id="timeline" height="300"></canvas>
+        </div>
+        <div class="two-col">
+          <div class="panel">
+            <div class="panel-head"><h2>The incident in Splunk</h2><div class="actions"><button class="btn primary" id="btn-fire">Fire the incident</button><button class="btn danger" id="btn-reset">Reset</button></div></div>
+            <div id="pipeline" class="pipeline"><p class="muted">No incident since the last reset. Fire it, then watch the steps fill in.</p></div>
+          </div>
+          <div class="panel">
+            <div class="panel-head"><h2>Path attacks</h2><a href="#" class="btn small" data-goto="triggers">Start one</a></div>
+            <div id="attacks" class="attacks"><p class="muted">None running.</p></div>
+          </div>
+        </div>
+        <div class="panel">
+          <div class="panel-head"><h2>Counts by sourcetype</h2></div>
+          <table class="tbl" id="counts"><thead><tr><th>sourcetype</th><th>last minute</th><th>since start</th></tr></thead><tbody></tbody></table>
+        </div>
+      </section>
+      <!-- Events -->
+      <section class="page" id="page-events">
+        <header class="page-head"><h1>Events</h1><p>Live tail of what leaves this machine, one line per event. Click a sourcetype to filter.</p></header>
+        <div class="toolbar"><div id="ev-filters" class="chips"></div><div class="spacer"></div><button class="btn small" id="ev-pause">Pause</button><button class="btn small" id="ev-clear">Clear</button></div>
+        <div class="log" id="log"></div>
+      </section>
+      <!-- Triggers -->
+      <section class="page" id="page-triggers">
+        <header class="page-head"><h1>Triggers</h1><p>Send specific events and watch Splunk react: the two risk detections run every minute, the finding follows a minute later, then the agent, the request and the enforcement.</p></header>
+        <div class="cards">
+          <div class="card">
+            <h3>The incident: CI runner reaches the checkpoint store</h3>
+            <p>Job 88213 on <code>ci-runner-7d9f8-xk2lq</code> runs <code>/usr/bin/curl</code> against <code>ai-train/checkpoint-store:9000</code> every 30 s until the quarantine policy drops it. Two risk signals, one finding, the agent brief, the request, the approval, six dropped retries, a failed job.</p>
+            <div class="row"><button class="btn primary" data-trigger="fire">Fire</button><button class="btn danger" data-trigger="reset">Reset</button></div>
+            <div class="result" id="r-fire"></div>
+          </div>
+          <div class="card">
+            <h3>Path attack: any workload reaches any protected store</h3>
+            <p>The same story for a workload of your choice: exec, connect, audit-mode flow every 30 s; risk 50 + 40, a finding for that workload, the agent brief, a quarantine request. Approve it and the retries are dropped.</p>
+            <div class="row"><label>Workload <select id="pa-src"></select></label><label>Store <select id="pa-dest"></select></label><label>Program <select id="pa-prog"></select></label><label>Attempts <input id="pa-max" type="number" value="40" min="2" max="200"></label></div>
+            <div class="row"><button class="btn primary" data-trigger="path_attack">Start the attack</button></div>
+            <div class="result" id="r-path_attack"></div>
+          </div>
+          <div class="card">
+            <h3>Audit-mode flow</h3>
+            <p>One connection that the store's allowlist would deny if it were enforced: Hubble egress FORWARDED, ingress AUDIT. Risk 50 for the workload; the path shows as unprotected on the posture dashboard.</p>
+            <div class="row"><label>Workload <select id="af-src"></select></label><label>Store <select id="af-dest"></select></label><button class="btn" data-trigger="audit_flow">Send</button></div>
+            <div class="result" id="r-audit_flow"></div>
+          </div>
+          <div class="card">
+            <h3>Unapproved program</h3>
+            <p>Tetragon exec and connect from a program that is not on the store's process allowlist, no flows. Risk 40 for the workload.</p>
+            <div class="row"><label>Workload <select id="pc-src"></select></label><label>Store <select id="pc-dest"></select></label><label>Program <select id="pc-prog"></select></label><button class="btn" data-trigger="program_connect">Send</button></div>
+            <div class="result" id="r-program_connect"></div>
+          </div>
+          <div class="card">
+            <h3>Nexus Live Protect</h3>
+            <p>A Live Protect shield event from a leaf switch (advisory, component, status protected). Counts on the Incident Timeline tile.</p>
+            <div class="row"><label>Switch <select id="lp-switch"></select></label><button class="btn" data-trigger="liveprotect">Send</button></div>
+            <div class="result" id="r-liveprotect"></div>
+          </div>
+          <div class="card">
+            <h3>Nexus configuration change</h3>
+            <p>An NX-OS configuration change with the user and the diff.</p>
+            <div class="row"><label>Device <select id="nc-device"></select></label><label>User <input id="nc-user" value="netops-cli"></label></div>
+            <div class="row"><label class="wide">Change <input id="nc-change" value="interface Eth1/12 description zt-live"></label><button class="btn" data-trigger="nexus_config">Send</button></div>
+            <div class="result" id="r-nexus_config"></div>
+          </div>
+          <div class="card">
+            <h3>Enforcement action</h3>
+            <p>A completed enforcement on a workload, requested, approved, applied and verified a minute ago, with its Kubernetes or switch events. Adds one to the posture's enforcement actions and to the audit trail.</p>
+            <div class="row"><label>Point <select id="en-point"></select></label><label>Workload <select id="en-target"></select></label><label>Approver <select id="en-by"></select></label></div>
+            <div class="row"><label class="wide">Comment <input id="en-comment" value="Sent from the live generator"></label><button class="btn" data-trigger="enforcement">Send</button></div>
+            <div class="result" id="r-enforcement"></div>
+          </div>
+        </div>
+      </section>
+      <!-- Settings -->
+      <section class="page" id="page-settings">
+        <header class="page-head"><h1>Settings</h1><p>Cadence, modes and where the streaming runs.</p></header>
+        <div class="cards">
+          <div class="card"><h3>Cadence</h3><p>Fast runs every scheduled search each minute; normal runs them every five minutes.</p><div class="row"><button class="btn" data-speed="fast">Fast</button><button class="btn" data-speed="normal">Normal</button><span id="speed-now" class="pill"></span></div><div class="result" id="r-speed"></div></div>
+          <div class="card"><h3>Response mode</h3><p>Local: the approvals page and the app's endpoint apply the policy. SOAR: the ES automation rule hands the finding to the playbook.</p><div class="row"><button class="btn" data-config='{"response_mode":"local"}'>Local</button><button class="btn" data-config='{"response_mode":"soar"}'>SOAR</button><span id="rm-now" class="pill"></span></div><div class="result" id="r-config"></div></div>
+          <div class="card"><h3>Agent mode</h3><p>MCP: the agent calls the five MCP tools. Inline: the evidence is gathered by a search and handed to the agent in one prompt.</p><div class="row"><button class="btn" data-config='{"agent_mode":"mcp"}'>MCP</button><button class="btn" data-config='{"agent_mode":"inline"}'>Inline</button><span id="am-now" class="pill"></span></div></div>
+          <div class="card"><h3>Streaming ownership</h3><p>While this app runs it holds the streaming lease; the search head's scripted input stands down and takes over again when this app stops.</p><div id="owner-info" class="kv"></div></div>
+          <div class="card"><h3>Endpoints and health</h3><div id="endpoints" class="kv"></div><div class="row"><button class="btn" id="btn-health">Check</button></div><div class="result" id="r-health"></div></div>
+        </div>
+      </section>
+    </main>
+  </div>
+  <script src="/js/app.js?v=1"></script>
+</body>
+</html>

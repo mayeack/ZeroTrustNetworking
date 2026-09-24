@@ -7,7 +7,7 @@ import sys
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, os.path.join(ROOT, "zt_incident_demo", "bin"))
-from ztgen import canon, cnp, estate as E, plan as P, schedule as S  # noqa: E402
+from ztgen import attacks as A, canon, cnp, estate as E, plan as P, schedule as S  # noqa: E402
 
 BANNED = ("sample", "mock", "fake", "synthetic", "illustrative", "demo")
 
@@ -102,6 +102,33 @@ def test_cnp():
     assert b["cnp_json"]["spec"]["endpointSelector"]["matchLabels"] == {"zt-quarantine": "88213"}
     assert b["label_patch_json"] == {"metadata": {"labels": {"zt-quarantine": "88213"}}}
     assert 'zt-quarantine: "88213"' in b["policy_yaml"]
+
+
+def test_attacks():
+    """A path attack attempt has the canonical shape; DROPPED carries the quarantine identity and the denying policy."""
+    e = E.get_estate()
+    src, dest = "ml-notebooks/jupyter", "ai-train/checkpoint-store"
+    sp, dp = e.workloads[src].pods[0], e.workloads[dest].pods[-1]
+    rec = {"src_workload": src, "src_pod": sp.name, "dest_workload": dest, "dest_pod": dp.name, "port": 9000, "program": "/usr/bin/curl", "t0": 1790000000.0,
+           "seed": 1234, "identity_quarantined": e.workloads[src].identity + 78, "job_id": "7412"}
+    evs = A.attempt_events(e, rec, 0, dropped=False)
+    assert [x["sourcetype"] for x in evs] == ["cisco:isovalent:processExec", "cisco:isovalent:processConnect", "cilium:hubble:flow", "cilium:hubble:flow"]
+    flows = [x["event"]["flow"] for x in evs[2:]]
+    assert [f["verdict"] for f in flows] == ["FORWARDED", "AUDIT"] and flows[1]["destination"]["pod_name"] == dp.name and flows[1]["l4"]["TCP"]["destination_port"] == 9000
+    assert evs[1]["event"]["process_connect"]["process"]["binary"] == "/usr/bin/curl" and evs[1]["event"]["process_connect"]["destination_pod"]["name"] == dp.name
+    assert "checkpoint-store.ai-train.svc:9000" in evs[1]["event"]["process_connect"]["process"]["arguments"]
+    d = A.attempt_events(e, rec, 3, dropped=True, policy_names=["zt-quarantine-jupyter-7412"], label_value="7412")
+    assert [x["sourcetype"] for x in d] == ["cisco:isovalent:processExec", "cisco:isovalent:processConnect", "cilium:hubble:flow"]
+    f = d[2]["event"]["flow"]
+    assert f["verdict"] == "DROPPED" and f["source"]["identity"] == e.workloads[src].identity + 78 and f["egress_denied_by"][0]["name"] == "zt-quarantine-jupyter-7412"
+    assert "k8s:zt-quarantine=7412" in f["source"]["labels"]
+    # timing follows the canonical cadence and the program args know every store
+    assert abs((d[2]["time"] - rec["t0"]) - (3 * canon.ATTEMPT_INTERVAL + canon.T_EGRESS)) < 1e-6
+    for store in E.STORES:
+        assert A.program_args("/usr/bin/curl", store).startswith("-sS") and store.split("/")[1] in A.program_args("/usr/bin/curl", store)
+    for text in json.dumps(evs):
+        pass
+    assert not any(w in json.dumps(evs).lower() for w in BANNED)
 
 
 if __name__ == "__main__":

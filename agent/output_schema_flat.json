@@ -1,120 +1,124 @@
 {
- "type": "object",
- "required": [
-  "finding_id",
-  "entity",
-  "job_id",
-  "dest_workload",
-  "data_class",
-  "disposition",
-  "confidence",
-  "what_happened",
-  "why_it_matters",
-  "where_pod",
-  "where_node",
-  "recommendation_enforcement_point",
-  "recommendation_action",
-  "recommendation_policy_name",
-  "approver_labels",
-  "follow_up",
-  "evidence",
-  "brief_text"
- ],
- "properties": {
-  "finding_id": {
-   "type": "string",
-   "description": "The finding id exactly as zt_finding_context returned it"
-  },
-  "entity": {
-   "type": "string",
-   "description": "namespace/workload"
-  },
-  "risk": {
-   "type": "number",
-   "description": "Total risk score of the finding"
-  },
-  "job_id": {
-   "type": "string",
-   "description": "CI job id, for example 88213"
-  },
-  "dest_workload": {
-   "type": "string"
-  },
-  "data_class": {
-   "type": "string"
-  },
-  "disposition": {
-   "type": "string",
-   "description": "true_positive, benign_positive or needs_review"
-  },
-  "confidence": {
-   "type": "string",
-   "description": "high, medium or low"
-  },
-  "what_happened": {
-   "type": "string"
-  },
-  "why_it_matters": {
-   "type": "string"
-  },
-  "where_pod": {
-   "type": "string"
-  },
-  "where_node": {
-   "type": "string"
-  },
-  "where_switch": {
-   "type": "string"
-  },
-  "where_interface": {
-   "type": "string"
-  },
-  "recommendation_enforcement_point": {
-   "type": "string",
-   "description": "kernel, dpu, switch or none"
-  },
-  "recommendation_action": {
-   "type": "string"
-  },
-  "recommendation_policy_name": {
-   "type": "string"
-  },
-  "recommendation_scope": {
-   "type": "string"
-  },
-  "recommendation_blast_radius": {
-   "type": "string"
-  },
-  "approver_labels": {
-   "type": "array",
-   "items": {
-    "type": "string"
-   },
-   "description": "Approver labels, for example SOC tier 2"
-  },
-  "follow_up": {
-   "type": "array",
-   "items": {
-    "type": "string"
-   },
-   "maxItems": 3
-  },
-  "evidence": {
-   "type": "array",
-   "items": {
-    "type": "string"
-   },
-   "description": "One entry per fact as 'tool: fact'"
-  },
-  "open_questions": {
-   "type": "array",
-   "items": {
-    "type": "string"
-   }
-  },
-  "brief_text": {
-   "type": "string",
-   "description": "Six lines: Disposition, What happened, Why it matters, Where, Recommendation, Follow-up"
+  "type": "object",
+  "required": [
+    "finding_id",
+    "entity",
+    "job_id",
+    "dest_workload",
+    "data_class",
+    "disposition",
+    "confidence",
+    "what_happened",
+    "why_it_matters",
+    "where_pod",
+    "where_node",
+    "recommendation_enforcement_point",
+    "recommendation_action",
+    "recommendation_policy_name",
+    "approver_labels",
+    "follow_up",
+    "evidence",
+    "brief_text",
+    "where_switch",
+    "where_interface"
+  ],
+  "properties": {
+    "finding_id": {
+      "type": "string",
+      "description": "The finding id exactly as zt_finding_context returned it"
+    },
+    "entity": {
+      "type": "string",
+      "description": "namespace/workload"
+    },
+    "risk": {
+      "type": "number",
+      "description": "Total risk score of the finding"
+    },
+    "job_id": {
+      "type": "string",
+      "description": "CI job id, for example 88213"
+    },
+    "dest_workload": {
+      "type": "string"
+    },
+    "data_class": {
+      "type": "string"
+    },
+    "disposition": {
+      "type": "string",
+      "description": "true_positive, benign_positive or needs_review"
+    },
+    "confidence": {
+      "type": "string",
+      "description": "high, medium or low"
+    },
+    "what_happened": {
+      "type": "string"
+    },
+    "why_it_matters": {
+      "type": "string"
+    },
+    "where_pod": {
+      "type": "string"
+    },
+    "where_node": {
+      "type": "string"
+    },
+    "where_switch": {
+      "type": "string",
+      "description": "The leaf switch of the server (from zt_workload_server_context), e.g. dc2-leaf-205"
+    },
+    "where_interface": {
+      "type": "string",
+      "description": "The switch interface of the server (from zt_workload_server_context), e.g. Eth1/12"
+    },
+    "recommendation_enforcement_point": {
+      "type": "string",
+      "description": "kernel, dpu, switch or none"
+    },
+    "recommendation_action": {
+      "type": "string"
+    },
+    "recommendation_policy_name": {
+      "type": "string"
+    },
+    "recommendation_scope": {
+      "type": "string"
+    },
+    "recommendation_blast_radius": {
+      "type": "string"
+    },
+    "approver_labels": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Approver labels, for example SOC tier 2"
+    },
+    "follow_up": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "maxItems": 3
+    },
+    "evidence": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "One entry per fact as 'tool: fact'"
+    },
+    "open_questions": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "brief_text": {
+      "type": "string",
+      "description": "Six lines: Disposition, What happened, Why it matters, Where, Recommendation, Follow-up"
+    }
   }
- }
 }

@@ -86,6 +86,20 @@ smoke: ## Acceptance checks with a pass/fail table (FRESH=1 right after a fresh 
 	$(PY) tools/smoke.py --fresh=$(FRESH)
 wording: ## Acceptance criterion 11: banned words in visible text of both apps, the agent and the playbook
 	$(PY) tools/wording.py
+verify-views: ## Run every Dashboard Studio data source on the stack with the newest incident selected
+	$(PY) tools/verify_views.py
+live-run: ## Live generator in the foreground (http://127.0.0.1:8890): streams from this Mac, live timeline, triggers
+	$(PY) tools/live.py run
+live-start: ## Live generator in the background (pid in local/live.pid)
+	$(PY) tools/live.py start
+live-stop: ## Stop the background live generator (the search head streamer resumes)
+	$(PY) tools/live.py stop
+live-status: ## Process and API status of the live generator
+	$(PY) tools/live.py status
+live-install: ## launchd agent com.zt-incident-demo.live (starts at login, restarts on failure)
+	$(PY) tools/live.py install
+live-uninstall: ## Remove the launchd agent
+	$(PY) tools/live.py uninstall
 reset-hard: ## Empty zero_trust and zt_summary on the stack and backfill again (asks first)
 	$(PY) tools/reset_hard.py
 collateral: ## Update the deck and the talk track from docs/collateral/collateral.yaml

@@ -1,5 +1,18 @@
 # Changelog
 
+## 1.0.3 (unreleased)
+
+- Live generator on the workstation (`live/`): browser page with a ten-minute timeline, live tail, counts, the incident's progress in Splunk and triggers (fire, reset, path attack for any workload, audit-mode flow, unapproved program, Live Protect, Nexus configuration change, enforcement action). Streams through the same `ztgen` code; a streaming lease in `zt_demo_state` keeps the search head input quiet while it runs.
+- `ztgen.attacks`: generic path attacks (any workload to any protected store) advanced by whichever streamer holds the lease; the reset releases their quarantines.
+- `ztgen.actions`: fire, reset and status shared by `ztdemo` and the live generator.
+- Incident Timeline: incident selector (newest first), every panel scoped to the chosen incident, pending wording per step, rebuilt evidence links; new macro `zt_incident_window(1)`.
+- Homepage `zt_home` (default view): one card per dashboard with a live number, scoreboard row.
+- Enforcement Approvals: the comment box sits with Approve and Reject in the decision row.
+- `ztbrief` runs on the search head (`distributed=False`, `local = true`, `| localop` in the capture search): Splunk Cloud sends streaming commands to the indexers, where the KV store is off.
+- Risk detections throttle per run (`zt_run`), so a reset and a new fire within the hour produce new risk events; finding title from `risk_object` (ES normalised the entity through the asset lookup).
+- Agent output schema: switch and interface are required fields.
+- Tools: `verify_views.py`, `wording.py`, `live.py`; named User-Agent for the emulator probe (Cloudflare 1010).
+
 ## 1.0.0 (2026-09-23)
 
 First release of the Zero Trust Incident demo for the deck "One incident, end to end", built for Splunk Cloud Platform (stack `prd-shw-39d7bab80b2f9d`) with Enterprise Security 8.7, AI Toolkit 6.1 (Agent Launchpad), MCP Server 2.0 and Splunk SOAR Cloud 8.7.

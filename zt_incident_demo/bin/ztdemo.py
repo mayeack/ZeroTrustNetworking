@@ -11,7 +11,7 @@ sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), "lib
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
 from splunklib.searchcommands import GeneratingCommand, Configuration, Option, dispatch  # noqa: E402
-from ztgen import canon, plan as P, state as ST, builders as B  # noqa: E402
+from ztgen import actions, canon, plan as P, state as ST, builders as B  # noqa: E402
 from ztgen.k8s_client import K8s  # noqa: E402
 from ztgen.restclient import Splunkd, RestError  # noqa: E402
 from ztgen.streamer import Streamer, make_hec, setup_logging  # noqa: E402
@@ -91,32 +91,9 @@ class ZtDemoCommand(GeneratingCommand):
 
     def reset(self, sd):
         cfg = ST.config(sd)
-        hec = make_hec(sd, cfg)
         now = time.time()
-        released, audit_ids, note = [], [], ""
-        token = sd.password("zt_incident_demo", "k8s_platform")
-        if token:
-            try:
-                k8s = K8s(cfg["emulator"]["url"], token, verify=cfg["emulator"]["verify_tls"], user_agent="ztdemo-reset/1.0")
-                released, audit_ids = k8s.release_quarantine()
-            except Exception as e:  # noqa: BLE001
-                note = "emulator unreachable: %s" % str(e)[:160]
-        else:
-            note = "no k8s_platform token in storage/passwords (run make secrets)"
-        st = ST.load(sd)
-        if released:
-            hec.send([B.enforcement_audit(now, request_id="", finding_id="", investigation_id="", state="released", enforcement_point="kernel",
-                                          action="CNP %s" % ",".join(released), target="%s/%s" % (canon.RUNNER_NS, canon.RUNNER_POD), workload=canon.RUNNER_WORKLOAD,
-                                          policy_name=",".join(released), approved_by=canon.PLATFORM_USER, approver_role=canon.PLATFORM_ROLE, approved_at=now,
-                                          executed_by="splunk", playbook="ztdemo", run_id="", k8s_audit_ids=audit_ids, comment="merge request reverted")])
-        cancelled = 0
-        for r in sd.kv_query("zt_enforcement_requests", {"status": {"$in": ["pending", "approved"]}}):
-            r["status"] = "cancelled"
-            sd.kv_save("zt_enforcement_requests", r)
-            cancelled += 1
-        Streamer(sd, hec, cfg).reset(now)
-        return {"_time": now, "action": "reset", "result": "plan idle, reset stamped", "released_policies": ",".join(released) or "none", "cancelled_requests": cancelled,
-                "previous_plan_status": st["plan_status"], "last_reset_epoch": now, "note": note}
+        out = actions.reset(sd, make_hec(sd, cfg), cfg, now)
+        return dict({"_time": now, "action": "reset"}, **out)
 
     def backfill(self, sd):
         cfg = ST.config(sd)
